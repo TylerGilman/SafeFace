@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    {% load static %}
+    <script src="{% static 'htmx.min.js' %}" defer></script>
+    </head>
+
+    <body>
+    {% block content %}{% endblock content %}
+    </body>
+</html>

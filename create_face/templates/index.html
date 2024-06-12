@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Create an Avatar</h1>
+<select id="character" class="select select-bordered w-full max-w-xs">
+  <option disabled selected>Who shot first?</option>
+  <option>Han Solo</option>
+  <option>Greedo</option>
+</select>
+
+<button hx-post="create" hx-vals='js:{character: getCharacter()}'> 
+<script>
+  function getCharacter() {
+    return document.getElementById("character").value 
+  }
+</script>
+submit
+</button>
+
+{% endblock %}
+
+
+
+
+
+
