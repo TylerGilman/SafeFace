@@ -9,4 +9,4 @@ pip install -r requirements.txt
 ## Run: 
 python3 manage.py runserver
 
-## Dan has a Peanut Brain and weak wrists
+## Dan has a Peanut Brain and strong right wrist for no particyular reason
