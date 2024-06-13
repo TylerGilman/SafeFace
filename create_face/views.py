@@ -43,5 +43,9 @@ def create(request):
 
 
   image.save("static/images/generated_image.png")
+  torch.cuda.empty_cache()
+
+  # return image
   
-  return render(request, "index.html", {"avatar": "true"})
+  
+  return render(request, "avatar_display.html", {"avatar": "true"})
