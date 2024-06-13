@@ -1,5 +1,5 @@
 {% block content %}
-  <div id="generate_button" hx-swap="innerHTML" hx-target="#generate_button"> 
+  <div hx-swap="outerHTML" hx-target="#generate_button"> 
   <button hx-post="create" hx-indicator="#spinner" hx-vals='js:{gender: getGender(), hair_color: getHairColor(), skin_type: getSkinType(), eye_color: getEyeColor(), gender: getGender(), bodyfat: getBodyfat(), ethnicity: getEthnicity()}' class="bg-white text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
     Regenerate
   </button>
@@ -10,7 +10,7 @@
       <img src="/static/images/generated_image.png" alt="avatar" class="mx-auto rounded-lg shadow-lg"/>
     {% else %}
       <p class="text-lg font-semibold">No avatar created yet</p>
-      <img src="/static/images/empty_profile.png" alt="avatar" class="mx-auto max-width-50% rounded-lg shadow-lg"/>
+      <img src="/static/images/empty_profile.png" alt="avatar" class="mx-auto max-w-1/2 rounded-lg shadow-lg"/>
     {% endif %}
   </div>
 {% endblock %}
