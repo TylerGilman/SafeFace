@@ -28,7 +28,7 @@ def create(request):
   pipe.to("cuda")
 
   # Define prompts and generate image
-  prompt = "Hyper-Realism, Profile View, White Background, of a person with the following attributes: " + request.POST.get('hair_color')+ ", " + request.POST.get('eye_color') + ", " + request.POST.get('skin_type') + ", " + request.POST.get('ethnicity') + ", " + request.POST.get('gender') + ", " + request.POST.get('bodyfat') + ", directly facing the camera."
+  prompt = "Hyper-Realism, Profile View, White Background, of a person with the following attributes: " + request.POST.get('hair_color')+ ", " + request.POST.get('eye_color') + ", " + request.POST.get('skin_type') + ", " + request.POST.get('ethnicity') + ", " + request.POST.get('gender') + ", " + request.POST.get('bodyfat') + ", face directly forward."
   negative_prompt = ""
 
   image = pipe(
