@@ -11,11 +11,7 @@ from diffusers import (
 
 
 def index(request):
-  initial_food_value = "none"  # This can be dynamic based on your logic
-  context = {
-        'food': initial_food_value,
-    }
-  return render(request, "index.html", context)
+  return render(request, "index.html", None)
 
 @csrf_exempt
 def create(request):
@@ -32,7 +28,7 @@ def create(request):
   pipe.to("cuda")
 
   # Define prompts and generate image
-  prompt = "Front Headshot of a person with the following attributes: " + request.POST.get('character')
+  prompt = "Hyper-Realism, Profile View, White Background, of a person with the following attributes: " + request.POST.get('hair_color')+ ", " + request.POST.get('eye_color') + ", " + request.POST.get('skin_type') + ", " + request.POST.get('ethnicity') + ", " + request.POST.get('gender') + ", " + request.POST.get('bodyfat') + ", directly facing the camera."
   negative_prompt = ""
 
   image = pipe(
@@ -46,10 +42,6 @@ def create(request):
   ).images[0]
 
 
-  image.save("generated_image.png")
-
-
-  if request.method == 'POST':
-      character = request.POST.get('character')
-      print(character)  # Print the "character" attribute
-  return render(request, None)
+  image.save("static/images/generated_image.png")
+  
+  return render(request, "index.html", {"avatar": "true"})
