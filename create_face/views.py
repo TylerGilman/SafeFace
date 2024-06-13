@@ -32,7 +32,7 @@ def create(request):
   negative_prompt = ""
 
   image = pipe(
-      prompt,
+      prompt=prompt,
       negative_prompt=negative_prompt,
       width=1024,
       height=1024,
@@ -43,9 +43,11 @@ def create(request):
 
 
   image.save("static/images/generated_image.png")
+  
+  # return image
   torch.cuda.empty_cache()
 
-  # return image
   
+  # close the pipeline
   
   return render(request, "avatar_display.html", {"avatar": "true"})
