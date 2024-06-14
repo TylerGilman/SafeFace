@@ -1,12 +1,9 @@
 {% block content %}
-  <div hx-swap="outerHTML" hx-target="#generate_button"> 
-  <button hx-post="create" hx-indicator="#balls" hx-vals='js:{gender: getGender(), hair_color: getHairColor(), skin_type: getSkinType(), eye_color: getEyeColor(), gender: getGender(), bodyfat: getBodyfat(), ethnicity: getEthnicity()}' class="bg-white text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
+  <button hx-post="create" hx-swap="outerHTML" hx-indicator="#ball" hx-vals='js:{gender: getGender(), hair_color: getHairColor(), skin_type: getSkinType(), eye_color: getEyeColor(), gender: getGender(), bodyfat: getBodyfat(), ethnicity: getEthnicity()}' class="bg-white text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
     Regenerate
   </button>
-  </div>
-  <div id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
+  <div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
       <p class="text-lg font-semibold">Your Avatar</p>
-      <img src="/static/images/generated_image.png" alt="avatar" class="mx-auto max-w-xs rounded-xl shadow-lg"/>
-
+      <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-xl shadow-lg"/>
   </div>
 {% endblock %}

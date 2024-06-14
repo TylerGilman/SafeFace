@@ -6,8 +6,20 @@ from diffusers import (
     KDPM2AncestralDiscreteScheduler,
     AutoencoderKL,
 )
+from diffusers.models.modeling_outputs import Transformer2DModelOutput
+import time
 
+# Load VAE component
+vae = AutoencoderKL.from_pretrained(
+  "madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16
+)
 
+# Configure the pipeline
+pipe = StableDiffusionXLPipeline.from_pretrained(
+  "Corcelio/mobius", vae=vae, torch_dtype=torch.float16
+)
+pipe.scheduler = KDPM2AncestralDiscreteScheduler.from_config(pipe.scheduler.config)
+pipe.to("cuda")
 
 
 def index(request):
@@ -15,18 +27,6 @@ def index(request):
 
 @csrf_exempt
 def create(request):
-  # Load VAE component
-  vae = AutoencoderKL.from_pretrained(
-      "madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16
-  )
-
-  # Configure the pipeline
-  pipe = StableDiffusionXLPipeline.from_pretrained(
-      "Corcelio/mobius", vae=vae, torch_dtype=torch.float16
-  )
-  pipe.scheduler = KDPM2AncestralDiscreteScheduler.from_config(pipe.scheduler.config)
-  pipe.to("cuda")
-
   # Define prompts and generate image
   prompt = "Hyper-Realism, Profile View, White Background, of a single person's face with the following attributes: " + request.POST.get('hair_color')+ " " + request.POST.get('eye_color') + " " + request.POST.get('skin_type') + " " + request.POST.get('ethnicity') + " " + request.POST.get('gender') + " " + request.POST.get('bodyfat') + " facing directly forward."
   negative_prompt = ""
@@ -41,15 +41,10 @@ def create(request):
       clip_skip=3,
   ).images[0]
 
-
   image.save("static/images/generated_image.png")
   
-  # Clean up resources
-  del vae
-  del pipe
-  torch.cuda.empty_cache()
-
+  #torch.cuda.empty_cache()
   
-  # close the pipeline
-  
-  return render(request, "avatar_display.html", None)
+  static_path = "/static/images/generated_image.png"
+  # add t as a parameter to prevent caching
+  return render(request, "avatar_display.html", {'image_path': static_path + "?t=" + str(time.time())})
