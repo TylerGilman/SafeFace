@@ -28,7 +28,7 @@ def index(request):
 @csrf_exempt
 def create(request):
   # Define prompts and generate image
-  prompt = "Hyper-Realism, Profile View, White Background, of a single person's face with the following attributes: " + request.POST.get('hair_color')+ " " + request.POST.get('eye_color') + " " + request.POST.get('skin_type') + " " + request.POST.get('ethnicity') + " " + request.POST.get('gender') + " " + request.POST.get('bodyfat') + " facing directly forward."
+  prompt = "Hyper-Realism, Front Face View, White Background, of a single person's face with the following attributes: " + request.POST.get('hair_color')+ " " + request.POST.get('eye_color') + " " + request.POST.get('skin_type') + " " + request.POST.get('ethnicity') + " " + request.POST.get('gender') + " " + request.POST.get('bodyfat') + " facing directly forward."
   negative_prompt = ""
 
   image = pipe(
@@ -43,7 +43,7 @@ def create(request):
 
   image.save("static/images/generated_image.png")
   
-  #torch.cuda.empty_cache()
+  torch.cuda.empty_cache()
   
   static_path = "/static/images/generated_image.png"
   # add t as a parameter to prevent caching
