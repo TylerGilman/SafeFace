@@ -28,7 +28,7 @@ def index(request):
 @csrf_exempt
 def create(request):
   # Define prompts and generate image
-  prompt = "Hyper-Realism, Front Face View, White Background, of a single person's face with the following attributes: " + request.POST.get('hair_color')+ " " + request.POST.get('eye_color') + " " + request.POST.get('skin_type') + " " + request.POST.get('ethnicity') + " " + request.POST.get('gender') + " " + request.POST.get('bodyfat') + " facing directly forward."
+  prompt = "Hyper-Realism, Front Face View, White Background, of a single person's face with the following attributes: " + request.POST.get('hair_color') + " " + request.POST.get('hair_type') + " " + request.POST.get('hair_length') + " " + request.POST.get('skin_type') + " " + request.POST.get('eye_color') + " " + request.POST.get('skin_type') + " " + request.POST.get('ethnicity') + " " + request.POST.get('gender') + " " + request.POST.get('bodyfat') + " " + request.POST.get('age') + " facing directly forward."
   negative_prompt = ""
 
   image = pipe(
