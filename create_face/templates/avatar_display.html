@@ -1,9 +1,12 @@
 {% block content %}
-  <button hx-post="create" hx-swap="outerHTML" hx-indicator="#ball" hx-vals='js:{gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), gender: getGender(), bodyfat: getBodyfat(), age: getAge(), ethnicity: getEthnicity()}'  class="bg-white border text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
-    Regenerate
-  </button>
-  <div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
-      <p class="text-lg font-semibold">Your Avatar</p>
-      <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-xl shadow-lg"/>
-  </div>
+    <button hx-post="create" hx-swap="outerHTML" hx-indicator="#ball" hx-vals='js:{gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), bodyfat: getBodyfat(), age: getAge(), ethnicity: getEthnicity()}' class="bg-white border text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
+        Regenerate
+    </button>
+    <button hx-post="create_with_hugging_face" hx-swap="outerHTML" hx-indicator="#ball" hx-vals='js:{gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), bodyfat: getBodyfat(), age: getAge(), ethnicity: getEthnicity()}' class="bg-blue-700 border text-white py-2 px-4 rounded hover:bg-white hover:text-blue-700 transition duration-300">
+        Regenerate with Hugging Face
+    </button>
+    <div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
+        <p class="text-lg font-semibold">Your Avatar</p>
+        <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-xl shadow-lg"/>
+    </div>
 {% endblock %}
