@@ -23,7 +23,7 @@ def create_with_pipline(request):
     if image:
         image.save("static/images/generated_image.png")
         static_path = "/static/images/generated_image.png"
-        return render(request, "avatar_display.html", {"image_path": static_path + "?t=" + str(time.time())})
+        return render(request, "avatar_display.html", {"generate_method": "pipeline", "image_path": static_path + "?t=" + str(time.time())})
     else:
         return render(request, "error.html", {"message": "Failed to generate image using pipeline."})
 
@@ -34,7 +34,7 @@ def create_with_hugging_face(request):
     if image:
         image.save("static/images/generated_image.png")
         static_path = "/static/images/generated_image.png"
-        return render(request, "avatar_display.html", {"image_path": static_path + "?t=" + str(time.time())})
+        return render(request, "avatar_display.html", {"generate_method": "hugging_face", "image_path": static_path + "?t=" + str(time.time())})
     else:
         return render(request, "error.html", {"message": "Failed to generate image using Hugging Face."})
 
