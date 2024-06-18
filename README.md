@@ -1,4 +1,5 @@
 # Safe  Face
+Generate an AI avatar then swap their face onto your photos and videos.
 
 ## Install: 
 python3 -m venv .venv \
@@ -8,5 +9,3 @@ pip install -r requirements.txt
 
 ## Run: 
 python3 manage.py runserver
-
-## Dan has a Peanut Brain and strong right wrist for no particyular reason
