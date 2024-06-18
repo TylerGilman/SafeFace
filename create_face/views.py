@@ -40,7 +40,7 @@ def create_with_hugging_face(request):
 
 def make_prompt(request):
     return (
-        "Hyper-Realism, Front Face View, White Background, of a single person's face with the following attributes: "
+        "Hyper-Realism, Front Face View, White Background, of a single person's clean face with the following attributes: "
         + request.POST.get("hair_color") + " "
         + request.POST.get("hair_type") + " "
         + request.POST.get("hair_length") + " "
@@ -49,7 +49,7 @@ def make_prompt(request):
         + request.POST.get("skin_color") + " "
         + request.POST.get("ethnicity") + " "
         + request.POST.get("gender") + " "
-        + request.POST.get("bodyfat") + " "
+        + request.POST.get("body") + " "
         + request.POST.get("age") + " facing directly forward."
     )
 
