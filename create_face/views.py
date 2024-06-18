@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from ml_handler.pipeline import PipelineHandler
-from ml_handler.hugging_face import HuggingFaceHandler
+from create_face.ml_handler.pipeline import PipelineHandler
+from create_face.ml_handler.hugging_face import HuggingFaceHandler
 import time
 
 pipeline_handler = PipelineHandler()
@@ -44,9 +44,9 @@ def make_prompt(request):
         + request.POST.get("hair_color") + " "
         + request.POST.get("hair_type") + " "
         + request.POST.get("hair_length") + " "
-        + request.POST.get("skin_type") + " "
         + request.POST.get("eye_color") + " "
-        + request.POST.get("skin_color") + " "
+        + request.POST.get("skin_color") + " ,"
+        + request.POST.get("skin_type") + " "
         + request.POST.get("ethnicity") + " "
         + request.POST.get("gender") + " "
         + request.POST.get("body") + " "
@@ -58,4 +58,4 @@ def index(request):
     if request.method=="POST":
         return create(request)
     ## Just get the page
-    return render(request, "index.html", None)
+    return render(request, "create_face.html", None)

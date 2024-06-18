@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_htmx",
+    'create_face',
+    'swap_face'
 ]
 
 MIDDLEWARE = [
@@ -56,7 +58,7 @@ ROOT_URLCONF = "safe_face_web.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [ "create_face/templates"],
+        "DIRS": [ "create_face/templates", "swap_face/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
