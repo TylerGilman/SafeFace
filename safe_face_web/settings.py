@@ -39,8 +39,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_htmx",
     'create_face',
-    'swap_face'
+    'swap_face',
+    'authentication',
 ]
+
+LOGIN_URL = '/login/'
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
