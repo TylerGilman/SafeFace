@@ -4,7 +4,10 @@
 <div class="flex flex-col items-center justify-center w-full mt-5">
     <h1 class="text-3xl font-bold mb-6 text-center">Create an Avatar</h1>
   
-    <div id="create_form" class="bg-white shadow-lg rounded-lg p-6 flex-col items-center">
+    <div id="create_form" class="flex bg-white shadow-lg rounded-lg p-6 flex-col items-center">
+        <p class="text-sm opacity-70 text-center mb-4 text-red-500 max-w-[40ch]">
+            Stupid select won't style properly, appearance-none needed for some reason, but then lose the chevron
+        </p>
         <div id="attributes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 gap-x-6 mb-6 w-full">
             {% for field in form_fields %}
                 <div class="form-group relative">
