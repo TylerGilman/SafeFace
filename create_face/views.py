@@ -7,15 +7,17 @@ import time
 pipeline_handler = PipelineHandler()
 hugging_face_handler = HuggingFaceHandler()
 
+
 @csrf_exempt
 def create(request):
-  if request.POST.get("generate_method") == "pipeline":
-    return create_with_pipline(request)
-  elif request.POST.get("generate_method") == "hugging_face":
-    return create_with_hugging_face(request)
-  else:
-    return render(request, "error.html", {"message": "Invalid generate method."})
-      
+    if request.POST.get("generate_method") == "pipeline":
+        return create_with_pipline(request)
+    elif request.POST.get("generate_method") == "hugging_face":
+        return create_with_hugging_face(request)
+    else:
+        return render(request, "error.html", {"message": "Invalid generate method."})
+
+
 @csrf_exempt
 def create_with_pipline(request):
     prompt = make_prompt(request)
@@ -23,9 +25,11 @@ def create_with_pipline(request):
     if image:
         image.save("static/images/generated_image.png")
         static_path = "/static/images/generated_image.png"
-        return render(request, "avatar_display.html", {"generate_method": "pipeline", "image_path": static_path + "?t=" + str(time.time())})
+        return render(request, "avatar_display.html",
+                      {"generate_method": "pipeline", "image_path": static_path + "?t=" + str(time.time())})
     else:
         return render(request, "error.html", {"message": "Failed to generate image using pipeline."})
+
 
 @csrf_exempt
 def create_with_hugging_face(request):
@@ -34,12 +38,15 @@ def create_with_hugging_face(request):
     if image:
         image.save("static/images/generated_image.png")
         static_path = "/static/images/generated_image.png"
-        return render(request, "avatar_display.html", {"generate_method": "hugging_face", "image_path": static_path + "?t=" + str(time.time())})
+        return render(request, "avatar_display.html",
+                      {"generate_method": "hugging_face", "image_path": static_path + "?t=" + str(time.time())})
     else:
         return render(request, "error.html", {"message": "Failed to generate image using Hugging Face."})
 
+
 def make_prompt(request):
     return (
+<<<<<<< HEAD
         "Hyper-Realism, Front Face View, White Background, of a single person's clean face with the following attributes: "
         + request.POST.get("hair_color") + " "
         + request.POST.get("hair_type") + " "
@@ -51,11 +58,30 @@ def make_prompt(request):
         + request.POST.get("gender") + " "
         + request.POST.get("body") + " "
         + request.POST.get("age") + " facing directly forward."
+=======
+            "Hyper-Realism, Front Face View, White Background, of a single person's clean face with the following attributes: "
+            + request.POST.get("hair_color") + " "
+            + request.POST.get("hair_type") + " "
+            + request.POST.get("hair_length") + " "
+            + request.POST.get("skin_type") + " "
+            + request.POST.get("eye_color") + " "
+            + request.POST.get("skin_color") + " "
+            + request.POST.get("ethnicity") + " "
+            + request.POST.get("gender") + " "
+            + request.POST.get("body") + " "
+            + request.POST.get("age") + " facing directly forward."
+>>>>>>> fd635f9c7de19e6621e2f7a597f37c11e91bd9e9
     )
+
 
 @csrf_exempt
 def index(request):
-    if request.method=="POST":
+    if request.method == "POST":
         return create(request)
+<<<<<<< HEAD
     ## Just get the page
     return render(request, "create_face.html", None)
+=======
+    # Just get the page
+    return render(request, "index.html", None)
+>>>>>>> fd635f9c7de19e6621e2f7a597f37c11e91bd9e9
