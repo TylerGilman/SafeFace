@@ -57,6 +57,7 @@ def make_prompt(request):
         + request.POST.get("gender") + " "
         + request.POST.get("body") + " "
         + request.POST.get("age") + " facing directly forward."
+    )
 
 
 
