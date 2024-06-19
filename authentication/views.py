@@ -5,11 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import *
 
-# Define a view function for the home page
-@login_required(login_url='/home/login/')
-def home(request):
-    return render(request, 'home.html')
-
 # Define a view function for the login page
 def login_page(request):
     # Check if the HTTP request method is POST (form submission)
@@ -21,7 +16,7 @@ def login_page(request):
         if not User.objects.filter(username=username).exists():
             # Display an error message if the username does not exist
             messages.error(request, 'Invalid Username')
-            return redirect('/home/login/')
+            return redirect('/auth/login/')
 
         # Authenticate the user with the provided username and password
         user = authenticate(username=username, password=password)
@@ -29,11 +24,11 @@ def login_page(request):
         if user is None:
             # Display an error message if authentication fails (invalid password)
             messages.error(request, "Invalid Password")
-            return redirect('/home/login/')
+            return redirect('/auth/login/')
         else:
             # Log in the user and redirect to the home page upon successful login
             login(request, user)
-            return redirect('/home/')
+            return redirect('/create')
 
     # Render the login page template (GET request)
     return render(request, 'login.html')
@@ -53,7 +48,7 @@ def register_page(request):
         if user.exists():
             # Display an information message if the username is taken
             messages.info(request, "Username already taken!")
-            return redirect('/home/register/')
+            return redirect('/auth/register/')
 
         # Create a new User object with the provided information
         user = User.objects.create_user(
@@ -68,7 +63,7 @@ def register_page(request):
 
         # Display an information message indicating successful account creation
         messages.info(request, "Account created Successfully!")
-        return redirect('/home/register/')
+        return redirect('/auth/register/')
 
     # Render the registration page template (GET request)
     return render(request, 'register.html')

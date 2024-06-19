@@ -3,12 +3,15 @@ from django.views.decorators.csrf import csrf_exempt
 from create_face.ml_handler.pipeline import PipelineHandler
 from create_face.ml_handler.hugging_face import HuggingFaceHandler
 import time
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 pipeline_handler = PipelineHandler()
 hugging_face_handler = HuggingFaceHandler()
 
-
 @csrf_exempt
+@login_required(login_url='/auth/login/')
 def index(request):
     if request.method == "POST":
         return create(request)

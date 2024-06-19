@@ -5,13 +5,10 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns  # Static fi
 from django.views.generic import RedirectView  # For redirecting root URL
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/home/', permanent=True)),  # Redirect root URL to /home/
+    path('', RedirectView.as_view(url='/create/', permanent=True)),
     path('create/', include('create_face.urls')),
     path('swap_face/', include('swap_face.urls')),
     path('admin/', admin.site.urls),
-    path('home/', include('authentication.urls')),
+    path('auth/', include('authentication.urls')),
 ]
 
-# Include static files URL patterns if in debug mode
-if settings.DEBUG:
-    urlpatterns += staticfiles_urlpatterns()
