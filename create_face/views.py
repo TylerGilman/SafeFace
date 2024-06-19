@@ -11,7 +11,7 @@ hugging_face_handler = HuggingFaceHandler()
 @csrf_exempt
 def create(request):
     if request.POST.get("generate_method") == "pipeline":
-        return create_with_pipline(request)
+        return create_with_pipeline(request)
     elif request.POST.get("generate_method") == "hugging_face":
         return create_with_hugging_face(request)
     else:
@@ -19,7 +19,7 @@ def create(request):
 
 
 @csrf_exempt
-def create_with_pipline(request):
+def create_with_pipeline(request):
     prompt = make_prompt(request)
     image = pipeline_handler.generate_image(prompt)
     if image:
@@ -34,14 +34,15 @@ def create_with_pipline(request):
 @csrf_exempt
 def create_with_hugging_face(request):
     prompt = make_prompt(request)
-    image = hugging_face_handler.generate_image(prompt)
-    if image:
-        image.save("static/images/generated_image.png")
-        static_path = "/static/images/generated_image.png"
-        return render(request, "avatar_display.html",
-                      {"generate_method": "hugging_face", "image_path": static_path + "?t=" + str(time.time())})
-    else:
-        return render(request, "error.html", {"message": "Failed to generate image using Hugging Face."})
+    try:
+        image = hugging_face_handler.generate_image(prompt)
+        if image:
+            image.save("static/images/generated_image.png")
+            static_path = "/static/images/generated_image.png"
+            return render(request, "avatar_display.html",
+                          {"generate_method": "hugging_face", "image_path": static_path + "?t=" + str(time.time())})
+    except Exception as e:
+        return render(request, "error.html", {"message": str(e)})
 
 
 def make_prompt(request):
