@@ -1,0 +1,3 @@
+[submodule "swap_face/facefusion"]
+	path = swap_face/facefusion
+	url = git@github.com:facefusion/facefusion.git
