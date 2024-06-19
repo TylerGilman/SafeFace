@@ -2,13 +2,36 @@
 <html>
     <head>
         <title>Create Face</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {
+                                100: '#f0f4ff',
+                                200: '#d9e6ff',
+                                300: '#a6c1ff',
+                                400: '#598bff',
+                                500: '#3366ff',
+                                600: '#274bdb',
+                                700: '#1a34b8',
+                                800: '#102694',
+                                900: '#091c7a',
+                            },
+                        }
+                    }
+                }
+            }
+        </script>
 
-    {% load static %}
-    <script src="{% static 'htmx.min.js' %}" defer></script>
+        {% load static %}
+        <script src="{% static 'htmx.min.js' %}" defer></script>
     </head>
 
     <body>
-    {% block content %}{% endblock content %}
+        {% block content %}{% endblock content %}
     </body>
 </html>

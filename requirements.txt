@@ -46,3 +46,4 @@ urllib3==2.2.1
 zipp==3.19.2
 GPUtil==1.4.0
 onnxruntime-gpu==1.17.1
+python-dotenv==1.0.1
