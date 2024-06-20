@@ -1,26 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to SafeFaces</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        .container {
-            text-align: center;
-            margin: 100px auto;
-            max-width: 500px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-    </style>
-</head>
-<body class="bg-gray-100">
-    <div class="container mx-auto my-24 p-6 bg-white rounded-lg shadow-lg">
+{% extends 'base.html' %}
+
+{% block content %}
+<body id="body" class="bg-gray-100">
+    <input type="hidden" id="csrf" value="{{ csrf_token }}">
+    <input type="hidden" id="guest" value="{{ guest }}">
+    <div id="content" class="container mx-auto my-24 p-6 bg-white rounded-lg shadow-lg">
         <!-- Page heading -->
         <h1 class="text-green-500 font-bold text-2xl mb-6">Welcome to SafeFace</h1>
+
+        <div id="guest-button"><button hx-get="/create/" hx-include="guest" hx-vals='js:{guest: true}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true" class="text-black">
+           Continue as Guest 
+        </button></div>
+        <div id="login-button"><button hx-get="/auth/login" hx-vals='js:{guest: false}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true" class="text-black">
+            Login
+        </button></div>
          
         <!-- Animated GIF -->
         <!-- Use "welcome.gif" as the source for the GIF -->
@@ -28,3 +21,4 @@
     </div>
 </body>
 </html>
+{% endblock %}

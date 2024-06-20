@@ -11,7 +11,6 @@ pipeline_handler = PipelineHandler()
 hugging_face_handler = HuggingFaceHandler()
 
 @csrf_exempt
-@login_required(login_url='/auth/login/')
 def index(request):
     if request.method == "POST":
         return create(request)
@@ -28,7 +27,8 @@ def index(request):
         {'id': 'eye_color', 'label': 'Eye Color', 'placeholder': 'Select Eye Color', 'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']},
         {'id': 'body', 'label': 'Body Type', 'placeholder': 'Select Body Type','options': ['Morbidly Obese', 'Obese', 'Chubby', 'Muscular', 'Athletic', 'Unnaturally Muscular', 'Normal', 'Thin', 'Skeleton']}
     ]
-    return render(request, "create_face.html", {'form_fields': form_fields})
+    return render(request, "create_face.html", {'guest': request.GET.get("guest"), 'form_fields': form_fields})
+
 
 
 @csrf_exempt

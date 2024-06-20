@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import *
 
+def home_page(request):
+    return render(request, 'home.html')
+
 # Define a view function for the login page
 def login_page(request):
     # Check if the HTTP request method is POST (form submission)
@@ -28,7 +31,7 @@ def login_page(request):
         else:
             # Log in the user and redirect to the home page upon successful login
             login(request, user)
-            return redirect('/create')
+            return redirect('/create', {'guest': 'false'})
 
     # Render the login page template (GET request)
     return render(request, 'login.html')
