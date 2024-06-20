@@ -11,7 +11,7 @@
         <div id="guest-button"><button hx-get="/create/" hx-vals='js:{guest: true}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true" class="text-black">
            Continue as Guest 
         </button></div>
-        <div id="login-button"><button hx-get="/create/" hx-vals='js:{guest: false}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true" class="text-black">
+        <div id="login-button"><button hx-get="/auth/login/"  hx-target="#content" hx-swap="outerHTML" hx-push-url="true" class="text-black">
             Login
         </button></div>
          
