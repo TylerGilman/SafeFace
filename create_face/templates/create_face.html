@@ -3,62 +3,34 @@
 {% block content %}
 <div id="content" class="content flex flex-col items-center justify-center min-h-screen">
   <h1 class="text-3xl font-bold mb-6 text-center">Create an Avatar</h1>
-
-  <div id="create_form" class="flex bg-gray-200 shadow-lg rounded-lg p-2 flex-col items-center w-full">
-    <div id="mode-toggle" class="flex gap-2">
-      <div id="create-mode" class="border-4 border-black rounded-full bg-white relative inset-0 flex">
-        <img id="brainstorm" class="h-6 w-6 m-4" src="../static/images/brainstorm.svg" alt="Brainstorm"/>
-      </div>
-      <div id="gallery-mode" class="border rounded-full bg-white inset-0 flex">
-        <img id="gallery" class="h-6 w-6 m-4" src="../static/images/gallery.svg" alt="Gallery"/>
-      </div>
-    </div>
-    <div id="attributes"
-      class="text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 gap-x-2 mb-6 overflow-x-auto">
-      {% for field in form_fields %}
-      <div class="form-group relative border-4 rounded-xl">
-        <label for="{{ field.id }}" class="text-center block mb-2 text-sm font-medium text-black">
-          {{ field.label }}
-        </label>
-        <select id="{{ field.id }}"
-          class="text-center appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-          <option disabled selected></option>
-          {% for option in field.options %}
-          <option>{{ option }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      {% endfor %}
-    </div>
+    {% include "create_form.html" %} 
+  <div id="avatar" class="text-center flex flex-col justify-center items-center mb-6">
+    <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto max-h-96 rounded-lg shadow-lg" />
   </div>
-
-    <div id="avatar" class="text-center flex flex-col justify-center items-center mb-6">
-      <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto max-h-96 rounded-lg shadow-lg" />
-    </div>
-    <div id="generate_button" class="flex flex-row items-center justify-center w-full gap-4">
-      <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball"
-        hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
-        class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-        Generate Avatar
-      </button>
-      <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball"
-        hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
-        class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-        Generate Avatar with Hugging Face
-      </button>
-      {% if user.is_authenticated and guest == "false" %}
-      <button hx-get="/save/" hx-swap="outerHTML" hx-indicator="#ball"
-        class="flex items-center justify-center text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-        Save Avatar
-        <img id="save" class="ms-2 h-6 w-6" src="../static/images/save-icon.svg" alt="Save..." />
-      </button>
-      {% else %}
-      <button hx-get="/auth/login/" hx-params="none" hx-swap="outerHTML" hx-target="#content"
-        class="flex items-center justify-center text-white bg-gray-700 hover:bg-gray-400 focus:ring-4 focus:ring-gray-50 font-medium rounded-lg text-md px-4 py-2 mb-2">
-        Login to Save Avatar
-      </button>
-      {% endif %}
-    </div>
+  <div id="generate_button" class="flex flex-row items-center justify-center w-full gap-4">
+    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball"
+      hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
+      class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+      Generate Avatar
+    </button>
+    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball"
+      hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
+      class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+      Generate Avatar with Hugging Face
+    </button>
+    {% if user.is_authenticated and guest == "false" %}
+    <button hx-get="/save/" hx-swap="outerHTML" hx-indicator="#ball"
+      class="flex items-center justify-center text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+      Save Avatar
+      <img id="save" class="ms-2 h-6 w-6" src="../static/images/save-icon.svg" alt="Save..." />
+    </button>
+    {% else %}
+    <button hx-get="/auth/login/" hx-params="none" hx-swap="outerHTML" hx-target="#content"
+      class="flex items-center justify-center text-white bg-gray-700 hover:bg-gray-400 focus:ring-4 focus:ring-gray-50 font-medium rounded-lg text-md px-4 py-2 mb-2">
+      Login to Save Avatar
+    </button>
+    {% endif %}
+  </div>
 
   <div class="flex h-24 items-center justify-center w-full">
     <img id="ball" class="htmx-indicator content-center h-24 w-24" src="../static/images/bouncing-ball.svg"

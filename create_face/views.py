@@ -20,7 +20,8 @@ hugging_face_handler = HuggingFaceHandler()
 def index(request):
     if request.method == "POST":
         return create(request)
-    # Just get the page
+      
+      
     form_fields = [
         {'id': 'gender', 'label': 'Gender', 'label': 'Select Gender', 'options': ['Male', 'Female', 'Ugly']},
         {'id': 'hair_color', 'label': 'Hair Color', 'label': 'Select Hair Color', 'options': ['Brown', 'Ginger', 'Blonde', 'Black', 'White', 'Purple']},
@@ -33,7 +34,15 @@ def index(request):
         {'id': 'eye_color', 'label': 'Eye Color', 'label': 'Select Eye Color', 'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']},
         {'id': 'body', 'label': 'Body Type', 'label': 'Select Body Type','options': ['Morbidly Obese', 'Obese', 'Chubby', 'Muscular', 'Athletic', 'Unnaturally Muscular', 'Normal', 'Thin', 'Skeleton']}
     ]
-    return render(request, "create_face.html", {'guest': request.GET.get("guest"), 'form_fields': form_fields})
+      
+    mode = request.GET.get("mode")
+    change_mode = request.GET.get("change_mode") 
+    if not mode:
+      mode = "create_mode"
+    if change_mode == "true":
+        print("mode: ", mode)
+        return render(request, "create_form.html", {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode})
+    return render(request, "create_face.html", {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode})
 
 
 
