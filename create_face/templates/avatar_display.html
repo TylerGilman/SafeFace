@@ -1,16 +1,29 @@
+{% extends 'base.html' %}
+
 {% block content %}
-    {% if generate_method == "pipeline" %}
-    <button hx-post="create" hx-swap="outerHTML" hx-indicator="#ball" hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}' class="bg-white border text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
-        Regenerate
+{% if generate_method == "pipeline" %}
+<button hx-post="create" hx-swap="outerHTML" hx-indicator="#ball"
+  hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
+  class="bg-white border text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
+  Regenerate
+</button>
+{% elif generate_method == "hugging_face" %}
+<button hx-post="create" hx-swap="outerHTML" hx-indicator="#ball"
+  hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
+  class="bg-blue-700 border text-white py-2 px-4 rounded hover:bg-white hover:text-blue-700 transition duration-300">
+  Regenerate with Hugging Face
+</button>
+{% endif %}
+<div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
+  <p class="text-lg font-semibold">Your Avatar</p>
+  <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-xl shadow-lg" />
+  
+  <div class="flex flex-col items-center justify-center w-full">
+    <input type="hidden" id="image_data" value="{{ image_path }}">
+    <button hx-get="/swap_face/" hx-swap="outerHTML" hx-include="#image_data" hx-vals='{"image_data": document.getElementById("image_data").value}' hx-target="#content"
+      class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+      Swap Face
     </button>
-    {% elif generate_method == "hugging_face" %}
-    <button hx-post="create" hx-swap="outerHTML" hx-indicator="#ball" hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}' class="bg-blue-700 border text-white py-2 px-4 rounded hover:bg-white hover:text-blue-700 transition duration-300">
-        Regenerate with Hugging Face
-    </button>
-    {% endif %}
   </div>
-    <div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
-        <p class="text-lg font-semibold">Your Avatar</p>
-        <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-xl shadow-lg"/>
-    </div>
+</div>
 {% endblock %}

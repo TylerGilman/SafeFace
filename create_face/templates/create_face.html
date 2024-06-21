@@ -2,104 +2,120 @@
 
 {% block content %}
 <div id="content" class="content flex flex-col items-center justify-center min-h-screen">
-    <h1 class="text-3xl font-bold mb-6 text-center">Create an Avatar</h1>
-  
-    <div id="create_form" class="flex bg-white shadow-lg rounded-lg p-2 flex-col items-center w-full">
-        <div id="attributes" class="text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 gap-x-2 mb-6 w-full overflow-x-auto">
-            {% for field in form_fields %}
-                <div class="form-group relative">
-                    <label for="{{ field.id }}" class="text-center block mb-2 text-sm font-medium text-gray-700 dark:text-white">{{ field.label }}</label>
-                    <select id="{{ field.id }}" class="text-center appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <option disabled selected>{{ field.placeholder }}</option>
-                        {% for option in field.options %}
-                            <option>{{ option }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            {% endfor %}
-        </div>
+  <h1 class="text-3xl font-bold mb-6 text-center">Create an Avatar</h1>
 
-        <div id="avatar" class="text-center flex flex-col justify-center items-center mb-6">
-            <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto max-h-96 rounded-lg shadow-lg"/>
-        </div>
-<div id="generate_button" class="flex flex-row items-center justify-center w-full gap-4">
-    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}' class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+  <div id="create_form" class="flex bg-white shadow-lg rounded-lg p-2 flex-col items-center w-full">
+    <div id="attributes"
+      class="text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 gap-x-2 mb-6 w-full overflow-x-auto">
+      {% for field in form_fields %}
+      <div class="form-group relative">
+        <label for="{{ field.id }}" class="text-center block mb-2 text-sm font-medium text-gray-700 dark:text-white">{{
+          field.label }}</label>
+        <select id="{{ field.id }}"
+          class="text-center appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+          <option disabled selected>{{ field.placeholder }}</option>
+          {% for option in field.options %}
+          <option>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div id="avatar" class="text-center flex flex-col justify-center items-center mb-6">
+      <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto max-h-96 rounded-lg shadow-lg" />
+    </div>
+    <div id="generate_button" class="flex flex-row items-center justify-center w-full gap-4">
+      <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball"
+        hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
+        class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
         Generate Avatar
-    </button>
-    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}' class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+      </button>
+      <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball"
+        hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
+        class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
         Generate Avatar with Hugging Face
-    </button>
-    {% if user.is_authenticated and guest == "false" %}
-        <button hx-get="/save/" hx-swap="outerHTML" hx-indicator="#ball" class="flex items-center justify-center text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-            Save Avatar
-            <img id="save" class="ms-2 h-6 w-6" src="../static/images/save-icon.svg" alt="Save..."/>
-        </button>
-    {% else %}
-        <button hx-get="/auth/login/" hx-params="none" hx-swap="outerHTML" hx-target="#content" class="flex items-center justify-center text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-            Login to Save Avatar
-        </button>
-    {% endif %}
-</div>
-
+      </button>
+      {% if user.is_authenticated and guest == "false" %}
+      <button hx-get="/save/" hx-swap="outerHTML" hx-indicator="#ball"
+        class="flex items-center justify-center text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+        Save Avatar
+        <img id="save" class="ms-2 h-6 w-6" src="../static/images/save-icon.svg" alt="Save..." />
+      </button>
+      {% else %}
+      <button hx-get="/auth/login/" hx-params="none" hx-swap="outerHTML" hx-target="#content"
+        class="flex items-center justify-center text-white bg-primary-200 hover:bg-primary-300 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+        Login to Save Avatar
+      </button>
+      {% endif %}
     </div>
+  </div>
 
-    <div class="flex h-24 items-center justify-center w-full">
-        <img id="ball" class="htmx-indicator content-center h-24 w-24" src="../static/images/bouncing-ball.svg" alt="Loading..."/>
-    </div>
+  <div class="flex h-24 items-center justify-center w-full">
+    <img id="ball" class="htmx-indicator content-center h-24 w-24" src="../static/images/bouncing-ball.svg"
+      alt="Loading..." />
+  </div>
+
 </div>
 
 <script>
-    function getPipeline() {
-        return "pipeline";
-    }
+  function getImagePath() {
+    var image = document.getElementById("image_path");
+    console.log(image.value)
+    console.log("{{ image_path }}")
+    return "{{ image_path }}";
+  }
+  function getPipeline() {
+    return "pipeline";
+  }
 
-    function getHuggingface() {
-        return "hugging_face";
-    }
+  function getHuggingface() {
+    return "hugging_face";
+  }
 
-    function getGender() {
-        return getValueById("gender");
-    }
+  function getGender() {
+    return getValueById("gender");
+  }
 
-    function getHairColor() {
-        return getValueById("hair_color");
-    }
+  function getHairColor() {
+    return getValueById("hair_color");
+  }
 
-    function getHairType() {
-        return getValueById("hair_type");
-    }
+  function getHairType() {
+    return getValueById("hair_type");
+  }
 
-    function getHairLength() {
-        return getValueById("hair_length");
-    }
+  function getHairLength() {
+    return getValueById("hair_length");
+  }
 
-    function getSkinColor() {
-        return getValueById("skin_color");
-    }
+  function getSkinColor() {
+    return getValueById("skin_color");
+  }
 
-    function getSkinType() {
-        return getValueById("skin_type");
-    }
+  function getSkinType() {
+    return getValueById("skin_type");
+  }
 
-    function getEthnicity() {
-        return getValueById("ethnicity");
-    }
+  function getEthnicity() {
+    return getValueById("ethnicity");
+  }
 
-    function getEyeColor() {
-        return getValueById("eye_color");
-    }
+  function getEyeColor() {
+    return getValueById("eye_color");
+  }
 
-    function getAge() {
-        return getValueById("age");
-    }
+  function getAge() {
+    return getValueById("age");
+  }
 
-    function getBody() {
-        return getValueById("body");
-    }
+  function getBody() {
+    return getValueById("body");
+  }
 
-    function getValueById(id) {
-        const element = document.getElementById(id);
-        return element.value !== element.options[0].value ? element.value : "";
-    }
+  function getValueById(id) {
+    const element = document.getElementById(id);
+    return element.value !== element.options[0].value ? element.value : "";
+  }
 </script>
 {% endblock %}

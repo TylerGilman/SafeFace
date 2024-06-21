@@ -6,6 +6,12 @@ import time
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from io import BytesIO
+from PIL import Image
+import base64
+
 
 pipeline_handler = PipelineHandler()
 hugging_face_handler = HuggingFaceHandler()
@@ -47,13 +53,22 @@ def create_with_pipeline(request):
     prompt = make_prompt(request)
     image = pipeline_handler.generate_image(prompt)
     if image:
-        image.save("static/images/generated_image.png")
-        static_path = "/static/images/generated_image.png"
-        return render(request, "avatar_display.html",
-                      {"generate_method": "pipeline", "image_path": static_path + "?t=" + str(time.time())})
+        # Save the image to a BytesIO object
+        image_io = BytesIO()
+        image.save(image_io, format='PNG')
+        image_io.seek(0)
+        
+        # Encode the image in base64
+        image_base64 = base64.b64encode(image_io.read()).decode('utf-8')
+        image_data = f"data:image/png;base64,{image_base64}"
+        
+        # Render the template with the base64 image
+        return render(request, "avatar_display.html", {
+            "generate_method": "pipeline",
+            "image_path": image_data
+        })
     else:
         return render(request, "error.html", {"message": "Failed to generate image using pipeline."})
-
 
 @csrf_exempt
 def create_with_hugging_face(request):
@@ -61,14 +76,26 @@ def create_with_hugging_face(request):
     try:
         image = hugging_face_handler.generate_image(prompt)
         if image:
-            image.save("static/images/generated_image.png")
-            static_path = "/static/images/generated_image.png"
-            return render(request, "avatar_display.html",
-                          {"generate_method": "hugging_face", "image_path": static_path + "?t=" + str(time.time())})
+            # Save the image to a BytesIO object
+            image_io = BytesIO()
+            image.save(image_io, format='PNG')
+            image_io.seek(0)
+            
+            # Encode the image in base64
+            image_base64 = base64.b64encode(image_io.read()).decode('utf-8')
+            image_data = f"data:image/png;base64,{image_base64}"
+            
+            # Render the template with the base64 image
+            return render(request, "avatar_display.html", {
+                "generate_method": "hugging_face",
+                "image_path": image_data
+            })
         else:
             return render(request, "error.html", {"message": "Failed to generate image using HuggingFace."})
     except Exception as e:
         return render(request, "error.html", {"message": str(e)})
+
+
 
 
 def make_prompt(request):
