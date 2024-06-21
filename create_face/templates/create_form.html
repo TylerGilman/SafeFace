@@ -2,7 +2,7 @@
 <div  name="create_form" id="create_form" class="flex bg-gray-200 shadow-lg rounded-lg p-2 flex-col items-center w-full">
     <input type="hidden" id="create_mode" value="{{ mode }}" />
     <input type="hidden" id="change_mode" value="false" />
-    <div id="mode-toggle"  class="flex gap-2">
+    <div id="mode-toggle"  class="flex gap-2 items-center">
       <div id="create_mode" hx-target="#create_form" hx-get="" hx-vals='js:{"mode": "create_mode", "change_mode": "true"}' hx-include="#create_mode, #change_mode" class="{% if mode == "create_mode" %} border-4 border-black {% endif %} rounded-full bg-white relative inset-0 flex">
         <img id="brainstorm" class="h-6 w-6 m-4" src="../static/images/brainstorm.svg" alt="Brainstorm"/>
       </div>
