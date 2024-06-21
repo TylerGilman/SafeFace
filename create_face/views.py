@@ -21,7 +21,6 @@ def index(request):
     if request.method == "POST":
         return create(request)
       
-      
     form_fields = [
         {'id': 'gender', 'label': 'Gender', 'label': 'Select Gender', 'options': ['Male', 'Female', 'Ugly']},
         {'id': 'hair_color', 'label': 'Hair Color', 'label': 'Select Hair Color', 'options': ['Brown', 'Ginger', 'Blonde', 'Black', 'White', 'Purple']},
@@ -41,7 +40,7 @@ def index(request):
       mode = "create_mode"
     if change_mode == "true":
         print("mode: ", mode)
-        return render(request, "create_form.html", {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode})
+        return render(request, "create_form.html", {'guest': request.GET.get("guest"), 'mode': mode, 'form_fields': form_fields})
     return render(request, "create_face.html", {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode})
 
 
