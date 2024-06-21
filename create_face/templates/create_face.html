@@ -5,7 +5,7 @@
   <h1 class="text-3xl font-bold mb-6 text-center">Create an Avatar</h1>
   {% include "create_form.html" %} 
   <div id="avatar" class="text-center flex flex-col justify-center items-center mb-6">
-    <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto max-h-96 rounded-lg shadow-lg" />
+    <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto max-h-96 rounded-full shadow-xl" />
   </div>
   <div id="generate_button" class="flex flex-row items-center justify-center w-full gap-4">
     <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball"
