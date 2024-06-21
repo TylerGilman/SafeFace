@@ -16,7 +16,7 @@
 {% endif %}
 <div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
   <p class="text-lg font-semibold">Your Avatar</p>
-  <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-full shadow-lg" id="avatar_image"/>
+  <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-lg shadow-lg" id="avatar_image"/>
   
   <div class="flex flex-col items-center justify-center w-full">
     <input type="hidden" name="image_data" id="image_data" value="{{ image_path }}">
