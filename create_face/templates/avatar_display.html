@@ -2,13 +2,13 @@
 
 {% block content %}
 {% if generate_method == "pipeline" %}
-<button hx-post="create" hx-swap="outerHTML" hx-indicator="#ball"
+<button hx-post="" hx-swap="outerHTML" hx-indicator="#ball"
   hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
   class="bg-white border text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
   Regenerate
 </button>
 {% elif generate_method == "hugging_face" %}
-<button hx-post="create" hx-swap="outerHTML" hx-indicator="#ball"
+<button hx-post="" hx-swap="outerHTML" hx-indicator="#ball"
   hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
   class="bg-blue-700 border text-white py-2 px-4 rounded hover:bg-white hover:text-blue-700 transition duration-300">
   Regenerate with Hugging Face
