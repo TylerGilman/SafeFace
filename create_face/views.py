@@ -145,17 +145,28 @@ def save_image(request):
 
 
 def make_prompt(request):
-    return (
-            "Hyper-Realism, Front Face View, White Background, of a single person's clean face with the following "
-            "attributes:"
-            + request.POST.get("hair_color") + " "
-            + request.POST.get("hair_type") + " "
-            + request.POST.get("hair_length") + " "
-            + request.POST.get("eye_color") + " "
-            + request.POST.get("skin_color") + " ,"
-            + request.POST.get("skin_type") + " "
-            + request.POST.get("ethnicity") + " "
-            + request.POST.get("gender") + " "
-            + request.POST.get("body") + " "
-            + request.POST.get("age") + " facing directly forward."
-    )
+    attributes = [
+        ("hair color", request.POST.get("hair_color")),
+        ("hair type", request.POST.get("hair_type")),
+        ("hair length", request.POST.get("hair_length")),
+        ("eye color", request.POST.get("eye_color")),
+        ("skin color", request.POST.get("skin_color")),
+        ("skin type", request.POST.get("skin_type")),
+        ("ethnicity", request.POST.get("ethnicity")),
+        ("gender", request.POST.get("gender")),
+        ("body type", request.POST.get("body")),
+        ("age", request.POST.get("age"))
+    ]
+
+    prompt = "Hyper-Realism, Front Face View, White Background, of a single person's clean face with the following: "
+    attributes = [f"{label}: {value}" for label, value in attributes if value]
+
+    if attributes:
+        prompt += ", ".join(attributes) + "."
+    else:
+        prompt += "a clean face with a white background."
+
+    prompt += " The person is looking directly into the camera, with a neutral expression."
+
+    print(prompt)
+    return prompt
