@@ -7,10 +7,16 @@ from django.http import HttpResponseRedirect, HttpResponse
 
 
 def home_page(request):
+    if request.user.is_authenticated:
+        return redirect('/create/')
+
     return render(request, 'home.html')
 
 # Define a view function for the login page
 def login_page(request):
+    if request.user.is_authenticated:
+        return redirect('/create/')
+
     # Check if the HTTP request method is POST (form submission)
     if request.method == "POST":
         username = request.POST.get('username')
@@ -40,6 +46,9 @@ def login_page(request):
 
 # Define a view function for the registration page
 def register_page(request):
+    if request.user.is_authenticated:
+        return redirect('/create/')
+
     # Check if the HTTP request method is POST (form submission)
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
