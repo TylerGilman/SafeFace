@@ -1,8 +1,6 @@
-{% extends 'base.html' %}
-
 {% block content %}
 <body>
-    <div class="flex items-center justify-center">
+    <div id="content" name="content" class="flex items-center justify-center">
         <!-- Login form -->
         <form class="mt-20 w-full max-w-sm mx-auto bg-bg-50 p-8 rounded dark:bg-bg-800" method="post" enctype="multipart/form-data">
             {% csrf_token %}  <!-- CSRF token for security -->
@@ -32,7 +30,7 @@
 
             <div class="flex flex-col items-center gap-6">
                 <!-- Link to registration page -->
-                <p class="text-sm dark:text-white">Don't have an account? <a href="/auth/register/" class="text-blue-500 hover:text-blue-800">Register</a> </p>
+                <p class="text-sm dark:text-white">Don't have an account? <a hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content" class="text-blue-500 hover:text-blue-800">Register</a> </p>
 
                 <!-- Submit button -->
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>

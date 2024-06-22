@@ -3,7 +3,7 @@
 {% block content %}
 
 <body id="body" class="bg-bg-100 w-5/6 flex-col items-center">
-    <div class="flex flex-col items-center justify-center w-full gap-10">
+    <div id="content" name="content" class="flex flex-col items-center justify-center w-full gap-10">
         <input type="hidden" id="csrf" value="{{ csrf_token }}">
         <input type="hidden" id="guest" value="{{ guest }}">
         <div class="flex-col gap-4">
@@ -12,11 +12,12 @@
         </div>
 
         <div class="flex gap-3 items-center">
-            <a href="{% url 'create' %}"
+            <a hx-get="/create" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #render-mode" hx-vals='js:{render_mode: "content"}'
                     class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                 Continue as Guest
             </a>
-            <a href="{% url 'login_page' %}"
+            <input type="hidden" id="next" value="/create">
+            <a hx-get="/auth/login" hx-swap="outerHTML" hx-target="#content"  hx-include="#csrf, #next" hx-vals='js:{next: "/create"}' hx-push-url="true"
                     class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                 Login
             </a>

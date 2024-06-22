@@ -1,0 +1,12 @@
+{% block content %}
+<div id="content" name="content" class="content flex flex-col items-center justify-center">
+  <h1 class="text-3xl font-bold mb-6 text-center dark:text-white mt-10">Create an Avatar</h1>
+  {% include "create_form.html" %} 
+
+  <div class="flex h-24 items-center justify-center w-full">
+    <img id="ball" class="htmx-indicator content-center h-24 w-24" src="../static/images/bouncing-ball.svg"
+      alt="Loading..." />
+  </div>
+
+</div>
+{% endblock %}

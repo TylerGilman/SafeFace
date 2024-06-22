@@ -19,6 +19,12 @@ hugging_face_handler = HuggingFaceHandler()
 def index(request):
     if request.method == "POST":
         return create(request)
+    if request.GET.get("render_mode") == "content":
+        template = "create_face_content.html"
+    else:
+        template = "create_face.html"
+    
+
 
     form_fields = [
         {'id': 'gender', 'label': 'Select Gender', 'options': ['Male', 'Female', 'Ugly']},
@@ -34,10 +40,7 @@ def index(request):
          'options': ['African', 'Caucasian', 'Italian', 'Jewish', 'British', 'Finnish', 'Mexican', 'Chinese',
                      'Vietnamese']},
         {'id': 'eye_color', 'label': 'Select Eye Color',
-         'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']},
-        {'id': 'body', 'label': 'Select Body Type',
-         'options': ['Morbidly Obese', 'Obese', 'Chubby', 'Muscular', 'Athletic', 'Unnaturally Muscular', 'Normal',
-                     'Thin', 'Skeleton']}
+         'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']}
     ]
 
     mode = request.GET.get("mode")
@@ -62,9 +65,9 @@ def index(request):
 
     if change_mode == "true":
         return render(request, "create_form.html",
-                      {'guest': request.GET.get("guest"), 'mode': mode, 'form_fields': form_fields, 'images': images})
+                      {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode, 'form_fields': form_fields, 'images': images})
 
-    return render(request, "create_face.html",
+    return render(request, template,
                   {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode, 'images': images})
 
 
@@ -154,7 +157,6 @@ def make_prompt(request):
         ("skin type", request.POST.get("skin_type")),
         ("ethnicity", request.POST.get("ethnicity")),
         ("gender", request.POST.get("gender")),
-        ("body type", request.POST.get("body")),
         ("age", request.POST.get("age"))
     ]
 
@@ -168,5 +170,4 @@ def make_prompt(request):
 
     prompt += " The person is looking directly into the camera, with a neutral expression."
 
-    print(prompt)
     return prompt
