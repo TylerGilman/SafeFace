@@ -17,6 +17,8 @@ python3 manage.py runserver
 
 
 ### To add default images to the gallery:
+- Add your default images (must be PNG) to the `static/default_images` folder
+- Run the following command:
 ```
 python3 manage.py load_default_images
 ```

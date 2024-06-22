@@ -19,7 +19,8 @@ class Command(BaseCommand):
 
         # Define the path to the default images
         default_images_path = 'static/default_images'
-        default_images = ['default1.png']
+        # Find all images in the default images folder
+        default_images = [f for f in os.listdir(default_images_path) if os.path.isfile(os.path.join(default_images_path, f)) and f.endswith('.png')]
 
         for image_name in default_images:
             image_path = os.path.join(default_images_path, image_name)
