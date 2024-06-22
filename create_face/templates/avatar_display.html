@@ -1,60 +1,89 @@
-{% extends 'base.html' %}
-
 {% block content %}
-{% if generate_method == "pipeline" %}
-<button hx-post="" hx-swap="outerHTML" hx-indicator="#ball"
-  hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
-  class="bg-white border text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
-  Regenerate
-</button>
-{% elif generate_method == "hugging_face" %}
-<button hx-post="" hx-swap="outerHTML" hx-indicator="#ball"
-  hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
-  class="bg-blue-700 border text-white py-2 px-4 rounded hover:bg-white hover:text-blue-700 transition duration-300">
-  Regenerate with Hugging Face
-</button>
-{% endif %}
-<div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
-  <p class="text-lg font-semibold">Your Avatar</p>
-  <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-lg shadow-lg" id="avatar_image"/>
-  
-  <div class="flex flex-col items-center justify-center w-full">
-    <input type="hidden" name="image_data" id="image_data" value="{{ image_path }}">
-    <button id="swap_face_button"
-      class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-      Swap Face
-    </button>
-  </div>
-</div>
+    {% if generate_method == "pipeline" %}
+        <button hx-post="" hx-swap="outerHTML" hx-indicator="#ball"
+                hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
+                class="bg-white border text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
+            Regenerate
+        </button>
+    {% elif generate_method == "hugging_face" %}
+        <button hx-post="" hx-swap="outerHTML" hx-indicator="#ball"
+                hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), body: getBody(), age: getAge(), ethnicity: getEthnicity()}'
+                class="bg-blue-700 border text-white py-2 px-4 rounded hover:bg-white hover:text-blue-700 transition duration-300">
+            Regenerate with Hugging Face
+        </button>
+    {% endif %}
+    <div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
+        <p class="text-lg font-semibold">Your Avatar</p>
+        <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-lg shadow-lg" id="avatar_image"/>
 
-<script>
-document.getElementById('swap_face_button').addEventListener('click', function() {
-  const imagePath = "{{ image_path }}"
-  
-  // Create a form to submit the data
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = '/swap_face/';
+        <div class="flex flex-col items-center justify-center w-full">
+            <input type="hidden" name="image_data" id="image_data" value="{{ image_path }}">
+            <button id="swap_face_button"
+                    class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                Swap Face
+            </button>
+            <button id="save_image_button"
+                    class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+                Save Image
+            </button>
+        </div>
+    </div>
 
-  // Create hidden input to hold the image data
-  const input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = 'image_data';
-  input.value = imagePath;
+    <script>
+        document.getElementById('swap_face_button').addEventListener('click', function() {
+            const imagePath = "{{ image_path }}"
 
-  form.appendChild(input);
+            // Create a form to submit the data
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/swap_face/';
 
-  // Add the CSRF token to the form
-  const csrfToken = document.createElement('input');
-  csrfToken.type = 'hidden';
-  csrfToken.name = 'csrfmiddlewaretoken';
-  csrfToken.value = '{{ csrf_token }}';
+            // Create hidden input to hold the image data
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'image_data';
+            input.value = imagePath;
 
-  form.appendChild(csrfToken);
+            form.appendChild(input);
 
-  document.body.appendChild(form);
-  form.submit();
-});
+            // Add the CSRF token to the form
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
 
-</script>
+            form.appendChild(csrfToken);
+
+            document.body.appendChild(form);
+            form.submit();
+        });
+
+        document.getElementById('save_image_button').addEventListener('click', function() {
+            const imagePath = document.getElementById('image_data').value;
+
+            // Create a form to submit the data
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/create/save_image/';
+
+            // Create hidden input to hold the image data
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'image_data';
+            input.value = imagePath;
+
+            form.appendChild(input);
+
+            // Add the CSRF token to the form
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+
+            form.appendChild(csrfToken);
+
+            document.body.appendChild(form);
+            form.submit();
+        });
+    </script>
 {% endblock %}

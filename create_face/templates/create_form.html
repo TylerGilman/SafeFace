@@ -1,25 +1,25 @@
 {% block form %}
-<div  name="create_form" id="create_form" class="flex bg-gray-200 shadow-lg rounded-lg p-2 flex-col items-center w-full">
+<div name="create_form" id="create_form" class="flex w-5/6 bg-gray-200 dark:bg-bg-900 shadow-lg rounded-lg p-2 flex-col items-center">
     <input type="hidden" id="create_mode" value="{{ mode }}" />
     <input type="hidden" id="change_mode" value="false" />
     <div id="mode-toggle"  class="flex gap-2 items-center">
-      <div id="create_mode" hx-target="#create_form" hx-get="" hx-vals='js:{"mode": "create_mode", "change_mode": "true"}' hx-include="#create_mode, #change_mode" class="{% if mode == "create_mode" %} border-4 border-black {% endif %} rounded-full bg-white relative inset-0 flex">
+      <div id="create_mode" hx-target="#create_form" hx-get="" hx-vals='js:{"mode": "create_mode", "change_mode": "true"}' hx-include="#create_mode, #change_mode" class="{% if mode == "create_mode" %} border-2 shadow-lg border-black dark:border-bg-900 {% else %} opacity-50 {% endif %} rounded-full bg-white relative inset-0 flex">
         <img id="brainstorm" class="h-6 w-6 m-4" src="../static/images/brainstorm.svg" alt="Brainstorm"/>
       </div>
-      <div id="gallery_mode" hx-target="#create_form" hx-get="" hx-vals='js:{"mode": "gallery_mode", "change_mode": "true"}' hx-include="#create_mode, #change_mode" class="{% if mode == "gallery_mode" %} border-4 border-black {% endif %} rounded-full bg-white inset-0 flex">
+      <div id="gallery_mode" hx-target="#create_form" hx-get="" hx-vals='js:{"mode": "gallery_mode", "change_mode": "true"}' hx-include="#create_mode, #change_mode" class="{% if mode == "gallery_mode" %} border-2 shadow-lg border-black {% else %} opacity-50 {% endif %} rounded-full bg-white inset-0 flex">
         <img id="gallery" class="h-6 w-6 m-4" src="../static/images/gallery.svg" alt="Gallery"/>
       </div>
     </div>
     {% if mode == "create_mode" %}
     <div id="attributes"
-      class="text-center grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 gap-x-2 mb-6 overflow-x-auto">
+      class="mt-5 p-1 text-center grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 gap-x-4 mb-6 overflow-x-auto">
       {% for field in form_fields %}
-      <div class="form-group relative border-4 rounded-xl">
-        <label for="{{ field.id }}" class="text-center block mb-2 text-sm font-medium text-black">
+      <div class="form-group relative rounded-xl">
+        <label for="{{ field.id }}" class="text-center block mb-2 text-sm font-medium text-black dark:text-white">
           {{ field.label }}
         </label>
         <select id="{{ field.id }}"
-          class="text-center appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+          class="text-center appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3 py-2 dark:bg-bg-700 dark:border-gray-500 dark:placeholder-gray-100 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
           <option disabled selected></option>
           {% for option in field.options %}
           <option>{{ option }}</option>
@@ -29,6 +29,17 @@
       {% endfor %}
     </div>
     {% endif %}
-  </div>
+    {% if mode == "gallery_mode" %}
+        <div id="gallery" class="flex flex-col items-center justify-center w-full gap-4">
+            <div id="avatar_gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {% for image in images %}
+                    <div class="relative">
+                        <img src="data:image/png;base64,{{ image.image }}" alt="Avatar" class="rounded-lg shadow-lg" />
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
 
 {% endblock %}

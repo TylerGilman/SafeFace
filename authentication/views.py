@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import *
+from django.http import HttpResponseRedirect, HttpResponse
+
 
 def home_page(request):
     return render(request, 'home.html')
@@ -14,6 +15,7 @@ def login_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
+        next_url = request.GET.get('next', '/create/')
 
         # Check if a user with the provided username exists
         if not User.objects.filter(username=username).exists():
@@ -31,7 +33,7 @@ def login_page(request):
         else:
             # Log in the user and redirect to the home page upon successful login
             login(request, user)
-            return redirect('/create' + '?guest=' + "false")
+            return HttpResponseRedirect(next_url)
 
     # Render the login page template (GET request)
     return render(request, 'login.html')
@@ -70,3 +72,11 @@ def register_page(request):
 
     # Render the registration page template (GET request)
     return render(request, 'register.html')
+
+
+@login_required
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('/auth/login/')
+    return HttpResponse(status=405)

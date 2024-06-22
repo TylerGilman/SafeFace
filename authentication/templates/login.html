@@ -2,20 +2,16 @@
 
 {% block content %}
 <body>
-    <div class="container mx-auto mt-10">
+    <div class="flex items-center justify-center">
         <!-- Login form -->
-        <form class="w-full max-w-sm mx-auto bg-white p-8 shadow-lg rounded" method="post" enctype="multipart/form-data">
-            <h1 class="text-center text-green-500 text-2xl font-bold mb-4">SafeFace</h1>
-
+        <form class="mt-20 w-full max-w-sm mx-auto bg-bg-50 p-8 rounded dark:bg-bg-800" method="post" enctype="multipart/form-data">
             {% csrf_token %}  <!-- CSRF token for security -->
 
-            <!-- Login heading -->
-            <h3 class="text-xl font-semibold mb-4">Login</h3>
-            <hr class="mb-4">
+            <h1 class="text-3xl font-bold mb-6 text-center dark:text-white">Login</h1>
 
             <!-- Display error/success messages -->
             {% if messages %}
-            <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" role="alert">
+            <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 dark:text-white px-4 py-3" role="alert">
                 {% for message in messages %}
                 <p class="font-bold">{{ message }}</p>
                 {% endfor %}
@@ -24,21 +20,23 @@
 
             <!-- Username input field -->
             <div class="mb-4">
-                <label for="exampleInputEmail1" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                <label for="exampleInputEmail1" class="block text-gray-700 dark:text-white text-sm font-bold mb-2">Username</label>
                 <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="username" id="exampleInputEmail1" placeholder="Enter username" required>
             </div>
 
             <!-- Password input field -->
             <div class="mb-4">
-                <label for="exampleInputPassword1" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                <label for="exampleInputPassword1" class="block text-gray-700 dark:text-white text-sm font-bold mb-2">Password</label>
                 <input type="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="exampleInputPassword1" placeholder="Password" required>
             </div>
 
-            <!-- Link to registration page -->
-            <p class="text-sm">Don't have an account <a href="/auth/register/" class="text-blue-500 hover:text-blue-800">Register</a> </p>
+            <div class="flex flex-col items-center gap-6">
+                <!-- Link to registration page -->
+                <p class="text-sm dark:text-white">Don't have an account? <a href="/auth/register/" class="text-blue-500 hover:text-blue-800">Register</a> </p>
 
-            <!-- Submit button -->
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+                <!-- Submit button -->
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+            </div>
         </form>
     </div>
 </body>

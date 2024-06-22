@@ -2,19 +2,17 @@
 
 {% block content %}
 <body>
-    <div id="content" class="container mx-auto mt-12">
+<div class="flex items-center justify-center">
         <!-- Registration form -->
-        <form class="w-full max-w-sm mx-auto bg-white p-8 shadow-lg rounded" method="post" enctype="multipart/form-data">
+        <form class="mt-20 w-full max-w-sm mx-auto bg-bg-50 dark:bg-bg-800 p-8 rounded" method="post" enctype="multipart/form-data">
+        {% csrf_token %}  <!-- CSRF token for security -->
             {% csrf_token %}  <!-- CSRF token for security -->
 
-            <!-- Registration form heading -->
-            <h1 class="text-center text-green-500 text-2xl font-bold mb-4">SafeFace</h1>
-            <h3 class="text-xl font-semibold mb-4">Register</h3>
-            <hr class="mb-4">
+            <h1 class="text-3xl font-bold mb-6 text-center dark:text-white">Register</h1>
 
             <!-- Display error/success messages -->
             {% if messages %}
-            <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" role="alert">
+            <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 dark:text-white px-4 py-3" role="alert">
                 {% for message in messages %}
                 <p class="font-bold">{{ message }}</p>
                 {% endfor %}
@@ -23,33 +21,36 @@
 
             <!-- First Name input field -->
             <div class="mb-4">
-                <label for="exampleInputEmail1" class="block text-gray-700 text-sm font-bold mb-2">First name</label>
+                <label for="exampleInputEmail1" class="block text-gray-700 dark:text-white text-sm font-bold mb-2">First name</label>
                 <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="exampleInputEmail1" placeholder="Enter First name" name="first_name" required>
             </div>
 
             <!-- Last Name input field -->
             <div class="mb-4">
-                <label for="exampleInputEmail1" class="block text-gray-700 text-sm font-bold mb-2">Last name</label>
+                <label for="exampleInputEmail1" class="block text-gray-700 dark:text-white text-sm font-bold mb-2">Last name</label>
                 <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="exampleInputEmail1" placeholder="Enter Last name" name="last_name" required>
             </div>
 
             <!-- Username input field -->
             <div class="mb-4">
-                <label for="exampleInputEmail1" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                <label for="exampleInputEmail1" class="block text-gray-700 dark:text-white text-sm font-bold mb-2">Username</label>
                 <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="exampleInputEmail1" placeholder="Enter email" name="username" required>
             </div>
 
             <!-- Password input field -->
             <div class="mb-4">
-                <label for="exampleInputPassword1" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                <label for="exampleInputPassword1" class="block text-gray-700 dark:text-white text-sm font-bold mb-2">Password</label>
                 <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="exampleInputPassword1" placeholder="Password" name="password" required>
             </div>
 
-            <!-- Link to login page for users who already have an account -->
-            <p class="text-sm">Already have an account <a href="/auth/login/" class="text-blue-500 hover:text-blue-800">Login</a> </p>
+            <div class="flex flex-col items-center gap-6">
 
-            <!-- Submit button -->
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+                <!-- Link to login page for users who already have an account -->
+                <p class="text-sm dark:text-white">Already have an account <a href="/auth/login/" class="text-blue-500 hover:text-blue-800">Login</a> </p>
+
+                <!-- Submit button -->
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+            </div>
         </form>
     </div>
 </body>

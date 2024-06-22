@@ -10,5 +10,6 @@ urlpatterns = [
     path('swap_face/', include('swap_face.urls')),
     path('admin/', admin.site.urls),
     path('auth/', include('authentication.urls')),
+    path('login/', RedirectView.as_view(url='/auth/login/', permanent=True)),
 ]
 

@@ -21,6 +21,18 @@
                                 800: '#102694',
                                 900: '#091c7a',
                             },
+                            bg: {
+                                900: '#1a1a1a',
+                                800: '#2b2b2b',
+                                700: '#4d4d4d',
+                                600: '#666666',
+                                500: '#808080',
+                                400: '#999999',
+                                300: '#b3b3b3',
+                                200: '#cccccc',
+                                100: '#e6e6e6',
+                                50: '#f2f2f2',
+                            },
                         }
                     }
                 }
@@ -31,7 +43,40 @@
         <script src="{% static 'htmx.min.js' %}" defer></script>
     </head>
 
-    <body>
-        {% block content %}{% endblock content %}
+    <body class="bg-bg-50 dark:bg-bg-800">
+        <!-- Navbar -->
+        <nav class="bg-bg-100 dark:bg-bg-900">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between h-16">
+                    <div class="flex">
+                        <div class="flex-shrink-0 flex items-center">
+                            <a href="/" class="text-xl font-bold text-primary-600">SafeFace</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        {% if user.is_authenticated %}
+                            <div class="relative ml-3">
+                                <div>
+                                    <span class="text-gray-600 dark:text-white mr-4">{{ user.username }}</span>
+                                    <form method="post" action="{% url 'logout' %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="bg-primary-500 text-white hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Logout</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div>
+                                <a href="{% url 'login_page' %}" class="bg-primary-500 text-white hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Login</a>
+                                <a href="{% url 'register' %}" class="bg-primary-500 text-white hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Sign Up</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            {% block content %}{% endblock content %}
+        </main>
     </body>
 </html>

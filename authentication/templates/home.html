@@ -2,26 +2,30 @@
 
 {% block content %}
 
-<body id="body" class="bg-gray-100">
-  <input type="hidden" id="csrf" value="{{ csrf_token }}">
-  <input type="hidden" id="guest" value="{{ guest }}">
-  <div id="content" class="container mx-auto my-24 p-6 bg-white rounded-lg shadow-lg">
-    <!-- Page heading -->
-    <h1 class="text-green-500 font-bold text-2xl mb-6">Welcome to SafeFace</h1>
+<body id="body" class="bg-bg-100 w-5/6 flex-col items-center">
+    <div class="flex flex-col items-center justify-center w-full gap-10">
+        <input type="hidden" id="csrf" value="{{ csrf_token }}">
+        <input type="hidden" id="guest" value="{{ guest }}">
+        <div class="flex-col gap-4">
+            <h1 class="mt-20 text-4xl text-center font-bold text-primary-500 dark:text-primary-400">Welcome to Create Face</h1>
+            <p class="text-center text-lg mt-4 text-gray-600 dark:text-gray-400">Create avatars and swap faces with ease</p>
+        </div>
 
-    <div id="guest-button"><button hx-get="/create/" hx-include="#csrf, #guest" hx-vals='js:{guest: true}' hx-target="#content" hx-swap="outerHTML"
-        hx-push-url="true" class="text-black">
-        Continue as Guest
-      </button></div>
-    <div id="login-button"><button hx-get="/auth/login/" hx-target="#content" hx-swap="outerHTML" hx-push-url="true"
-        class="text-black">
-        Login
-      </button></div>
+        <div class="flex gap-3 items-center">
+            <a href="{% url 'create' %}"
+                    class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                Continue as Guest
+            </a>
+            <a href="{% url 'login_page' %}"
+                    class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                Login
+            </a>
+        </div>
 
-    <!-- Animated GIF -->
-    <!-- Use "welcome.gif" as the source for the GIF -->
-    <img src="https://i.ibb.co/RNB6jpM/welcome.gif" alt="Welcome Cartoon" class="w-3/5 mx-auto">
-  </div>
+        <!-- Animated GIF -->
+        <!-- Use "welcome.gif" as the source for the GIF -->
+{#        <img src="https://i.ibb.co/RNB6jpM/welcome.gif" alt="Welcome Cartoon" class="w-3/5 mx-auto">#}
+    </div>
 </body>
 
 </html>
