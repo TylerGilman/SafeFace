@@ -7,14 +7,14 @@
     <div id="create_mode" hx-target="#create_form" hx-get="/create" hx-swap="outerHTML"
       hx-vals='js:{"mode": "create_mode", "change_mode": "true", "render_mode":"content"}'
       hx-include="#create_mode, #change_mode, #render_mode"
-      class="hover:scale-105 transform transition duration-500 {% if mode == "create_mode" %} border-2 shadow-lg
+      class="hover:scale-105 transform transition duration-500 {% if mode == " create_mode" %} border-2 shadow-lg
       border-black dark:border-bg-900 {% else %} opacity-50 {% endif %} rounded-full bg-white relative inset-0 flex">
       <img id="brainstorm" class="h-6 w-6 m-4" src="../static/images/brainstorm.svg" alt="Brainstorm" />
     </div>
     <div id="gallery_mode" hx-target="#create_form" hx-get="/create" hx-swap="outerHTML"
       hx-vals='js:{"mode": "gallery_mode", "change_mode": "true", "render_mode":"content"}'
       hx-include="#create_mode, #change_mode, #render_mode"
-      class="hover:scale-105 transform transition duration-500 {% if mode == "gallery_mode" %} border-2 shadow-lg
+      class="hover:scale-105 transform transition duration-500 {% if mode == " gallery_mode" %} border-2 shadow-lg
       border-black {% else %} opacity-50 {% endif %} rounded-full bg-white inset-0 flex">
       <img id="gallery" class="h-6 w-6 m-4" src="../static/images/gallery.svg" alt="Gallery" />
     </div>
@@ -52,9 +52,9 @@
       Generate with Hugging Face
     </button>
     {% if user.is_authenticated %}
-    <button hx-get="/save/" hx-swap="outerHTML" hx-indicator="#ball"
+    <button id="save_image_button"
       class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-      Save Avatar
+      Save Image
       <img id="save" class="ms-2 h-6 w-6" src="../static/images/save-icon.svg" alt="Save..." />
     </button>
     {% else %}
@@ -129,46 +129,81 @@
 
   function getValueById(id) {
     const element = document.getElementById(id);
-    console.log(element.value + "pls help");
     return element.value !== element.options[0].value ? element.value : "";
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    function attachImageClickListeners() {
-      const images = document.querySelectorAll('.swap-face-button');
-      console.log(images);
-      images.forEach(function (image) {
-        image.addEventListener('click', function () {
-          const imagePath = this.getAttribute('data-image-path');
+        function attachImageClickListeners() {
+            const images = document.querySelectorAll('.swap-face-button');
+            console.log(images);
+            images.forEach(function(image) {
+                image.addEventListener('click', function() {
+                    const imagePath = this.getAttribute('data-image-path');
 
-          // Create a form to submit the data
-          const form = document.createElement('form');
-          form.method = 'POST';
-          form.action = '/swap_face/';
+                    // Create a form to submit the data
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/swap_face/';
 
-          // Create hidden input to hold the image data
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = 'image_data';
-          input.value = "data:image/png;base64," + imagePath;
+                    // Create hidden input to hold the image data
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'image_data';
+                    input.value = "data:image/png;base64," + imagePath;
 
-          form.appendChild(input);
+                    form.appendChild(input);
 
-          // Add the CSRF token to the form
-          const csrfToken = document.createElement('input');
-          csrfToken.type = 'hidden';
-          csrfToken.name = 'csrfmiddlewaretoken';
-          csrfToken.value = '{{ csrf_token }}';
+                    // Add the CSRF token to the form
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = 'csrfmiddlewaretoken';
+                    csrfToken.value = '{{ csrf_token }}';
 
-          form.appendChild(csrfToken);
+                    form.appendChild(csrfToken);
 
-          document.body.appendChild(form);
-          form.submit();
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            });
+        }
+
+        // If gallery is present, attach click listeners to the images
+        if (document.getElementById('gallery')) {
+            attachImageClickListeners();
+        }
+
+        // Attach click listeners to the images after swapping the form
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            if (evt.detail.target.id === 'create_form') {
+                attachImageClickListeners();
+            }
         });
-      });
-    }
 
-    attachImageClickListeners(); // Call the function to attach the listeners
+  document.getElementById('save_image_button').addEventListener('click', function () {
+    const imagePath = document.getElementById('image_data').value;
+
+    // Create a form to submit the data
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/create/save_image/';
+
+    // Create hidden input to hold the image data
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'image_data';
+    input.value = imagePath;
+
+    form.appendChild(input);
+
+    // Add the CSRF token to the form
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = 'csrfmiddlewaretoken';
+    csrfToken.value = '{{ csrf_token }}';
+
+    form.appendChild(csrfToken);
+
+    document.body.appendChild(form);
+    form.submit();
   });
 </script>
 {% endblock %}

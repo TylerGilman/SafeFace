@@ -22,42 +22,10 @@
       class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
       Swap Face
     </button>
-    <button id="save_image_button"
-      class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
-      Save Image
-    </button>
+
   </div>
 </div>
-
 <script>
-
-
-    document.getElementById('save_image_button').addEventListener('click', function () {
-      const imagePath = document.getElementById('image_data').value;
-
-      // Create a form to submit the data
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = '/create/save_image/';
-
-      // Create hidden input to hold the image data
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'image_data';
-      input.value = imagePath;
-
-      form.appendChild(input);
-
-      // Add the CSRF token to the form
-      const csrfToken = document.createElement('input');
-      csrfToken.type = 'hidden';
-      csrfToken.name = 'csrfmiddlewaretoken';
-      csrfToken.value = '{{ csrf_token }}';
-
-      form.appendChild(csrfToken);
-
-      document.body.appendChild(form);
-      form.submit();
-    });
 </script>
+
 {% endblock %}
