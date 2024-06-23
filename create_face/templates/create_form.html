@@ -4,15 +4,15 @@
   <input type="hidden" id="create_mode" value="{{ mode }}" />
   <input type="hidden" id="change_mode" value="false" />
   <div id="mode-toggle" class="flex gap-2 items-center">
-    <div id="create_mode" hx-target="#create_form" hx-get="/create" hx-swap="outerHTML"
-      hx-vals='js:{"mode": "create_mode", "change_mode": "true", "render_mode":"content"}'
+    <div id="create_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
+      hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode:"content"}'
       hx-include="#create_mode, #change_mode, #render_mode"
       class="hover:scale-105 transform transition duration-500 {% if mode == " create_mode" %} border-2 shadow-lg
       border-black dark:border-bg-900 {% else %} opacity-50 {% endif %} rounded-full bg-white relative inset-0 flex">
       <img id="brainstorm" class="h-6 w-6 m-4" src="../static/images/brainstorm.svg" alt="Brainstorm" />
     </div>
-    <div id="gallery_mode" hx-target="#create_form" hx-get="/create" hx-swap="outerHTML"
-      hx-vals='js:{"mode": "gallery_mode", "change_mode": "true", "render_mode":"content"}'
+    <div id="gallery_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
+      hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode:"content"}'
       hx-include="#create_mode, #change_mode, #render_mode"
       class="hover:scale-105 transform transition duration-500 {% if mode == " gallery_mode" %} border-2 shadow-lg
       border-black {% else %} opacity-50 {% endif %} rounded-full bg-white inset-0 flex">
@@ -69,11 +69,29 @@
   <div id="gallery" class="mt-5 flex flex-col items-center justify-center w-full gap-4">
     <div id="avatar_gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {% for image in images %}
-      <div class="relative swap-face-button" data-image-path="{{ image.image }}">
-        <img src="data:image/png;base64,{{ image.image }}" alt="Avatar"
-          class="rounded-lg shadow-lg hover:scale-105 transform transition duration-500" />
+
+      <div class="relative w-80 h-80 flex items-center justify-center">
+        <div class="swap-face-button" data-image-path="{{ image.image }}">
+          <div class="relative inline-block">
+            <img src="data:image/png;base64,{{ image.image }}" alt="Avatar"
+              class="rounded-lg shadow-lg hover:scale-105 transform transition duration-500 max-w-52" />
+            <div hx-post="/create/delete"
+              class="border-2 bg-white rounded-full absolute w-8 h-8 -top-6 -right-6 flex items-center justify-center">
+              <img id="save"  src="../static/images/trash-can.svg" alt="Delete" class="w-4 h-4" />
+            </div>
+          </div>
+
+
+
+
+        </div>
       </div>
       {% endfor %}
+      <button class="hidden" id="save_image_button"
+        class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+        Save Image
+        <img id="save" class="ms-2 h-6 w-6" src="../static/images/save-icon.svg" alt="Save..." />
+      </button>
     </div>
   </div>
   {% endif %}
@@ -134,7 +152,6 @@
 
   function attachImageClickListeners() {
     const images = document.querySelectorAll('.swap-face-button');
-    console.log(images);
     images.forEach(function (image) {
       image.addEventListener('click', function () {
         const imagePath = this.getAttribute('data-image-path');
