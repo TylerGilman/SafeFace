@@ -6,6 +6,11 @@ from django.http import JsonResponse
 @csrf_exempt
 def swap_face(request):
     if request.method == 'POST':
+        if request.POST.get(('csrf_token') != get_token(request)):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+        template = 'swap_face.html'
+        if request.POST.get('render_mode') == 'content':
+            template = 'swap_face_content.html'
         image_path = request.POST.get('image_data')
         
         if not image_path:
@@ -14,6 +19,6 @@ def swap_face(request):
         response_data = {
             'image_path': image_path
         }
-        return render(request, "swap_face.html", response_data)
+        return render(request, template, response_data)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)

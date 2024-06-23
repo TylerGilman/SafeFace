@@ -93,11 +93,11 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-bg-100 dark:bg-bg-900 fixed bottom-0 w-full">
-    <div class="max-w-7xl mx-auto px-4 py-4">
+  <footer class="bg-bg-100 dark:bg-bg-900 fixed bottom-0 w-full h-12">
+    <div class="max-w-7xl mx-auto px-4">
       <div x-data="{
         text: '',
-        textArray : ['Alpine JS is Amazing', 'It is Truly Awesome!', 'You Have to Try It!'],
+        textArray : ['Generating an Avatar Takes a Little Patience!', 'Log In And Save Up To TEN Avatars!', 'Become Someone Who Does Not Exist... Yet!'],
         textIndex: 0,
         charIndex: 0,
         typeSpeed: 110,
@@ -158,7 +158,7 @@
         }, $data.cursorSpeed);
 
     })" class="flex items-center justify-center mx-auto text-center max-w-7xl">
-        <div class="relative flex items-center justify-center h-auto">
+        <div class="relative flex items-center justify-center py-4">
           <p class="text-2xl text-white font-black leading-tight" x-text="text"></p>
           <span class="absolute right-0 w-2 -mr-2 bg-white h-3/4" x-ref="cursor"></span>
         </div>

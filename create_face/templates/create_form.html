@@ -132,51 +132,51 @@
     return element.value !== element.options[0].value ? element.value : "";
   }
 
-        function attachImageClickListeners() {
-            const images = document.querySelectorAll('.swap-face-button');
-            console.log(images);
-            images.forEach(function(image) {
-                image.addEventListener('click', function() {
-                    const imagePath = this.getAttribute('data-image-path');
+  function attachImageClickListeners() {
+    const images = document.querySelectorAll('.swap-face-button');
+    console.log(images);
+    images.forEach(function (image) {
+      image.addEventListener('click', function () {
+        const imagePath = this.getAttribute('data-image-path');
 
-                    // Create a form to submit the data
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/swap_face/';
+        // Create a form to submit the data
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/swap_face/';
 
-                    // Create hidden input to hold the image data
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'image_data';
-                    input.value = "data:image/png;base64," + imagePath;
+        // Create hidden input to hold the image data
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'image_data';
+        input.value = "data:image/png;base64," + imagePath;
 
-                    form.appendChild(input);
+        form.appendChild(input);
 
-                    // Add the CSRF token to the form
-                    const csrfToken = document.createElement('input');
-                    csrfToken.type = 'hidden';
-                    csrfToken.name = 'csrfmiddlewaretoken';
-                    csrfToken.value = '{{ csrf_token }}';
+        // Add the CSRF token to the form
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = '{{ csrf_token }}';
 
-                    form.appendChild(csrfToken);
+        form.appendChild(csrfToken);
 
-                    document.body.appendChild(form);
-                    form.submit();
-                });
-            });
-        }
+        document.body.appendChild(form);
+        form.submit();
+      });
+    });
+  }
 
-        // If gallery is present, attach click listeners to the images
-        if (document.getElementById('gallery')) {
-            attachImageClickListeners();
-        }
+  // If gallery is present, attach click listeners to the images
+  if (document.getElementById('gallery')) {
+    attachImageClickListeners();
+  }
 
-        // Attach click listeners to the images after swapping the form
-        document.body.addEventListener('htmx:afterSwap', function(evt) {
-            if (evt.detail.target.id === 'create_form') {
-                attachImageClickListeners();
-            }
-        });
+  // Attach click listeners to the images after swapping the form
+  document.body.addEventListener('htmx:afterSwap', function (evt) {
+    if (evt.detail.target.id === 'create_form') {
+      attachImageClickListeners();
+    }
+  });
 
   document.getElementById('save_image_button').addEventListener('click', function () {
     const imagePath = document.getElementById('image_data').value;

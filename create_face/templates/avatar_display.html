@@ -16,9 +16,9 @@
   <p class="text-lg font-semibold">Your Avatar</p>
   <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-lg shadow-lg" id="avatar_image" />
 
-  <div class="flex flex-col items-center justify-center w-full">
+  <div class="flex flex-col items-center justify-eenter w-full">
     <input type="hidden" name="image_data" id="image_data" value="{{ image_path }}">
-    <button id="swap_face_button"
+    <button id="swap_face_button" hx-post="/swap_face/" hx-vals="js:{render_mode: 'content', image_data: document.getElementById('image_data').value}" hx-swap="outerHTML" hx-target="#content" hx-push-url="true"
       class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
       Swap Face
     </button>
