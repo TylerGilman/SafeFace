@@ -5,7 +5,7 @@
 
     <div name="avatar" id="avatar" class="text-center flex flex-col justify-center items-center">
         <p class="text-lg font-semibold mb-4 dark:text-white">Avatar</p>
-        <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-2xl shadow-lg" />
+        <img src="{{ image_data }}" alt="avatar" class="mx-auto max-w-xs rounded-2xl shadow-lg" />
     </div>
 
     <div class="flex items-center rounded-lg mt-4">
@@ -15,8 +15,12 @@
             </svg>
             Choose File
         </button>
-        <input type="text" id="fileName" class="flex-grow p-2 border border-gray-300 rounded-r-lg" placeholder="no file selected" readonly>
+        <input type="text" id="filename" class="flex-grow p-2 border border-gray-300 rounded-r-lg" placeholder="no file selected" readonly>
         <input type="file" id="hiddenFileInput" style="display: none;" onchange="handleFileChange(event)">
+    </div>
+
+    <div id="submit_swap" class="flex items-center rounded-lg mt-4">
+        <button onclick="submitForm()" class="bg-primary-600 rounded-lg px-4 py-2 text-white">Swap Face</button>
     </div>
 </div>
 
@@ -24,8 +28,43 @@
     function handleFileChange(event) {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
-            document.getElementById('fileName').value = selectedFile.name;
+            document.getElementById('filename').value = selectedFile.name;
         }
+    }
+
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    async function submitForm() {
+        const formData = new FormData();
+        const fileInput = document.getElementById('hiddenFileInput');
+        const file = fileInput.files[0];
+        
+        if (file) {
+            const base64File = await getBase64(file);
+            formData.append('uploaded_file', base64File);
+        }
+
+        formData.append('image_data', '{{ image_data|safe }}');  // Ensure this is properly encoded if needed
+
+        fetch('/swap_face/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            // handle the response, replace the outerHTML of the element with id 'submit_swap'
+            document.getElementById('submit_swap').outerHTML = data;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 </script>
 

@@ -133,6 +133,9 @@ STATICFILES_DIRS = ('static',)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Memory
+DATA_UPLOAD_MAX_MEMORY_SIZE = 51539607552
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
