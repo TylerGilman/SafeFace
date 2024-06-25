@@ -45,24 +45,24 @@ def index(request):
         template = "create_face.html"
 
     form_fields = [
-        {'id': 'gender', 'label': 'Select Gender',
+        {'id': 'gender', 'label': 'Gender',
             'options': ['Male', 'Female', 'Ugly']},
-        {'id': 'hair_color', 'label': 'Select Hair Color',
+        {'id': 'hair_color', 'label': 'Hair Color',
          'options': ['Brown', 'Ginger', 'Blonde', 'Black', 'White', 'Purple']},
-        {'id': 'hair_type', 'label': 'Select Hair Type',
+        {'id': 'hair_type', 'label': 'Hair Type',
             'options': ['Curly', 'Straight', 'Messy', 'Wavy']},
-        {'id': 'hair_length', 'label': 'Select Hair Length',
+        {'id': 'hair_length', 'label': 'Hair Length',
          'options': ['Very Short', 'Short', 'Medium', 'Long', 'Very Long']},
-        {'id': 'skin_color', 'label': 'Select Skin Color',
+        {'id': 'skin_color', 'label': 'Skin Color',
             'options': ['White', 'Pale', 'Tan', 'Dark', 'Very Dark']},
-        {'id': 'skin_type', 'label': 'Select Skin Type', 'options': [
+        {'id': 'skin_type', 'label': 'Skin Type', 'options': [
             'Acne', 'Clear', 'Freckles', 'See-Through']},
-        {'id': 'age', 'label': 'Select Age', 'options': [
+        {'id': 'age', 'label': 'Age', 'options': [
             'Child', 'Teenager', 'Adult', 'Elderly']},
-        {'id': 'ethnicity', 'label': 'Select Ethnicity',
+        {'id': 'ethnicity', 'label': 'Ethnicity',
          'options': ['African', 'Caucasian', 'Italian', 'Jewish', 'British', 'Finnish', 'Mexican', 'Chinese',
                      'Vietnamese']},
-        {'id': 'eye_color', 'label': 'Select Eye Color',
+        {'id': 'eye_color', 'label': 'Eye Color',
          'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']}
     ]
 
