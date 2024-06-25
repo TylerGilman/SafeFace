@@ -22,9 +22,7 @@ def swap_face(request):
         if not image_data:
             return JsonResponse({'error': 'No image data provided'}, status=400)
 
-        filename = request.POST.get('filename')
-        print("image_path: ", image_data)
-        print("filename: ", filename)
+        filename = request.POST.get('uploaded_file')
         # Swap if the post request sends a image_data and a filename
         if image_data and filename:
             # Swap Time
@@ -63,8 +61,8 @@ def swap_face(request):
                 result = subprocess.run(command, shell=True, capture_output=True, text=True)
 
                 # Log the stdout and stderr outputs for debugging
-                logger.debug(f'Subprocess stdout: {result.stdout}')
-                logger.debug(f'Subprocess stderr: {result.stderr}')
+                logger.info(f'Subprocess stdout: {result.stdout}')
+                logger.info(f'Subprocess stderr: {result.stderr}')
                   
 
             # Handle the uploaded_file and image_data
