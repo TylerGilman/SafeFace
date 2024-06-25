@@ -28,8 +28,8 @@
 
   {% if mode == "create_mode" %}
   <div class="flex flex-col items-center justify-center w-full gap-4">
-    <p class="text-lg font-medium mt-2">Select Avatar Attributes</p>
-    <div id="attributes" class="text-center grid grid-cols-3 md:grid-cols-2 lg:grid-cols-6 w-full gap-4 gap-x-4 p-2">
+    <p class="text-lg font-medium mt-1">Select Avatar Attributes</p>
+    <div id="attributes" class="text-center grid grid-cols-3 md:grid-cols-2 lg:grid-cols-6 w-full gap-4 gap-x-4">
         {% for field in form_fields %}
             <div class="form-group relative rounded-xl">
               <label for="{{ field.id }}" class="text-center block text-sm text-black dark:text-white">
