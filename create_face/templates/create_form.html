@@ -27,7 +27,7 @@
       <label for="{{ field.id }}" class="text-center block text-sm  text-black dark:text-white">
         {{ field.label }}
       </label>
-      <select id="field_{{ field.id }}"
+      <select id="{{ field.id }}"
         class="text-center appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3  dark:bg-bg-700 dark:border-gray-500 dark:placeholder-gray-100 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
         <option disabled selected></option>
         {% for option in field.options %}
@@ -72,7 +72,7 @@
     <div id="avatar_gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {% for image in images %}
       <div class="relative w-full max-w-xs flex items-center justify-center">
-        <div id="image_{{ image.id }}" name="image_{{ image.id }}"  class=" relative inline-block">
+        <div name="image_{{ image.id }}" id="image_{{ image.id }}  class=" relative inline-block">
           <div class="swap-face-button" data-image-path="{{ image.image }}">
             <img src="data:image/png;base64,{{ image.image }}" alt="Avatar"
               class="rounded-lg shadow-lg hover:scale-105 transform transition duration-500 w-full max-h-40 object-cover" />
@@ -215,6 +215,5 @@
     document.body.appendChild(form);
     form.submit();
   });
-
 </script>
 {% endblock %}
