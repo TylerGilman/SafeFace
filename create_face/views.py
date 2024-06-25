@@ -18,6 +18,7 @@ hugging_face_handler = HuggingFaceHandler()
 # Set up logging
 logger = logging.getLogger("create_face")
 
+
 @csrf_exempt
 @login_required
 def delete_image(request, id):
@@ -26,13 +27,13 @@ def delete_image(request, id):
         image = UserImage.objects.get(id=id)
         image.delete()
         logger.info(f'Image with id {id} deleted successfully.')
-        return render(request, "empty.html", None)  # Redirect to the desired page after deletion
+        # Redirect to the desired page after deletion
+        return render(request, "empty.html", None)
     except UserImage.DoesNotExist:
         logger.error(f'Image with id {id} not found.')
     except Exception as e:
         logger.error(f'An error occurred: {e}')
     return render(request, "error.html", {"message": "Failed to delete image."})
-
 
 
 @csrf_exempt
@@ -168,8 +169,14 @@ def save_image(request):
 
             user_image = UserImage(user=request.user, image=data)
             user_image.save()
-            return HttpResponse("Image saved successfully.")
+            logger.info("Image saved successfully.")
+
+            return render(request, "empty.html", {
+                "generatedSaved": None,
+                "showMessage": "Saved successfully!"
+            })
         else:
+            logger.error("Cannot save, no image data provided.")
             return HttpResponse("No image data provided.")
     return HttpResponse("Invalid request method.")
 
