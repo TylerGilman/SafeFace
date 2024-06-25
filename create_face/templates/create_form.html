@@ -74,7 +74,7 @@
       <img id="save" class="ms-2 h-6 w-6" src="../static/images/save-icon.svg" alt="Save..." />
     </button>
     {% else %}
-    <button hx-get="/auth/login/" hx-params="none" hx-swap="outerHTML" hx-target="#content"
+    <button hx-get="/auth/login/" hx-params="none" hx-swap="none"
       class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700">
       Login to Save Avatar
     </button>
@@ -164,7 +164,7 @@
   }
 
   function attachImageClickListeners() {
-    const images = document.querySelectorAll('#swap-face-button');
+    const images = document.querySelectorAll('.swap-face-button');
     images.forEach(function (image) {
       image.addEventListener('click', function () {
         const imagePath = this.getAttribute('data-image-path');
