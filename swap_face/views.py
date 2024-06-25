@@ -5,8 +5,9 @@ from django.http import JsonResponse
 import base64
 from PIL import Image
 from io import BytesIO
+import logging
 
-
+logger = logging.getLogger("swap_face")
 @csrf_exempt
 def swap_face(request):
     if request.method == 'POST':

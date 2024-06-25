@@ -9,10 +9,30 @@ from django.utils.encoding import force_bytes
 from io import BytesIO
 import base64
 
+import logging
 from create_face.models import UserImage
 
 pipeline_handler = PipelineHandler()
 hugging_face_handler = HuggingFaceHandler()
+
+# Set up logging
+logger = logging.getLogger("create_face")
+
+@csrf_exempt
+@login_required
+def delete_image(request, id):
+    try:
+        # Attempt to get the image by ID
+        image = UserImage.objects.get(id=id)
+        image.delete()
+        logger.info(f'Image with id {id} deleted successfully.')
+        return render(request, "empty.html", None)  # Redirect to the desired page after deletion
+    except UserImage.DoesNotExist:
+        logger.error(f'Image with id {id} not found.')
+    except Exception as e:
+        logger.error(f'An error occurred: {e}')
+    return render(request, "error.html", {"message": "Failed to delete image."})
+
 
 
 @csrf_exempt
@@ -23,19 +43,22 @@ def index(request):
         template = "create_face_content.html"
     else:
         template = "create_face.html"
-    
-
 
     form_fields = [
-        {'id': 'gender', 'label': 'Select Gender', 'options': ['Male', 'Female', 'Ugly']},
+        {'id': 'gender', 'label': 'Select Gender',
+            'options': ['Male', 'Female', 'Ugly']},
         {'id': 'hair_color', 'label': 'Select Hair Color',
          'options': ['Brown', 'Ginger', 'Blonde', 'Black', 'White', 'Purple']},
-        {'id': 'hair_type', 'label': 'Select Hair Type', 'options': ['Curly', 'Straight', 'Messy', 'Wavy']},
+        {'id': 'hair_type', 'label': 'Select Hair Type',
+            'options': ['Curly', 'Straight', 'Messy', 'Wavy']},
         {'id': 'hair_length', 'label': 'Select Hair Length',
          'options': ['Very Short', 'Short', 'Medium', 'Long', 'Very Long']},
-        {'id': 'skin_color', 'label': 'Select Skin Color', 'options': ['White', 'Pale', 'Tan', 'Dark', 'Very Dark']},
-        {'id': 'skin_type', 'label': 'Select Skin Type', 'options': ['Acne', 'Clear', 'Freckles', 'See-Through']},
-        {'id': 'age', 'label': 'Select Age', 'options': ['Child', 'Teenager', 'Adult', 'Elderly']},
+        {'id': 'skin_color', 'label': 'Select Skin Color',
+            'options': ['White', 'Pale', 'Tan', 'Dark', 'Very Dark']},
+        {'id': 'skin_type', 'label': 'Select Skin Type', 'options': [
+            'Acne', 'Clear', 'Freckles', 'See-Through']},
+        {'id': 'age', 'label': 'Select Age', 'options': [
+            'Child', 'Teenager', 'Adult', 'Elderly']},
         {'id': 'ethnicity', 'label': 'Select Ethnicity',
          'options': ['African', 'Caucasian', 'Italian', 'Jewish', 'British', 'Finnish', 'Mexican', 'Chinese',
                      'Vietnamese']},
@@ -55,13 +78,17 @@ def index(request):
         except User.DoesNotExist:
             admin_user = None
 
-        user_images = UserImage.objects.filter(user=request.user) if request.user.is_authenticated else []
-        default_images = UserImage.objects.filter(user=admin_user) if admin_user else []
+        user_images = UserImage.objects.filter(
+            user=request.user) if request.user.is_authenticated else []
+        default_images = UserImage.objects.filter(
+            user=admin_user) if admin_user else []
         images = list(default_images) + list(user_images)
 
         # Encode images to base64
         for image in images:
-            image.image = base64.b64encode(force_bytes(image.image)).decode('utf-8')
+            image.image = base64.b64encode(
+                force_bytes(image.image)).decode('utf-8')
+            image.id = image.id
 
     if change_mode == "true":
         return render(request, "create_form.html",
