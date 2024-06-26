@@ -57,25 +57,19 @@ def swap_face(request):
                 temp_output_path = os.path.join(temp_dir, 'output_image.png')
 
                 # Call the FaceFusion command
-                command = f'python swap_face/facefusion/run.py -h'
+                command = f'python swap_face/facefusion/run.py'
                 result = subprocess.run(command, shell=True, capture_output=True, text=True)
 
                 # Log the stdout and stderr outputs for debugging
-                logger.info(f'Subprocess stdout: {result.stdout}')
-                logger.info(f'Subprocess stderr: {result.stderr}')
-                  
+                logger.error(f'Subprocess stdout: {result.stdout}')
+                logger.error(f'Subprocess stderr: {result.stderr}')
 
-            # Handle the uploaded_file and image_data
-            # Perform face swap operation
+                # Handle the uploaded_file and image_data
+                # Perform face swap operation
 
-            # Return appropriate response
-            return JsonResponse({'status': 'success', 'message': 'Face swap successful'})
-
-            response_data = {
-                'image_path': image_data,
-                'filename': filename,
-            }
-            return render(request, template, response_data)
+                # Return appropriate response
+                return JsonResponse({'status': 'success', 'message': 'Face swap successful'})
+            return JsonResponse({'error': 'No image uploaded'}, status=400)
 
         response_data = {'image_data': image_data}
         return render(request, template, response_data)

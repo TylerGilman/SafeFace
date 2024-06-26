@@ -161,6 +161,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'swap_face': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
         'PIL': {
             'handlers': ['console'],
             'level': 'ERROR',
