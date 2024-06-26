@@ -9,6 +9,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 def home_page(request):
     if request.user.is_authenticated:
         return redirect('/create/')
+    if request.GET.get('render_mode') == 'content':
+        return render(request, 'home_partial.html')
 
     return render(request, 'home.html')
 
@@ -79,7 +81,7 @@ def register_page(request):
 
         # Display an information message indicating successful account creation
         messages.info(request, "Account created Successfully!")
-        return redirect('/auth/register/')
+        return render(request, 'login.html')
 
     # Render the registration page template (GET request)
     return render(request, 'register.html')
