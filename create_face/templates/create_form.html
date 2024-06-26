@@ -1,6 +1,6 @@
 {% block form %}
 <div name="create_form" id="create_form"
-  class="flex max-w-xxl bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-2">
+  class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-1">
   <input type="hidden" id="create_mode" value="{{ mode }}" />
   <input type="hidden" id="change_mode" value="false" />
   <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 dark:bg-gray-300 rounded-xl relative">
@@ -37,7 +37,7 @@
   {% if mode == "create_mode" %}
   <div class="flex flex-col items-center justify-center w-full gap-4">
     <p class="text-lg font-medium mt-1">Select Avatar Attributes</p>
-    <div id="attributes" class="text-center grid grid-cols-3 md:grid-cols-2 lg:grid-cols-6 w-full gap-4 gap-x-4">
+    <div id="attributes" class="text-center grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 w-full gap-4 gap-x-4">
         {% for field in form_fields %}
             <div class="form-group relative rounded-xl">
               <label for="{{ field.id }}" class="text-center block text-sm text-black dark:text-white">
