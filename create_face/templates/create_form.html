@@ -65,7 +65,9 @@
     </button>
     <button hx-post="" hx-swap="outerHTML" hx-indicator="#ball"
       hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
-      class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700">Generate with Hugging Face</button>
+      class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+      Generate with Hugging Face
+    </button>
     {% if user.is_authenticated %}
 
     <button id="save_image_button" hx-target="#generate_button"
@@ -90,7 +92,7 @@
           <div name="image_{{ image.id }}" id="image_{{ image.id }}"
             class="relative w-full max-w-xs flex items-center justify-center">
             <div class="relative inline-block hover:scale-105 transform transition duration-500">
-              <div class="swap-face-button" data-image-path="{{ image.image }}">
+              <div class="swap-face-button" data-image-id="{{ image.id }}" data-image-path="{{ image.image }}">
                 <img src="data:image/png;base64,{{ image.image }}" alt="Avatar"
                   class="rounded-xl shadow-lg w-40 h-40 max-sm:w-30 max-sm:h-30 object-cover" />
               </div>
@@ -167,6 +169,7 @@
     const images = document.querySelectorAll('.swap-face-button');
     images.forEach(function (image) {
       image.addEventListener('click', function () {
+        const imageId = this.getAttribute('data-image-id');
         const imagePath = this.getAttribute('data-image-path');
 
         // Create a form to submit the data
@@ -174,13 +177,20 @@
         form.method = 'POST';
         form.action = '/swap_face/';
 
-        // Create hidden input to hold the image data
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'image_data';
-        input.value = "data:image/png;base64," + imagePath;
-
-        form.appendChild(input);
+        // Create hidden input to hold the image ID or data
+        if (imageId.startsWith('default-')) {
+          const inputPath = document.createElement('input');
+          inputPath.type = 'hidden';
+          inputPath.name = 'image_path';
+          inputPath.value = `data:image/jpeg;base64,${imagePath}`;
+          form.appendChild(inputPath);
+        } else {
+          const inputId = document.createElement('input');
+          inputId.type = 'hidden';
+          inputId.name = 'image_id';
+          inputId.value = imageId;
+          form.appendChild(inputId);
+        }
 
         // Add the CSRF token to the form
         const csrfToken = document.createElement('input');
@@ -195,7 +205,6 @@
       });
     });
   }
-
 
   // Attach click listeners to the images after swapping the form
   document.body.addEventListener('htmx:afterSwap', function (evt) {

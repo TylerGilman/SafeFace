@@ -1,34 +1,50 @@
 {% block content %}
 <div class="flex flex-col items-center">
-
     <h1 class="text-3xl font-bold mb-6 text-center dark:text-white">Face Swap</h1>
 
-    <div name="avatar" id="avatar" class="text-center flex flex-col justify-center items-center">
-        <p class="text-lg font-semibold mb-4 dark:text-white">Avatar</p>
-        <img src="{{ image_data }}" alt="avatar" class="mx-auto max-w-xs rounded-2xl shadow-lg" />
-    </div>
+    <div class="flex flex-row max-md:flex-col items-center gap-4">
+        <div name="avatar" id="avatar" class="text-center flex flex-col justify-center items-center">
+            <p class="text-lg font-semibold mb-4 dark:text-white">Source</p>
+            <img src="{{ image_data }}" alt="avatar" class="w-60 h-60 rounded-2xl shadow-lg" />
+        </div>
 
-    <div class="flex items-center rounded-lg mt-4">
-        <button class="bg-bg-600 dark:bg-bg-900 text-white p-2 cursor-pointer flex items-center rounded-l-lg px-4 whitespace-nowrap" onclick="document.getElementById('hiddenFileInput').click()">
-            <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            Choose File
-        </button>
-        <input type="text" id="filename" class="flex-grow p-2 border border-gray-300 rounded-r-lg" placeholder="no file selected" readonly>
+        <div id="uploaded_image_container" class="relative text-center flex flex-col justify-center items-center">
+            <p class="text-lg font-semibold mb-4 dark:text-white">Target</p>
+            <button id="choose_file_button" class="flex flex-col items-center gap-4 justify-center w-60 h-60 bg-transparent border-2 border-dashed border-black text-black dark:text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap" onclick="document.getElementById('hiddenFileInput').click()">
+                <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <p class="font-semibold text-lg">Choose File</p>
+            </button>
+        </div>
         <input type="file" id="hiddenFileInput" style="display: none;" onchange="handleFileChange(event)">
     </div>
 
-    <div id="submit_swap" class="flex items-center rounded-lg mt-4">
+    <div id="submit_swap" class="flex items-center rounded-lg mt-16">
         <button onclick="submitForm()" class="bg-primary-600 rounded-lg px-4 py-2 text-white">Swap Face</button>
     </div>
+
+    {% if image_id %}
+        <input type="hidden" name="image_id" id="image_id" value="{{ image_id }}">
+    {% endif %}
 </div>
 
 <script>
     function handleFileChange(event) {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
-            document.getElementById('filename').value = selectedFile.name;
+            getBase64(selectedFile).then(base64File => {
+                const uploadedImageContainer = document.getElementById('uploaded_image_container');
+                uploadedImageContainer.innerHTML = `
+                    <p class="text-lg font-semibold mb-4 dark:text-white">Target</p>
+                    <img src="${base64File}" alt="uploaded image" class="w-60 rounded-2xl shadow-lg aspect-auto" />
+                    <button id="choose_new_file_button" class="absolute -bottom-10 left-1/2 transform -translate-x-1/2 bg-bg-600 dark:bg-bg-900 text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap mt-4" onclick="document.getElementById('hiddenFileInput').click()">
+                        <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Choose New File
+                    </button>`;
+            });
         }
     }
 
@@ -44,23 +60,32 @@
     async function submitForm() {
         const formData = new FormData();
         const fileInput = document.getElementById('hiddenFileInput');
-        const file = fileInput.files[0];
-        
-        if (file) {
+        const imageIdElement = document.getElementById('image_id');
+
+        if (fileInput && fileInput.files.length > 0) {
+            const file = fileInput.files[0];
             const base64File = await getBase64(file);
             formData.append('uploaded_file', base64File);
+        } else {
+            formData.append('image_data', '{{ image_data|safe }}');
         }
 
-        formData.append('image_data', '{{ image_data|safe }}');  // Ensure this is properly encoded if needed
+        if (imageIdElement) {
+            formData.append('image_id', imageIdElement.value);
+        }
 
         fetch('/swap_face/', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
-            // handle the response, replace the outerHTML of the element with id 'submit_swap'
-            document.getElementById('submit_swap').outerHTML = data;
+            console.log('Success:', data);
+            if(data.status === 'success') {
+                // Display success message or handle success
+            } else {
+                // Handle error
+            }
         })
         .catch(error => {
             console.error('Error:', error);
