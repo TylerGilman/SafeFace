@@ -8,6 +8,10 @@ __pycache__/
 
 db.sqlite3
 
+media/
+
+swap_face/facefusion/
+
 # Distribution / packaging
 .Python
 build/

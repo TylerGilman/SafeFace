@@ -1,39 +1,21 @@
+import os
 from django.shortcuts import render
 from create_face.ml_handler.pipeline import PipelineHandler
 from create_face.ml_handler.hugging_face import HuggingFaceHandler
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.encoding import force_bytes
 from io import BytesIO
 import base64
-
 import logging
 from create_face.models import UserImage
+from safe_face_web import settings
 
 pipeline_handler = PipelineHandler()
 hugging_face_handler = HuggingFaceHandler()
 
 # Set up logging
 logger = logging.getLogger("create_face")
-
-
-@csrf_exempt
-@login_required
-def delete_image(request, id):
-    try:
-        # Attempt to get the image by ID
-        image = UserImage.objects.get(id=id)
-        image.delete()
-        logger.info(f'Image with id {id} deleted successfully.')
-        # Redirect to the desired page after deletion
-        return render(request, "empty.html", None)
-    except UserImage.DoesNotExist:
-        logger.error(f'Image with id {id} not found.')
-    except Exception as e:
-        logger.error(f'An error occurred: {e}')
-    return render(request, "error.html", {"message": "Failed to delete image."})
 
 
 @csrf_exempt
@@ -46,25 +28,19 @@ def index(request):
         template = "create_face.html"
 
     form_fields = [
-        {'id': 'gender', 'label': 'Gender',
-            'options': ['Male', 'Female', 'Ugly']},
+        {'id': 'gender', 'label': 'Gender', 'options': ['Male', 'Female', 'Ugly']},
         {'id': 'hair_color', 'label': 'Hair Color',
          'options': ['Brown', 'Ginger', 'Blonde', 'Black', 'White', 'Purple']},
-        {'id': 'hair_type', 'label': 'Hair Type',
-            'options': ['Curly', 'Straight', 'Messy', 'Wavy']},
+        {'id': 'hair_type', 'label': 'Hair Type', 'options': ['Curly', 'Straight', 'Messy', 'Wavy']},
         {'id': 'hair_length', 'label': 'Hair Length',
          'options': ['Very Short', 'Short', 'Medium', 'Long', 'Very Long']},
-        {'id': 'skin_color', 'label': 'Skin Color',
-            'options': ['White', 'Pale', 'Tan', 'Dark', 'Very Dark']},
-        {'id': 'skin_type', 'label': 'Skin Type', 'options': [
-            'Acne', 'Clear', 'Freckles', 'See-Through']},
-        {'id': 'age', 'label': 'Age', 'options': [
-            'Child', 'Teenager', 'Adult', 'Elderly']},
+        {'id': 'skin_color', 'label': 'Skin Color', 'options': ['White', 'Pale', 'Tan', 'Dark', 'Very Dark']},
+        {'id': 'skin_type', 'label': 'Skin Type', 'options': ['Acne', 'Clear', 'Freckles', 'See-Through']},
+        {'id': 'age', 'label': 'Age', 'options': ['Child', 'Teenager', 'Adult', 'Elderly']},
         {'id': 'ethnicity', 'label': 'Ethnicity',
          'options': ['African', 'Caucasian', 'Italian', 'Jewish', 'British', 'Finnish', 'Mexican', 'Chinese',
                      'Vietnamese']},
-        {'id': 'eye_color', 'label': 'Eye Color',
-         'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']}
+        {'id': 'eye_color', 'label': 'Eye Color', 'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']}
     ]
 
     mode = request.GET.get("mode")
@@ -74,26 +50,20 @@ def index(request):
 
     images = []
     if mode == "gallery_mode":
-        try:
-            admin_user = User.objects.get(username='admin')
-        except User.DoesNotExist:
-            admin_user = None
+        user_images = UserImage.objects.filter(user=request.user) if request.user.is_authenticated else []
 
-        user_images = UserImage.objects.filter(
-            user=request.user) if request.user.is_authenticated else []
-        default_images = UserImage.objects.filter(
-            user=admin_user) if admin_user else []
-        images = list(default_images) + list(user_images)
+        for user_image in user_images:
+            with open(user_image.image_path, 'rb') as f:
+                image_base64 = base64.b64encode(f.read()).decode('utf-8')
+                images.append({'id': user_image.id, 'image': image_base64})
 
-        # Encode images to base64
-        for image in images:
-            image.image = base64.b64encode(
-                force_bytes(image.image)).decode('utf-8')
-            image.id = image.id
+        default_images = get_default_images()
+        images.extend(default_images)
 
     if change_mode == "true":
         return render(request, "create_form.html",
-                      {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode, 'form_fields': form_fields, 'images': images})
+                      {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode,
+                       'form_fields': form_fields, 'images': images})
 
     return render(request, template,
                   {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode, 'images': images})
@@ -167,7 +137,17 @@ def save_image(request):
             _, imgstr = image_data.split(';base64,')
             data = base64.b64decode(imgstr)
 
-            user_image = UserImage(user=request.user, image=data)
+            # Check how many images the user has saved
+            user_images = UserImage.objects.filter(user=request.user)
+            if len(user_images) >= 5:
+                return HttpResponse("You have reached the maximum number of saved images.")
+
+            # Save the image to the file system
+            filename = f"{request.user.id}_image_{len(user_images) + 1}.png"
+            file_path = save_image_to_file_system(data, request.user.id, filename)
+
+            # Save the file path to the database
+            user_image = UserImage(user=request.user, image_path=file_path)
             user_image.save()
             logger.info("Image saved successfully.")
 
@@ -179,6 +159,53 @@ def save_image(request):
             logger.error("Cannot save, no image data provided.")
             return HttpResponse("No image data provided.")
     return HttpResponse("Invalid request method.")
+
+
+@csrf_exempt
+@login_required
+def delete_image(request, id):
+    try:
+        # Attempt to get the image by ID
+        image = UserImage.objects.get(id=id)
+        image_path = image.image_path
+        image.delete()
+
+        # Remove the image file from the file system
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
+        logger.info(f'Image with id {id} deleted successfully.')
+        return render(request, "empty.html", None)  # Redirect to the desired page after deletion
+    except UserImage.DoesNotExist:
+        logger.error(f'Image with id {id} not found.')
+    except Exception as e:
+        logger.error(f'An error occurred: {e}')
+    return render(request, "error.html", {"message": "Failed to delete image."})
+
+
+def save_image_to_file_system(image_data, user_id, filename):
+    directory = os.path.join(settings.MEDIA_ROOT, 'user_images', str(user_id))
+    os.makedirs(directory, exist_ok=True)
+    file_path = os.path.join(directory, filename)
+    with open(file_path, 'wb') as f:
+        f.write(image_data)
+    return file_path
+
+
+def get_default_images():
+    default_images = []
+    default_images_dir = os.path.join(settings.MEDIA_ROOT, 'default_images')
+
+    if os.path.exists(default_images_dir):
+        for filename in os.listdir(default_images_dir):
+            if filename.endswith(('.png', '.jpg', '.jpeg')):
+                filepath = os.path.join(default_images_dir, filename)
+                with open(filepath, 'rb') as f:
+                    image_data = f.read()
+                    image_base64 = base64.b64encode(image_data).decode('utf-8')
+                    default_images.append({'id': f'default-{filename}', 'image': image_base64})
+
+    return default_images
 
 
 def make_prompt(request):
