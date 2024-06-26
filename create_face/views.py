@@ -51,7 +51,8 @@ def index(request):
     images = []
     if mode == "gallery_mode":
         user_images = UserImage.objects.filter(user=request.user) if request.user.is_authenticated else []
-
+        if len(user_images) == 0:
+            logger.error("No images found for the user.")
         for user_image in user_images:
             with open(user_image.image_path, 'rb') as f:
                 image_base64 = base64.b64encode(f.read()).decode('utf-8')
