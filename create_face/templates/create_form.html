@@ -3,26 +3,34 @@
   class="flex max-w-xxl bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-2">
   <input type="hidden" id="create_mode" value="{{ mode }}" />
   <input type="hidden" id="change_mode" value="false" />
-  <div id="mode-toggle" class="flex gap-4 items-center my-1">
+  <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 dark:bg-gray-300 rounded-xl relative">
+    <div id="slider" class="absolute top-0 left-0 w-1/2 h-full bg-bg-50 dark:bg-bg-800 rounded-xl transition-transform duration-500 {% if mode == "gallery_mode" %}transform translate-x-full{% endif %}"></div>
     <div id="create_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
       hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode:"content"}'
       hx-include="#create_mode, #change_mode, #render_mode"
-      class="hover:scale-105 transform transition duration-500 {% if mode == "create_mode" %}border-2 shadow-lg
-      border-black dark:border-bg-900{% else %}opacity-50{% endif %} rounded-full bg-white flex">
-      <figure class="contents-center">
-        <img id="brainstorm" class="h-6 w-6" src="../static/images/brainstorm.svg" alt="Brainstorm" />
-        <figcaption class="text-sm">Create</figcaption>
-      </figure>
+      class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == "create_mode" %}text-gray-800 dark:text-gray-300{% else %}text-gray-400 dark:text-gray-600{% endif %}">
+      <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 16C9.85038 16.6303 10.8846 17 12 17C13.1154 17 14.1496 16.6303 15 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        <ellipse cx="15" cy="10.5" rx="1" ry="1.5" fill="currentColor"></ellipse>
+        <ellipse cx="9" cy="10.5" rx="1" ry="1.5" fill="currentColor"></ellipse>
+        <path d="M22 14C22 17.7712 22 19.6569 20.8284 20.8284C19.6569 22 17.7712 22 14 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        <path d="M10 22C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        <path d="M10 2C6.22876 2 4.34315 2 3.17157 3.17157C2 4.34315 2 6.22876 2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        <path d="M14 2C17.7712 2 19.6569 2 20.8284 3.17157C22 4.34315 22 6.22876 22 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+      </svg>
+      <p class="text-sm">Create</p>
     </div>
     <div id="gallery_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
       hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode:"content"}'
       hx-include="#create_mode, #change_mode, #render_mode"
-      class="hover:scale-105 transform transition duration-500 {% if mode == "gallery_mode" %}border-2 shadow-lg
-      border-black{% else %}opacity-50{% endif %} rounded-full bg-white flex">
-      <figure class="text-sm">
-        <img id="gallery" class="h-6 w-6" src="../static/images/gallery.svg" alt="Gallery" />
-        <figcaption>Gallery</figcaption>
-      </figure>
+      class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == "gallery_mode" %}text-gray-800 dark:text-gray-300{% else %}text-gray-400 dark:text-gray-600{% endif %}">
+      <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 13.4375C22 17.2087 22 19.0944 20.8284 20.2659C19.6569 21.4375 17.7712 21.4375 14 21.4375H10C6.22876 21.4375 4.34315 21.4375 3.17157 20.2659C2 19.0944 2 17.2087 2 13.4375C2 9.66626 2 7.78065 3.17157 6.60907C4.34315 5.4375 6.22876 5.4375 10 5.4375H14C17.7712 5.4375 19.6569 5.4375 20.8284 6.60907C21.4921 7.27271 21.7798 8.16545 21.9045 9.50024" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        <path d="M3.98779 6C4.10022 5.06898 4.33494 4.42559 4.82498 3.93726C5.76553 3 7.27932 3 10.3069 3H13.5181C16.5457 3 18.0595 3 19 3.93726C19.4901 4.42559 19.7248 5.06898 19.8372 6" stroke="currentColor" stroke-width="1.5"></path>
+        <circle cx="17.5" cy="9.9375" r="1.5" stroke="currentColor" stroke-width="1.5"></circle>
+        <path d="M2 13.9376L3.75159 12.405C4.66286 11.6077 6.03628 11.6534 6.89249 12.5096L11.1822 16.7993C11.8694 17.4866 12.9512 17.5803 13.7464 17.0214L14.0446 16.8119C15.1888 16.0077 16.7369 16.1009 17.7765 17.0365L21 19.9376" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+      </svg>
+      <p class="text-sm">Gallery</p>
     </div>
   </div>
 
