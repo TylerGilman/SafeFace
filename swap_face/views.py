@@ -49,7 +49,6 @@ def swap_face(request):
 
         filename = request.POST.get('filename')
         uploaded_file_data = request.POST.get('uploaded_file')
-
         if uploaded_file_data:
             uploaded_file_data = uploaded_file_data.split('base64,')[1]
             uploaded_file_data = base64.b64decode(uploaded_file_data)
@@ -78,7 +77,7 @@ def swap_face(request):
             temp_output_path = os.path.join(temp_dir, 'output_image.png')
 
             # Call the FaceFusion command
-            command = f'python swap_face/facefusion/run.py -h'
+            command = f'python swap_face/facefusion/run.py'
             result = subprocess.run(command, shell=True, capture_output=True, text=True)
 
             # Log the stdout and stderr outputs for debugging
