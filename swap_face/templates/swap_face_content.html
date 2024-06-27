@@ -1,4 +1,5 @@
 {% block content %}
+
 <div class="flex flex-col items-center">
     <h1 class="text-3xl font-bold mb-6 text-center dark:text-white">Face Swap</h1>
 
@@ -26,6 +27,9 @@
 
     {% if image_id %}
         <input type="hidden" name="image_id" id="image_id" value="{{ image_id }}">
+    {% endif %}
+    {% if image_data %}
+        <input type="hidden" name="image_data" id="image_data" value="{{ image_data }}">
     {% endif %}
 </div>
 
@@ -66,17 +70,22 @@
             const file = fileInput.files[0];
             const base64File = await getBase64(file);
             formData.append('uploaded_file', base64File);
-        } else {
-            formData.append('image_data', '{{ image_data|safe }}');
+
+            if (imageIdElement) {
+                formData.append('image_id', imageIdElement.value);
+            }
+            else {
+              formData.append('image_data', '{{ image_data|safe }}');
+            }
         }
 
-        if (imageIdElement) {
-            formData.append('image_id', imageIdElement.value);
-        }
 
         fetch('/swap_face/', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.getElementById('csrf').value
+            }
         })
         .then(response => response.json())
         .then(data => {

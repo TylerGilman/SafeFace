@@ -21,30 +21,31 @@ def swap_face(request):
 
         image_id = request.POST.get('image_id')
         image_path = request.POST.get('image_path')
-        image_data = None
+        image_data_url = request.POST.get('image_data')
 
         if image_id:
             # Retrieve image from the database using image_id
             user_image = get_object_or_404(UserImage, id=image_id)
             with open(user_image.image_path, 'rb') as f:
-                image_data = f.read()
+                image_data_url = f.read()
         elif image_path:
             # Handle default image from the file system
             try:
                 if 'base64,' in image_path:
-                    image_data = base64.b64decode(image_path.split('base64,')[1])
+                    image_data_url = base64.b64decode(image_path.split('base64,')[1])
                 else:
                     with open(image_path, 'rb') as f:
-                        image_data = f.read()
+                        image_data_url = f.read()
+                
+                image_base64 = base64.b64encode(image_data_url).decode('utf-8')
+                image_data_url = f"data:image/jpeg;base64,{image_base64}"
             except (IndexError, FileNotFoundError) as e:
                 # logger.error(f"Error processing image_path: {e}")
                 return JsonResponse({'error': 'Invalid image path or image not found'}, status=400)
 
-        if not image_data:
+        if not image_data_url:
             return JsonResponse({'error': 'No image data or image ID provided'}, status=400)
 
-        image_base64 = base64.b64encode(image_data).decode('utf-8')
-        image_data_url = f"data:image/jpeg;base64,{image_base64}"
 
         filename = request.POST.get('filename')
         uploaded_file_data = request.POST.get('uploaded_file')
@@ -59,7 +60,7 @@ def swap_face(request):
             uploaded_file_bytes = uploaded_file_bytes.getvalue()
 
             # Process the image_data (if it's base64 encoded)
-            image_data = image_data.split('base64,')[1]
+            image_data = image_data_url.split('base64,')[1]
             image_data = base64.b64decode(image_data)
             image_data = Image.open(BytesIO(image_data))
 
