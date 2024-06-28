@@ -43,6 +43,7 @@
     {% if output_image_data %}
         <p class="text-lg font-semibold mb-4 dark:text-white">Result</p>
         <img src="{{ output_image_data }}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
+        <a href="{{ output_image_data }}" download="face_swap_result.png" class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
     {% endif %}
 </div>
 
@@ -110,6 +111,7 @@
                 resultContainer.innerHTML = `
                     <p class="text-lg font-semibold mb-4 dark:text-white">Result</p>
                     <img src="${data.output_image_data}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
+                    <a href="data:image/png;base64,${data.output_image_data.split('base64,')[1]}" download="face_swap_result.png" class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
                 `;
             }
         })
