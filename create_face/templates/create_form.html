@@ -1,13 +1,13 @@
 {% block form %}
 <div name="create_form" id="create_form"
   class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-5 max-md:gap-2">
-  <input type="hidden" id="create_mode" value="{{ mode }}" />
+  <input type="hidden" id="mode" value="{{ mode }}" />
   <input type="hidden" id="change_mode" value="false" />
   <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative">
     <div id="slider" class="absolute top-0 left-0 w-1/2 h-full bg-bg-50 rounded-xl transition-transform duration-500 {% if mode == "gallery_mode" %}transform translate-x-full{% endif %}"></div>
     <div id="create_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
       hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode:"content"}'
-      hx-include="#create_mode, #change_mode, #render_mode"
+      hx-include="#mode, #change_mode, #render_mode"
       class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == "create_mode" %}text-gray-800{% else %}text-gray-400{% endif %}">
       <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 16C9.85038 16.6303 10.8846 17 12 17C13.1154 17 14.1496 16.6303 15 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
@@ -22,7 +22,7 @@
     </div>
     <div id="gallery_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
       hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode:"content"}'
-      hx-include="#create_mode, #change_mode, #render_mode"
+      hx-include="#mode, #change_mode, #render_mode"
       class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == "gallery_mode" %}text-gray-800{% else %}text-gray-400{% endif %}">
       <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M22 13.4375C22 17.2087 22 19.0944 20.8284 20.2659C19.6569 21.4375 17.7712 21.4375 14 21.4375H10C6.22876 21.4375 4.34315 21.4375 3.17157 20.2659C2 19.0944 2 17.2087 2 13.4375C2 9.66626 2 7.78065 3.17157 6.60907C4.34315 5.4375 6.22876 5.4375 10 5.4375H14C17.7712 5.4375 19.6569 5.4375 20.8284 6.60907C21.4921 7.27271 21.7798 8.16545 21.9045 9.50024" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
