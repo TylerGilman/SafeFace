@@ -14,6 +14,8 @@ swap_face/facefusion/
 
 swap_face/data/tmp/
 
+.DS_Store
+
 # Distribution / packaging
 .Python
 build/
