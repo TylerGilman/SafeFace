@@ -12,6 +12,8 @@ media/
 
 swap_face/facefusion/
 
+swap_face/data/tmp/
+
 # Distribution / packaging
 .Python
 build/

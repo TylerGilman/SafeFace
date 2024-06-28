@@ -11,7 +11,7 @@
 
         <div id="uploaded_image_container" class="relative text-center flex flex-col justify-center items-center">
             <p class="text-lg font-semibold mb-4 dark:text-white">Target</p>
-            <button id="choose_file_button" class="flex flex-col items-center gap-4 justify-center w-60 h-60 bg-transparent border-2 border-dashed border-black text-black dark:text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap" onclick="document.getElementById('hiddenFileInput').click()">
+            <button id="choose_file_button" class="flex flex-col items-center gap-4 justify-center w-60 h-60 bg-transparent border-2 border-dashed border-black dark:border-white text-black dark:text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap" onclick="document.getElementById('hiddenFileInput').click()">
                 <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -22,7 +22,13 @@
     </div>
 
     <div id="submit_swap" class="flex items-center rounded-lg mt-16">
-        <button onclick="submitForm()" class="bg-primary-600 rounded-lg px-4 py-2 text-white">Swap Face</button>
+        <button onclick="submitForm()" class="bg-primary-600 rounded-lg px-4 py-2 text-white">
+            {% if output_image_data %}
+                Swap Again
+            {% else %}
+                Swap Face
+            {% endif %}
+        </button>
     </div>
 
     {% if image_id %}
@@ -30,6 +36,13 @@
     {% endif %}
     {% if image_data %}
         <input type="hidden" name="image_data" id="image_data" value="{{ image_data }}">
+    {% endif %}
+</div>
+
+<div id="result_container" class="flex flex-col items-center mt-8">
+    {% if output_image_data %}
+        <p class="text-lg font-semibold mb-4 dark:text-white">Result</p>
+        <img src="{{ output_image_data }}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
     {% endif %}
 </div>
 
@@ -42,7 +55,7 @@
                 uploadedImageContainer.innerHTML = `
                     <p class="text-lg font-semibold mb-4 dark:text-white">Target</p>
                     <img src="${base64File}" alt="uploaded image" class="w-60 rounded-2xl shadow-lg aspect-auto" />
-                    <button id="choose_new_file_button" class="absolute -bottom-10 left-1/2 transform -translate-x-1/2 bg-bg-600 dark:bg-bg-900 text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap mt-4" onclick="document.getElementById('hiddenFileInput').click()">
+                    <button id="choose_new_file_button" class="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-bg-600 dark:bg-bg-900 text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap mt-4" onclick="document.getElementById('hiddenFileInput').click()">
                         <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
@@ -65,35 +78,39 @@
         const formData = new FormData();
         const fileInput = document.getElementById('hiddenFileInput');
         const imageIdElement = document.getElementById('image_id');
+        const imageDataElement = document.getElementById('image_data');
 
         if (fileInput && fileInput.files.length > 0) {
             const file = fileInput.files[0];
             const base64File = await getBase64(file);
             formData.append('uploaded_file', base64File);
-
-            if (imageIdElement) {
-                formData.append('image_id', imageIdElement.value);
-            }
-            else {
-              formData.append('image_data', '{{ image_data|safe }}');
-            }
         }
 
+        if (imageIdElement) {
+            formData.append('image_id', imageIdElement.value);
+        }
+
+        if (imageDataElement) {
+            formData.append('image_path', imageDataElement.value);
+        }
+
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
         fetch('/swap_face/', {
             method: 'POST',
             body: formData,
-            headers: {
-                'X-CSRFToken': document.getElementById('csrf').value
-            }
         })
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            if(data.status === 'success') {
-                // Display success message or handle success
+            if (data.error) {
+                console.error('Error:', data.error);
             } else {
-                // Handle error
+                const resultContainer = document.getElementById('result_container');
+                resultContainer.innerHTML = `
+                    <p class="text-lg font-semibold mb-4 dark:text-white">Result</p>
+                    <img src="${data.output_image_data}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
+                `;
             }
         })
         .catch(error => {

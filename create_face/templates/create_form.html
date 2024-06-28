@@ -3,12 +3,12 @@
   class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-1">
   <input type="hidden" id="create_mode" value="{{ mode }}" />
   <input type="hidden" id="change_mode" value="false" />
-  <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 dark:bg-gray-300 rounded-xl relative">
-    <div id="slider" class="absolute top-0 left-0 w-1/2 h-full bg-bg-50 dark:bg-bg-800 rounded-xl transition-transform duration-500 {% if mode == "gallery_mode" %}transform translate-x-full{% endif %}"></div>
+  <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative">
+    <div id="slider" class="absolute top-0 left-0 w-1/2 h-full bg-bg-50 rounded-xl transition-transform duration-500 {% if mode == "gallery_mode" %}transform translate-x-full{% endif %}"></div>
     <div id="create_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
       hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode:"content"}'
       hx-include="#create_mode, #change_mode, #render_mode"
-      class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == "create_mode" %}text-gray-800 dark:text-gray-300{% else %}text-gray-400 dark:text-gray-600{% endif %}">
+      class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == "create_mode" %}text-gray-800{% else %}text-gray-400{% endif %}">
       <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 16C9.85038 16.6303 10.8846 17 12 17C13.1154 17 14.1496 16.6303 15 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
         <ellipse cx="15" cy="10.5" rx="1" ry="1.5" fill="currentColor"></ellipse>
@@ -23,7 +23,7 @@
     <div id="gallery_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
       hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode:"content"}'
       hx-include="#create_mode, #change_mode, #render_mode"
-      class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == "gallery_mode" %}text-gray-800 dark:text-gray-300{% else %}text-gray-400 dark:text-gray-600{% endif %}">
+      class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == "gallery_mode" %}text-gray-800{% else %}text-gray-400{% endif %}">
       <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M22 13.4375C22 17.2087 22 19.0944 20.8284 20.2659C19.6569 21.4375 17.7712 21.4375 14 21.4375H10C6.22876 21.4375 4.34315 21.4375 3.17157 20.2659C2 19.0944 2 17.2087 2 13.4375C2 9.66626 2 7.78065 3.17157 6.60907C4.34315 5.4375 6.22876 5.4375 10 5.4375H14C17.7712 5.4375 19.6569 5.4375 20.8284 6.60907C21.4921 7.27271 21.7798 8.16545 21.9045 9.50024" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
         <path d="M3.98779 6C4.10022 5.06898 4.33494 4.42559 4.82498 3.93726C5.76553 3 7.27932 3 10.3069 3H13.5181C16.5457 3 18.0595 3 19 3.93726C19.4901 4.42559 19.7248 5.06898 19.8372 6" stroke="currentColor" stroke-width="1.5"></path>
@@ -36,7 +36,7 @@
 
   {% if mode == "create_mode" %}
   <div class="flex flex-col items-center justify-center w-full gap-4">
-    <p class="text-lg font-medium mt-1">Select Avatar Attributes</p>
+    <p class="text-lg font-medium dark:text-white mt-1">Select Avatar Attributes</p>
     <div id="attributes" class="text-center grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 w-full gap-4 gap-x-4">
         {% for field in form_fields %}
             <div class="form-group relative rounded-xl">

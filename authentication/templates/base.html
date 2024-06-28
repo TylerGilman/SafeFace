@@ -57,7 +57,7 @@
       <div class="flex justify-between h-16">
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
-            <a hx-get="/auth/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode" hx-vals='js:{render_mode: "content"}'   hx-push-url="true" class="text-xl font-bold text-primary-600">SafeFace</a>
+            <a hx-get="/auth/" hx-swap="innerHTML" hx-target="#content" hx-include="#render_mode" hx-vals='js:{render_mode: "content"}'  hx-push-url="true" class="text-xl font-bold text-primary-600">SafeFace</a>
           </div>
         </div>
         <div class="flex items-center">
@@ -94,7 +94,11 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-bg-100 dark:bg-bg-900 bg-opacity-50 fixed bottom-0 w-full h-12">
+  <footer class="flex bg-bg-100 dark:bg-bg-900 bg-opacity-50 fixed bottom-0 w-full h-12">
+{#      <div class="flex flex-col py-2 pl-2 opacity-10 gap-1">#}
+{#          <p class="text-sm text-black dark:text-white font-semibold leading-tight">SafeFace</p>#}
+{#          <p class="text-xs text-black dark:text-white font-semibold leading-tight">© 2024 SafeFace</p>#}
+{#      </div>#}
     <div class="max-w-7xl mx-auto px-4">
       <div x-data="{
         text: '',
@@ -159,9 +163,9 @@
         }, $data.cursorSpeed);
 
     })" class="flex items-center justify-center mx-auto text-center max-w-7xl">
-        <div class="relative flex items-center justify-center py-2 mb-4">
-          <p class="text-2md text-black dark:text-white font-black leading-tight" x-text="text"></p>
-          <span class="absolute right-0 w-2 -mr-2 bg-black dark:bg-white h-1/4" x-ref="cursor"></span>
+        <div class="relative flex items-center justify-center py-2 mt-2 mb-4">
+          <p class="text-2md text-black dark:text-white font-semibold leading-tight" x-text="text"></p>
+          <span class="absolute right-0 w-1 -mr-2 bg-black dark:bg-white h-1/2" x-ref="cursor"></span>
         </div>
       </div>
     </div>
