@@ -54,7 +54,7 @@ def run_facefusion(output, source, target, headless=True):
     start_time = time.time()
     venv_path = '.venv/bin/activate'
     command = f'source {venv_path} && python swap_face/facefusion/run.py -s {source} -t {target} -o {output} {"--headless" if headless else ""}'
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    result = subprocess.run(f'bash -c "{command}"', shell=True, capture_output=True, text=True)
     end_time = time.time()
     logger.info(f'FaceFusion command completed in {end_time - start_time} seconds')
     logger.info(f'Subprocess stdout: {result.stdout}')

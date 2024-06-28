@@ -57,7 +57,7 @@
       <div class="flex justify-between h-16">
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
-            <a hx-get="/auth/" hx-swap="innerHTML" hx-target="#content" hx-include="#render_mode" hx-vals='js:{render_mode: "content"}'  hx-push-url="true" class="text-xl font-bold text-primary-600">SafeFace</a>
+            <a hx-get="/auth/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode" hx-vals='js:{render_mode: "content"}'  hx-push-url="true" class="text-xl font-bold text-primary-600">SafeFace</a>
           </div>
         </div>
         <div class="flex items-center">
@@ -75,9 +75,9 @@
           {% else %}
           <div>
             <a hx-get="/auth/login" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #next"
-              hx-vals='js:{next: "/create"}' hx-push-url="true"
+              hx-vals='js:{next: "/create/"}' hx-push-url="true"
               class="bg-primary-500 text-white hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Login</a>
-            <a hx-get="/auth/register" hx-swap="outerHTML" hx-target="#content" hx-push-url="true"
+            <a hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content" hx-push-url="true"
               class="bg-primary-500 text-white hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Sign
               Up</a>
           </div>
@@ -170,66 +170,6 @@
       </div>
     </div>
   </footer>
-  <div class="flex items-center justify-center mx-auto text-center max-w-7xl">
-    <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive"
-      aria-atomic="true">
-      <div class="d-flex">
-        <div x-data="toastComponent()" class="relative space-y-5">
-        </div>
-
-        <script>
-          function toastComponent() {
-            return {
-              title: 'Default Toast Notification',
-              description: '',
-              type: 'default',
-              position: 'top-center',
-              expanded: false,
-              popToast(custom) {
-                let html = '';
-                if (typeof custom !== 'undefined') {
-                  html = custom;
-                }
-                this.showToast(this.title, { description: this.description, type: this.type, position: this.position, html: html });
-              },
-              showToast(message, options = {}) {
-                let description = options.description || '';
-                let type = options.type || 'default';
-                let position = options.position || 'top-center';
-                let html = options.html || '';
-
-                window.dispatchEvent(new CustomEvent('toast-show', {
-                  detail: { type: type, message: message, description: description, position: position, html: html }
-                }));
-              },
-              init() {
-                window.toast = this.showToast.bind(this);
-
-                window.customToastHTML = `
-          <div class='relative flex items-start justify-center p-4'>
-            <div class='flex flex-col'>
-              <div class='flex mt-3'>
-                <div class="bg-white"
-                <button type='button' @click='burnToast(toast.id)' class='inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-indigo-600 rounded shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>Accept</button>
-              </div>
-            </div>
-          </div>
-        `;
-              }
-            };
-          }
-
-
-          document.addEventListener("DOMContentLoaded", () => {
-            // Example: Trigger toast after 3 seconds
-            setTimeout(() => {
-              window.toastComponent("Welcome!", { description: "This is a custom toast notification." });
-            }, 3000);
-          });
-
-
-        </script>
-
 </body>
 
 </html>
