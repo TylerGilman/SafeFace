@@ -16,7 +16,11 @@
 {% endif %}
 <div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
   <p class="text-lg font-semibold">Your Avatar</p>
-  <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-lg shadow-lg" id="avatar_image" />
+  <div class="relative">
+    <img src="{{ image_path }}" alt="avatar" class="mx-auto max-w-xs rounded-lg shadow-lg" id="avatar_image" />
+    <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
+      src="../static/images/bouncing-ball.svg" alt="Loading..." />
+  </div>
 
   <div class="flex flex-col items-center justify-eenter w-full">
     <input type="hidden" name="image_data" id="image_data" value="{{ image_path }}">
