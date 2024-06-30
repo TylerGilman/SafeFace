@@ -57,7 +57,9 @@
       <div class="flex justify-between h-16">
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
-            <a hx-get="/auth/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode" hx-vals='js:{render_mode: "content"}'  hx-push-url="true" class="text-xl font-bold text-primary-600 transform hover:scale-110 focus:scale-110 transition-transform">SafeFace</a>
+            <a hx-get="/auth/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
+              hx-vals='js:{render_mode: "content"}' hx-push-url="true"
+              class="text-xl font-bold text-primary-600 transform hover:scale-110 focus:scale-110 transition-transform">SafeFace</a>
           </div>
         </div>
         <div class="flex items-center">
@@ -74,10 +76,13 @@
           </div>
           {% else %}
           <div>
-            <a hx-get="/auth/login" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #next"
-              hx-vals='js:{next: "/create/"}' hx-push-url="true"
+            <a hx-get="/auth/login" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #next, #render_mode"
+              hx-vals='js:{next: "/create/", render_mode: "content"}' hx-vals='js:{render_mode: "content"}' hx-push-url="true"
               class="bg-primary-500 text-white hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Login</a>
-            <a hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content" hx-push-url="true"
+
+
+            <a hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
+              hx-vals='js:{render_mode: "content"}' hx-push-url="true"
               class="bg-primary-500 text-white hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Sign
               Up</a>
           </div>
@@ -95,10 +100,10 @@
 
   <!-- Footer -->
   <footer class="flex bg-bg-100 dark:bg-bg-900 bg-opacity-50 fixed bottom-0 w-full h-12">
-{#      <div class="flex flex-col py-2 pl-2 opacity-10 gap-1">#}
-{#          <p class="text-sm text-black dark:text-white font-semibold leading-tight">SafeFace</p>#}
-{#          <p class="text-xs text-black dark:text-white font-semibold leading-tight">© 2024 SafeFace</p>#}
-{#      </div>#}
+    {# <div class="flex flex-col py-2 pl-2 opacity-10 gap-1">#}
+      {# <p class="text-sm text-black dark:text-white font-semibold leading-tight">SafeFace</p>#}
+      {# <p class="text-xs text-black dark:text-white font-semibold leading-tight">© 2024 SafeFace</p>#}
+      {# </div>#}
     <div class="max-w-7xl mx-auto px-4">
       <div x-data="{
         text: '',
