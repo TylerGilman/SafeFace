@@ -83,7 +83,7 @@ def register_page(request):
 
         # Display an information message indicating successful account creation
         messages.info(request, "Account created Successfully!")
-        return render(request, "login.html")
+        return render(request, "login_content.html")
 
     # Render the registration page template (GET request)
     if request.GET.get("render_mode") == "content":

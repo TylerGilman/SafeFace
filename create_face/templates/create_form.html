@@ -92,7 +92,7 @@
       </svg>
     </button>
     {% else %}
-    <button hx-get="/auth/login/" hx-include="#csrf, #next, #render-mode" hx-vals='js:{next: "/create", render_mode: "content"}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true"
+    <button hx-get="/auth/login/" hx-include="#csrf, #next, #render_mode" hx-vals='js:{next: "/create", render_mode: "content"}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true"
       class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-3 dark:bg-primary-600 dark:hover:bg-primary-700">
       Login to Save Avatar
     </button>
