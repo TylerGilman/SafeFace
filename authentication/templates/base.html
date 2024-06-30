@@ -59,7 +59,7 @@
           <div class="flex-shrink-0 flex items-center">
             <a hx-get="/auth/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
               hx-vals='js:{render_mode: "content"}' hx-push-url="true"
-              class="text-xl font-bold text-primary-600 transform hover:scale-110 focus:scale-110 transition-transform">SafeFace</a>
+              class="text-xl font-bold text-primary-600 {% if not user.is_authenticated %} transform hover:scale-110 focus:scale-110 transition-transform {% endif %}">SafeFace</a>
           </div>
         </div>
         <div class="flex items-center">
@@ -77,7 +77,7 @@
           {% else %}
           <div>
             <a hx-get="/auth/login" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #next, #render_mode"
-              hx-vals='js:{next: "/create/", render_mode: "content"}' hx-vals='js:{render_mode: "content"}' hx-push-url="true"
+              hx-vals='js:{next: "/create/", render_mode: "content"}'  hx-push-url="true"
               class="bg-primary-500 text-white hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Login</a>
 
 

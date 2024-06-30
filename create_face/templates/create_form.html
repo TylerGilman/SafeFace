@@ -80,7 +80,7 @@
     </button>
     {% if user.is_authenticated %}
 
-    <button id="save_image_button" hx-target="#generate_button"
+    <button id="save_image_button" hx-swap="none"
       class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
       Save Image
       <svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -92,7 +92,7 @@
       </svg>
     </button>
     {% else %}
-    <button hx-get="/auth/login/" hx-params="none" hx-swap="none"
+    <button hx-get="/auth/login/" hx-vals='js:{render_mode: "content"}' hx-target="#content" hx-swap="outerHTML"
       class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-3 dark:bg-primary-600 dark:hover:bg-primary-700">
       Login to Save Avatar
     </button>
