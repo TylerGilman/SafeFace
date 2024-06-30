@@ -59,16 +59,16 @@
           <div id="avatar" class="text-center flex flex-col justify-center items-center max-w-50">
             <div class="flex items-center justify-center w-full">
               <div class="relative">
-                <img src="../static/images/empty_profile.png" alt="empty avatar" class="mx-auto rounded-2xl shadow-xl" />
+                <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto rounded-2xl shadow-xl" />
                 <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
-                  src="../static/images/bouncing-ball.svg" alt="loading..." />
+                  src="../static/images/bouncing-ball.svg" alt="Loading..." />
               </div>
             </div>
           </div>
       </div>
 
   <div id="generate_button" class="flex flex-col md:flex-row items-center justify-center gap-4 bg-primary-500 dark:bg-primary-600 rounded-full">
-    <button hx-post="/create/" hx-swap="outerhtml" hx-indicator="#ball" hx-include="#csrf" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
       hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
       class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
       Generate Avatar
@@ -92,7 +92,7 @@
       </svg>
     </button>
     {% else %}
-    <button hx-get="/auth/login/" hx-vals='js:{render_mode: "content"}' hx-target="#content" hx-swap="outerHTML"
+    <button hx-get="/auth/login/" hx-include="#csrf, #next, #render-mode" hx-vals='js:{next: "/create", render_mode: "content"}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true"
       class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-3 dark:bg-primary-600 dark:hover:bg-primary-700">
       Login to Save Avatar
     </button>
