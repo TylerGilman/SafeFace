@@ -1,6 +1,6 @@
 {% block content %}
-
-<div id="content" class="flex flex-col items-center">
+<div id="content">
+<div class="flex flex-col items-center">
     <h1 class="text-3xl font-bold mb-6 text-center dark:text-white">Face Swap</h1>
 
     <div class="flex flex-row max-md:flex-col items-center gap-4">
@@ -46,7 +46,7 @@
         <a href="{{ output_image_data }}" download="face_swap_result.png" class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
     {% endif %}
 </div>
-
+</div>
 <script>
     function handleFileChange(event) {
         const selectedFile = event.target.files[0];
