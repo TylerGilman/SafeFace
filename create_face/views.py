@@ -4,7 +4,6 @@ from create_face.ml_handler.pipeline import PipelineHandler
 from create_face.ml_handler.hugging_face import HuggingFaceHandler
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from io import BytesIO
 import base64
 import logging
@@ -18,7 +17,6 @@ hugging_face_handler = HuggingFaceHandler()
 logger = logging.getLogger("create_face")
 
 
-@csrf_exempt
 def index(request):
     if request.method == "POST":
         return create(request)
@@ -70,7 +68,6 @@ def index(request):
                   {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode, 'images': images})
 
 
-@csrf_exempt
 def create(request):
     generate_method = request.POST.get("generate_method")
     if generate_method == "pipeline":
@@ -81,7 +78,6 @@ def create(request):
         return render(request, "error.html", {"message": "Invalid generate method."})
 
 
-@csrf_exempt
 def create_with_pipeline(request):
     prompt = make_prompt(request)
     image = pipeline_handler.generate_image(prompt)
@@ -104,7 +100,6 @@ def create_with_pipeline(request):
         return render(request, "error.html", {"message": "Failed to generate image using pipeline."})
 
 
-@csrf_exempt
 def create_with_hugging_face(request):
     prompt = make_prompt(request)
     try:
@@ -162,7 +157,6 @@ def save_image(request):
     return HttpResponse("Invalid request method.")
 
 
-@csrf_exempt
 @login_required
 def delete_image(request, id):
     try:

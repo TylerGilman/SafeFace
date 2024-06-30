@@ -1,12 +1,14 @@
 {% block content %}
 {% if generate_method == "pipeline" %}
-<button hx-post="" hx-swap="outerHTML" hx-indicator="#ball"
+<button hx-post="" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
+  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
   hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(),  age: getAge(), ethnicity: getEthnicity()}'
   class="bg-white border text-blue-700 py-2 px-4 rounded hover:bg-blue-700 hover:text-white transition duration-300">
   Regenerate
 </button>
 {% elif generate_method == "hugging_face" %}
-<button hx-post="" hx-swap="outerHTML" hx-indicator="#ball"
+<button hx-post="" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
+  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
   hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
   class="bg-blue-700 border text-white py-2 px-4 rounded hover:bg-white hover:text-blue-700 transition duration-300">
   Regenerate with Hugging Face
@@ -18,7 +20,10 @@
 
   <div class="flex flex-col items-center justify-eenter w-full">
     <input type="hidden" name="image_data" id="image_data" value="{{ image_path }}">
-    <button id="swap_face_button" hx-post="/swap_face/" hx-vals="js:{render_mode: 'content', image_path: document.getElementById('image_data').value}" hx-swap="outerHTML" hx-target="#content" hx-push-url="true"
+    <button id="swap_face_button" hx-post="/swap_face/" hx-include="#csrf"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+      hx-vals="js:{render_mode: 'content', image_path: document.getElementById('image_data').value}" hx-swap="outerHTML"
+      hx-target="#content" hx-push-url="true"
       class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
       Swap Face
     </button>

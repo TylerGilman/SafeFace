@@ -1,6 +1,5 @@
 import time
 from django.shortcuts import render, get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import base64
 from PIL import Image
@@ -74,7 +73,6 @@ def make_response_data(image_data, filename, output_image_data=None, image_id=No
     return response_data
 
 
-@csrf_exempt
 def swap_face(request):
     if request.method == 'POST':
         template = 'swap_face_content.html' if request.POST.get('render_mode') == 'content' else 'swap_face.html'
