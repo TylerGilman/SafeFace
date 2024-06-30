@@ -10,7 +10,7 @@
         </div>
 
         <div class="flex gap-3 items-center">
-            <a hx-get="/create" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #render-mode" hx-vals='js:{render_mode: "content"}'
+            <a hx-get="/create" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #render-mode" hx-vals='js:{render_mode: "content"}' hx-push-url="true"
                     class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                 Continue as Guest
             </a>
@@ -19,10 +19,6 @@
                 Login
             </a>
         </div>
-
-        <!-- Animated GIF -->
-        <!-- Use "welcome.gif" as the source for the GIF -->
-{#        <img src="https://i.ibb.co/RNB6jpM/welcome.gif" alt="Welcome Cartoon" class="w-3/5 mx-auto">#}
     </div>
 </body>
 
