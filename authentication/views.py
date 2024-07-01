@@ -8,7 +8,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 
 def home_page(request):
     if request.user.is_authenticated:
-        return
+        if request.GET.get("render_mode") == "content":
+            return 
+        return redirect("/create/")
     if request.GET.get("render_mode") == "content":
         return render(request, "home_content.html")
 
