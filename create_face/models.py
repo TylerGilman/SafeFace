@@ -7,11 +7,14 @@ class UserImage(models.Model):
     image_path = models.CharField(max_length=255, default='')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.user.username} - {self.image_path}"
 
-class SavedImage(models.Model):
+
+class SwapImage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image_path = models.CharField(max_length=255, default='')
-    saved_at = models.DateTimeField(auto_now_add=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.image_path}"
