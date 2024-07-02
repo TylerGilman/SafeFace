@@ -1,4 +1,6 @@
 import os
+import random
+import time
 from django.shortcuts import render
 from create_face.ml_handler.pipeline import PipelineHandler
 from create_face.ml_handler.hugging_face import HuggingFaceHandler
@@ -16,6 +18,53 @@ hugging_face_handler = HuggingFaceHandler()
 # Set up logging
 logger = logging.getLogger("create_face")
 
+form_fields = [
+    {
+        'id': 'gender',
+        'label': 'Gender',
+        'options': ['Male', 'Female', 'Ugly']
+    },
+    {
+        'id': 'hair_color',
+        'label': 'Hair Color',
+        'options': ['Brown', 'Ginger', 'Blonde', 'Black', 'White', 'Purple']
+    },
+    {
+        'id': 'hair_type',
+        'label': 'Hair Type',
+        'options': ['Curly', 'Straight', 'Messy', 'Wavy']
+    },
+    {
+        'id': 'hair_length',
+        'label': 'Hair Length',
+        'options': ['Very Short', 'Short', 'Medium', 'Long', 'Very Long']
+    },
+    {
+        'id': 'skin_color',
+        'label': 'Skin Color',
+        'options': ['White', 'Pale', 'Tan', 'Dark', 'Very Dark']
+    },
+    {
+        'id': 'skin_type',
+        'label': 'Skin Type',
+        'options': ['Acne', 'Clear', 'Freckles', 'See-Through']},
+    {
+        'id': 'age',
+        'label': 'Age',
+        'options': ['Child', 'Teenager', 'Adult', 'Elderly']},
+    {
+        'id': 'ethnicity',
+        'label': 'Ethnicity',
+        'options': ['African', 'Caucasian', 'Italian', 'Jewish', 'British', 'Finnish', 'Mexican', 'Chinese',
+                    'Vietnamese']
+    },
+    {
+        'id': 'eye_color',
+        'label': 'Eye Color',
+        'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']
+    }
+]
+
 
 def index(request):
     if request.method == "POST":
@@ -24,22 +73,6 @@ def index(request):
         template = "create_face_content.html"
     else:
         template = "create_face.html"
-
-    form_fields = [
-        {'id': 'gender', 'label': 'Gender', 'options': ['Male', 'Female', 'Ugly']},
-        {'id': 'hair_color', 'label': 'Hair Color',
-         'options': ['Brown', 'Ginger', 'Blonde', 'Black', 'White', 'Purple']},
-        {'id': 'hair_type', 'label': 'Hair Type', 'options': ['Curly', 'Straight', 'Messy', 'Wavy']},
-        {'id': 'hair_length', 'label': 'Hair Length',
-         'options': ['Very Short', 'Short', 'Medium', 'Long', 'Very Long']},
-        {'id': 'skin_color', 'label': 'Skin Color', 'options': ['White', 'Pale', 'Tan', 'Dark', 'Very Dark']},
-        {'id': 'skin_type', 'label': 'Skin Type', 'options': ['Acne', 'Clear', 'Freckles', 'See-Through']},
-        {'id': 'age', 'label': 'Age', 'options': ['Child', 'Teenager', 'Adult', 'Elderly']},
-        {'id': 'ethnicity', 'label': 'Ethnicity',
-         'options': ['African', 'Caucasian', 'Italian', 'Jewish', 'British', 'Finnish', 'Mexican', 'Chinese',
-                     'Vietnamese']},
-        {'id': 'eye_color', 'label': 'Eye Color', 'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']}
-    ]
 
     mode = request.GET.get("mode")
     change_mode = request.GET.get("change_mode")
@@ -123,6 +156,22 @@ def create_with_hugging_face(request):
             return render(request, "error.html", {"message": "Failed to generate image using HuggingFace."})
     except Exception as e:
         return render(request, "error.html", {"message": str(e)})
+
+
+def randomize_attributes(request):
+    time.sleep(1)  # Sleep to simulate processing time
+
+    new_form_fields = form_fields.copy()
+    for field in new_form_fields:
+        field['default'] = random.choice(field['options'])  # Randomly select an option for each
+
+    return render(request, "create_form.html", {
+        'guest': request.GET.get("guest"),
+        'render_mode': 'content',
+        'mode': 'create_mode',
+        'form_fields': new_form_fields,
+        'images': []
+    })
 
 
 @login_required
