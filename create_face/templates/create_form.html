@@ -5,22 +5,13 @@
   <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative">
     <input type="hidden" id="mode" name="mode" value="{{ mode }}" />
     <input type="hidden" id="change_mode" name="change_mode" value="false" />
-    <input type="hidden" id="change_mode" name="change_mode" value=getImageData()/>
     <div id="slider"
       class="absolute top-0 left-0 w-1/2 h-full bg-bg-50 rounded-xl transition-transform duration-500 {% if mode == 'gallery_mode' %} transform translate-x-full {% endif %}">
     </div>
-    <script>
-      function getImageData() {
-        try {
-          document.getElementById('image_data').value;
-        } catch (error) {
-          return "";
-        }
-      } 
-    </script>
-    <div id="create_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
+
+    <div id="create_mode"  {% if mode == 'gallery_mode' %} hx-target="#create_form"  hx-get="/create/" hx-swap="outerHTML"
       hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode:"content"}'
-      hx-include="#mode, #change_mode, #render_mode"
+      hx-include="#mode, #change_mode, #render_mode" {% endif %}  
       class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'create_mode' %} text-gray-800 {% endif %} {% if mode == 'gallery_mode' %} text-gray-400 {% endif %}">
       <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 16C9.85038 16.6303 10.8846 17 12 17C13.1154 17 14.1496 16.6303 15 16" stroke="currentColor"
@@ -38,9 +29,9 @@
       </svg>
       <p class="text-sm">Create</p>
     </div>
-    <div id="gallery_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
+    <div id="gallery_mode" {% if mode == 'create_mode' %} hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
       hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode:"content"}'
-      hx-include="#mode, #change_mode, #render_mode"
+      hx-include="#mode, #change_mode, #render_mode" {% endif %}
       class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'gallery_mode' %} text-gray-800 {% else %} text-gray-400{% endif %}">
       <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path

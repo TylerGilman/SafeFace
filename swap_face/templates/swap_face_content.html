@@ -54,15 +54,15 @@
   {% if image_data %}
   <input type="hidden" name="image_data" id="image_data" value="{{ image_data }}">
   {% endif %}
-</div>
 
-<div id="result_container" class="flex flex-col items-center">
-  {% if output_image_data %}
-  <p class="text-lg font-semibold mb-4 dark:text-white">Result</p>
-  <img src="{{ output_image_data }}" alt="result" class="w-40 h-40 rounded-2xl shadow-lg" />
-  <a href="{{ output_image_data }}" download="face_swap_result.png"
-    class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
-  {% endif %}
+  <div id="result_container" class="flex flex-col items-center">
+    {% if output_image_data %}
+    <p class="text-lg font-semibold mb-4 dark:text-white">Result</p>
+    <img src="{{ output_image_data }}" alt="result" class="w-40 h-40 rounded-2xl shadow-lg" />
+    <a href="{{ output_image_data }}" download="face_swap_result.png"
+      class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
+    {% endif %}
+  </div>
 </div>
 <script>
   document.querySelectorAll('.ball').forEach((ball, index) => {
