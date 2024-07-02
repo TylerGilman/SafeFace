@@ -51,9 +51,30 @@
                         {% for option in field.options %}
                         <option>{{ option }}</option>
                         {% endfor %}
+                      {% for option in field.options %}
+                        <option {% if option == field.default %} selected {% endif %}>{{ option }}</option>
+                      {% endfor %}
                       </select>
                     </div>
                 {% endfor %}
+            </div>
+            <div class="flex justify-center mt-4">
+                <button
+                        type="button"
+                        hx-get="/create/randomize_attributes/"
+                        hx-target="#create_form"
+                        hx-swap="outerHTML"
+                        hx-include="#csrf"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-indicator="#random_ball"
+                        class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700"
+                >
+                  Randomize Options
+                    <div class="flex items-center justify-center">
+                      <img id="random_ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
+                        src="../static/images/bouncing-ball.svg" alt="Loading..." />
+                    </div>
+                </button>
             </div>
           </div>
             <div class="border-r-2 border-bg-400 dark:border-bg-700 h-40"></div>
