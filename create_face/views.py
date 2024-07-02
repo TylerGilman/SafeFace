@@ -159,6 +159,8 @@ def save_image(request):
 
 @login_required
 def delete_image(request, id):
+    if id.startswith("default-"):
+        return render(request, "error.html", {"message": "Cannot delete default images."})
     try:
         # Attempt to get the image by ID
         image = UserImage.objects.get(id=id)
