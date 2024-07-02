@@ -136,7 +136,8 @@ def save_image(request):
             # Check how many images the user has saved
             user_images = UserImage.objects.filter(user=request.user)
             if len(user_images) >= 5:
-                return HttpResponse("You have reached the maximum number of saved images.")
+                logger.info("Maximum number of saved images, cannot save!")
+                return render(request, "You have reached the maximum number of saved images.")
 
             # Save the image to the file system
             filename = f"{request.user.id}_image_{len(user_images) + 1}.png"
@@ -153,13 +154,13 @@ def save_image(request):
             })
         else:
             logger.error("Cannot save, no image data provided.")
-            return HttpResponse("No image data provided.")
+            return render(request, "error.html", {"message": "No image data provided."})  
     return HttpResponse("Invalid request method.")
 
 
 @login_required
 def delete_image(request, id):
-    if id.startswith("default-"):
+    if str(id).startswith("default-"):
         return render(request, "error.html", {"message": "Cannot delete default images."})
     try:
         # Attempt to get the image by ID
