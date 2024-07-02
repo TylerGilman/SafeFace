@@ -73,7 +73,7 @@
       class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
       Generate Avatar
     </button>
-    <button hx-post="" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
       hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
       class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
       Generate with Hugging Face
