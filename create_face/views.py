@@ -69,33 +69,35 @@ form_fields = [
 def index(request):
     if request.method == "POST":
         return create(request)
-    if request.GET.get("render_mode") == "content":
+      
+    render_mode=request.GET.get("render_mode")
+    if render_mode == "content":
         template = "create_face_content.html"
     else:
         template = "create_face.html"
-
+    
     mode = request.GET.get("mode")
     change_mode = request.GET.get("change_mode")
     if not mode:
         mode = "create_mode"
 
     images = []
-    if mode == "gallery_mode":
-        user_images = UserImage.objects.filter(user=request.user) if request.user.is_authenticated else []
-        if len(user_images) == 0:
-            logger.error("No images found for the user.")
-        for user_image in user_images:
-            with open(user_image.image_path, 'rb') as f:
-                image_base64 = base64.b64encode(f.read()).decode('utf-8')
-                images.append({'id': user_image.id, 'image': image_base64})
-
-        default_images = get_default_images()
-        images.extend(default_images)
-
     if change_mode == "true":
-        return render(request, "create_form.html",
-                      {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode,
-                       'form_fields': form_fields, 'images': images})
+      if mode == "gallery_mode" or mode == "create_mode":
+          user_images = UserImage.objects.filter(user=request.user) if request.user.is_authenticated else []
+          if len(user_images) == 0:
+              logger.error("No images found for the user.")
+          for user_image in user_images:
+              with open(user_image.image_path, 'rb') as f:
+                  image_base64 = base64.b64encode(f.read()).decode('utf-8')
+                  images.append({'id': user_image.id, 'image': image_base64})
+
+          default_images = get_default_images()
+          images.extend(default_images)
+
+          return render(request, "create_form.html",
+                        {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode,
+                        'form_fields': form_fields, 'images': images})
 
     return render(request, template,
                   {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode, 'images': images})
@@ -158,9 +160,20 @@ def create_with_hugging_face(request):
         return render(request, "error.html", {"message": str(e)})
 
 
-def randomize_attributes(request):
-    time.sleep(1)  # Sleep to simulate processing time
+def clear_attributes(request):
+    new_form_fields = form_fields.copy()
+    for field in new_form_fields:
+        field['default'] = ''
 
+    return render(request, "create_form.html", {
+        'guest': request.GET.get("guest"),
+        'render_mode': 'content',
+        'mode': 'create_mode',
+        'form_fields': new_form_fields,
+        'images': []
+    })
+   
+def randomize_attributes(request):
     new_form_fields = form_fields.copy()
     for field in new_form_fields:
         field['default'] = random.choice(field['options'])  # Randomly select an option for each
@@ -196,7 +209,6 @@ def save_image(request):
             user_image = UserImage(user=request.user, image_path=file_path)
             user_image.save()
             logger.info("Image saved successfully.")
-
             return render(request, "empty.html", {
                 "generatedSaved": None,
                 "showMessage": "Saved successfully!"
@@ -204,7 +216,8 @@ def save_image(request):
         else:
             logger.error("Cannot save, no image data provided.")
             return render(request, "error.html", {"message": "No image data provided."})  
-    return HttpResponse("Invalid request method.")
+          
+    return render(request, "error.html", {"message": "Error Saving Image."})  
 
 
 @login_required
