@@ -1,14 +1,14 @@
 {% block form %}
 {% load filters %}
 <div name="create_form" id="create_form"
-  class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-5 max-md:gap-2">
+  class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-1 max-md:gap-2">
   <input type="hidden" id="mode" value="{{ mode }}" />
   <input type="hidden" id="change_mode" value="false" />
   <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative">
     <div id="slider"
       class="absolute top-0 left-0 w-1/2 h-full bg-bg-50 rounded-xl transition-transform duration-500 {% if mode == 'gallery_mode' %} transform translate-x-full {% endif %}">
     </div>
-    <div id="create_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
+    <div id="create_mode" hx-target="#create_form" hx-get="/create/" hx-swap="innerHTML"
       hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode:"content"}'
       hx-include="#mode, #change_mode, #render_mode"
       class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'create_mode' %} text-gray-800 {% endif %} {% if mode == 'gallery_mode' %} text-gray-400 {% endif %}">
@@ -28,7 +28,7 @@
       </svg>
       <p class="text-sm">Create</p>
     </div>
-    <div id="gallery_mode" hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
+    <div id="gallery_mode" hx-target="#create_form" hx-get="/create/" hx-swap="innerHTML"
       hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode:"content"}'
       hx-include="#mode, #change_mode, #render_mode"
       class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'gallery_mode' %} text-gray-800 {% else %} text-gray-400{% endif %}">
@@ -71,107 +71,105 @@
         </div>
         {% endfor %}
       </div>
-      <div class="flex justify-center mt-4">
-        <button type="button" hx-get="/create/randomize_attributes/" hx-target="#create_form" hx-swap="outerHTML"
-          hx-include="#csrf" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-indicator="#random_ball"
-          class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-          Randomize Options
-          <div class="flex items-center justify-center">
-            <img id="random_ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
-              src="../static/images/bouncing-ball.svg" alt="Loading..." />
-          </div>
-        </button>
+      <div class="flex justify-center mt-1">
+        <div name="button-wrapper">
+          <button type="button" hx-get="/create/randomize_attributes/" hx-swap="outerHTML" hx-target="#create_form"
+            hx-trigger="click" hx-indicator="#ball"
+            class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+            Randomize Options
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="border-r-2 border-bg-400 dark:border-bg-700 h-40"></div>
-  <div id="avatar" class="text-center flex flex-col justify-center items-center max-w-50">
-    <div class="flex items-center justify-center w-full">
-      <div class="relative">
-        <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto rounded-2xl shadow-xl" />
-        <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
-          src="../static/images/bouncing-ball.svg" alt="Loading..." />
+    <div class="border-r-2 border-bg-400 dark:border-bg-700 h-40"></div>
+    <div id="avatar" class="text-center flex flex-col justify-center items-center max-w-50">
+      <div class="flex items-center justify-center w-full">
+        <div class="relative">
+          <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto rounded-2xl shadow-xl" />
+          <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
+            src="../static/images/bouncing-ball.svg" alt="Loading..." />
+        </div>
       </div>
     </div>
   </div>
+
+  <div id="generate_button"
+    class="flex flex-col md:flex-row items-center justify-center gap-2 bg-primary-500 dark:bg-primary-600 rounded-full">
+    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+      hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
+      class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+      Generate Avatar
+    </button>
+    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+      hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
+      class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+      Generate with Hugging Face
+    </button>
+    {% if user.is_authenticated %}
+
+    <input type="hidden" id="image_data" name="image_data" value="{{image_path}}">
+    <button id="save_image_button"
+      class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700"
+      hx-post="/create/save_image/" hx-trigger="click" hx-include="#image_data"
+      hx-vals="js:{image_data: document.getElementById('image_data').value}"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+      Save Image
+      <svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z"
+            fill="currentColor"></path>
+        </g>
+      </svg>
+    </button>
+    {% else %}
+    <button hx-get="/auth/login/" hx-include="#csrf, #next, #render_mode"
+      hx-vals='js:{next: "/create", render_mode: "content"}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true"
+      class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-3 dark:bg-primary-600 dark:hover:bg-primary-700">
+      Login to Save Avatar
+    </button>
+    {% endif %}
   </div>
-
-<div id="generate_button"
-  class="flex flex-col md:flex-row items-center justify-center gap-4 bg-primary-500 dark:bg-primary-600 rounded-full">
-  <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
-    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-    hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
-    class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-    Generate Avatar
-  </button>
-  <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
-    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-    hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
-    class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-    Generate with Hugging Face
-  </button>
-  {% if user.is_authenticated %}
-
-  <input type="hidden" id="image_data" name="image_data" value="{{image_path}}">
-  <button id="save_image_button"
-    class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700"
-    hx-post="/create/save_image/" hx-trigger="click" hx-include="#image_data"
-    hx-vals="js:{image_data: document.getElementById('image_data').value}"
-    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-    Save Image
-    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-      <g id="SVGRepo_iconCarrier">
-        <path fill-rule="evenodd" clip-rule="evenodd"
-          d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z"
-          fill="currentColor"></path>
-      </g>
-    </svg>
-  </button>
-  {% else %}
-  <button hx-get="/auth/login/" hx-include="#csrf, #next, #render_mode"
-    hx-vals='js:{next: "/create", render_mode: "content"}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true"
-    class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-3 dark:bg-primary-600 dark:hover:bg-primary-700">
-    Login to Save Avatar
-  </button>
   {% endif %}
-</div>
-{% endif %}
 
 
-{% if mode == "gallery_mode" %}
-<div id="gallery" class="mt-5 flex flex-col items-center justify-center w-full gap-4 p-2">
-  <div id="avatar_gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-    {% for image in images %}
-    <div name="image_{{ image.id }}" id="image_{{ image.id }}"
-      class="relative w-full max-w-xs flex items-center justify-center">
-      <div class="relative inline-block hover:scale-105 transform transition duration-500">
-        <div class="swap-face-button" data-image-id="{{ image.id }}" data-image-path="{{ image.image }}">
-          <img src="data:image/png;base64,{{ image.image }}" alt="Avatar"
-            class="rounded-xl shadow-lg w-40 h-40 max-sm:w-30 max-sm:h-30 object-cover" />
+  {% if mode == "gallery_mode" %}
+  <div id="gallery" class="mt-5 flex flex-col items-center justify-center w-full gap-4 p-2">
+    <div id="avatar_gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {% for image in images %}
+      <div name="image_{{ image.id }}" id="image_{{ image.id }}"
+        class="relative w-full max-w-xs flex items-center justify-center">
+        <div class="relative inline-block hover:scale-105 transform transition duration-500">
+          <div class="swap-face-button" data-image-id="{{ image.id }}" data-image-path="{{ image.image }}">
+            <img src="data:image/png;base64,{{ image.image }}" alt="Avatar"
+              class="rounded-xl shadow-lg w-40 h-40 max-sm:w-30 max-sm:h-30 object-cover" />
+          </div>
+          {% if not image.id|startswith:"default" %}
+          <div hx-post="/create/delete/{{image.id}}/" hx-confirm="Are you sure you want to delete this avatar?"
+            hx-target="#image_{{ image.id }}" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-include="#csrf"
+            class="border-2 bg-white hover:scale-110 transform transition duration-500 rounded-full absolute w-8 h-8 -top-4 -right-4 flex items-center justify-center">
+            <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6"
+                  stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </g>
+            </svg>
+          </div>
+          {% endif %}
         </div>
-        {% if not image.id|startswith:"default" %}
-        <div hx-post="/create/delete/{{image.id}}/" hx-confirm="Are you sure you want to delete this avatar?"
-          hx-target="#image_{{ image.id }}" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-          hx-include="#csrf"
-          class="border-2 bg-white hover:scale-110 transform transition duration-500 rounded-full absolute w-8 h-8 -top-4 -right-4 flex items-center justify-center">
-          <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-              <path
-                d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6"
-                stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </g>
-          </svg>
-        </div>
-        {% endif %}
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
-</div>
-{% endif %}
+  {% endif %}
 
 </div>
 
