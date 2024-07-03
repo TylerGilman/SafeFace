@@ -10,7 +10,7 @@
     </div>
 
     <div id="create_mode"  {% if mode == 'gallery_mode' %} hx-target="#create_form"  hx-get="/create/" hx-swap="outerHTML"
-      hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode:"content"}'
+      hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode: "content"}'
       hx-include="#mode, #change_mode, #render_mode" {% endif %}  
       class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'create_mode' %} text-gray-800 {% endif %} {% if mode == 'gallery_mode' %} text-gray-400 {% endif %}">
       <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +30,7 @@
       <p class="text-sm">Create</p>
     </div>
     <div id="gallery_mode" {% if mode == 'create_mode' %} hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
-      hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode:"content"}'
+      hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode: "content"}'
       hx-include="#mode, #change_mode, #render_mode" {% endif %}
       class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'gallery_mode' %} text-gray-800 {% else %} text-gray-400{% endif %}">
       <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

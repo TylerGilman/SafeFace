@@ -222,24 +222,26 @@ def save_image(request):
 
 @login_required
 def delete_image(request, id):
+    logger.info(f'Attempting to delete image with id: {id}')
     if str(id).startswith("default-"):
+        logger.info('Cannot delete default image')
         return render(request, "error.html", {"message": "Cannot delete default images."})
     try:
-        # Attempt to get the image by ID
+        logger.info(f'Fetching image with id: {id}')
         image = UserImage.objects.get(id=id)
         image_path = image.image_path
+        logger.info(f'Deleting image from database')
         image.delete()
-
-        # Remove the image file from the file system
+        logger.info(f'Checking if file exists: {image_path}')
         if os.path.exists(image_path):
+            logger.info(f'Removing file: {image_path}')
             os.remove(image_path)
-
         logger.info(f'Image with id {id} deleted successfully.')
-        return render(request, "empty.html", None)  # Redirect to the desired page after deletion
+        return render(request, "empty.html", None)
     except UserImage.DoesNotExist:
         logger.error(f'Image with id {id} not found.')
     except Exception as e:
-        logger.error(f'An error occurred: {e}')
+        logger.error(f'An error occurred: {e}', exc_info=True)
     return render(request, "error.html", {"message": "Failed to delete image."})
 
 
