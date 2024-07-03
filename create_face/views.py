@@ -1,14 +1,14 @@
-import os
-import random
-import time
-from django.shortcuts import render
-from create_face.ml_handler.pipeline import PipelineHandler
-from create_face.ml_handler.hugging_face import HuggingFaceHandler
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from io import BytesIO
 import base64
 import logging
+import os
+import random
+from io import BytesIO
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+from create_face.ml_handler.hugging_face import HuggingFaceHandler
+from create_face.ml_handler.pipeline import PipelineHandler
 from create_face.models import UserImage
 from safe_face_web import settings
 
@@ -69,13 +69,13 @@ form_fields = [
 def index(request):
     if request.method == "POST":
         return create(request)
-      
-    render_mode=request.GET.get("render_mode")
+
+    render_mode = request.GET.get("render_mode")
     if render_mode == "content":
         template = "create_face_content.html"
     else:
         template = "create_face.html"
-    
+
     mode = request.GET.get("mode")
     change_mode = request.GET.get("change_mode")
     if not mode:
@@ -83,21 +83,21 @@ def index(request):
 
     images = []
     if change_mode == "true":
-      if mode == "gallery_mode" or mode == "create_mode":
-          user_images = UserImage.objects.filter(user=request.user) if request.user.is_authenticated else []
-          if len(user_images) == 0:
-              logger.error("No images found for the user.")
-          for user_image in user_images:
-              with open(user_image.image_path, 'rb') as f:
-                  image_base64 = base64.b64encode(f.read()).decode('utf-8')
-                  images.append({'id': user_image.id, 'image': image_base64})
+        if mode == "gallery_mode" or mode == "create_mode":
+            user_images = UserImage.objects.filter(user=request.user) if request.user.is_authenticated else []
+            if len(user_images) == 0:
+                logger.error("No images found for the user.")
+            for user_image in user_images:
+                with open(user_image.image_path, 'rb') as f:
+                    image_base64 = base64.b64encode(f.read()).decode('utf-8')
+                    images.append({'id': user_image.id, 'image': image_base64})
 
-          default_images = get_default_images()
-          images.extend(default_images)
+            default_images = get_default_images()
+            images.extend(default_images)
 
-          return render(request, "create_form.html",
-                        {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode,
-                        'form_fields': form_fields, 'images': images})
+            return render(request, "create_form.html",
+                          {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode,
+                           'form_fields': form_fields, 'images': images})
 
     return render(request, template,
                   {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode, 'images': images})
@@ -172,7 +172,8 @@ def clear_attributes(request):
         'form_fields': new_form_fields,
         'images': []
     })
-   
+
+
 def randomize_attributes(request):
     new_form_fields = form_fields.copy()
     for field in new_form_fields:
@@ -215,9 +216,9 @@ def save_image(request):
             })
         else:
             logger.error("Cannot save, no image data provided.")
-            return render(request, "error.html", {"message": "No image data provided."})  
-          
-    return render(request, "error.html", {"message": "Error Saving Image."})  
+            return render(request, "error.html", {"message": "No image data provided."})
+
+    return render(request, "error.html", {"message": "Error Saving Image."})
 
 
 @login_required

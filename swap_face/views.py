@@ -1,12 +1,14 @@
-import time
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
 import base64
-from PIL import Image
-from io import BytesIO
 import logging
 import os
 import subprocess
+import time
+from io import BytesIO
+
+from PIL import Image
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+
 from create_face.models import UserImage
 
 logger = logging.getLogger("swap_face")
@@ -114,7 +116,8 @@ def swap_face(request):
                 output_image_base64,
                 image_id
             )
-            logger.info(f'Response data, image_data: {response_data["image_data"][:50]}, output_image_data: {response_data["output_image_data"][:50]}')
+            logger.info(
+                f'Response data, image_data: {response_data["image_data"][:50]}, output_image_data: {response_data["output_image_data"][:50]}')
 
             return JsonResponse(response_data)
         else:
