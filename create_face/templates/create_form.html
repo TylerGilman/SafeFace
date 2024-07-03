@@ -2,7 +2,7 @@
 {% load filters %}
 <div name="create_form" id="create_form"
   class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-1 max-md:gap-2">
-  <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative">
+  <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative mb-6">
     <input type="hidden" id="mode" name="mode" value="{{ mode }}" />
     <input type="hidden" id="change_mode" name="change_mode" value="false" />
     <div id="slider"
@@ -70,7 +70,7 @@
         </div>
       </div>
       <p class="text-lg font-medium dark:text-white text-left w-full">Select Avatar Attributes</p>
-      <div id="attributes" class="text-center grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 w-full gap-x-4">
+      <div id="attributes" class="text-center grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 w-full gap-x-4 mb-4">
         {% for field in form_fields %}
         <div class="form-group relative rounded-xl ">
           <label for="{{ field.id }}" class="text-left md:text-center block text-sm text-black dark:text-white">
