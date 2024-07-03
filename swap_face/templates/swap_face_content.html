@@ -25,19 +25,25 @@
     <div class="relative flex flex-col items-center">
       {% if image_id %} <input type="hidden" name="image_id" id="image_id" value="{{ image_id }}"> {% endif %}
       {% if image_data %} <input type="hidden" name="image_data" id="image_data" value="{{ image_data }}"> {% endif %}
-      <button onclick="submitForm()"
-        class="text-center flex flex-col justify-center items-center bg-primary-600 rounded-md px-4 py-2 m-1 text-white">
+      <button onclick="submitForm()" class="text-center flex flex-col justify-center items-center 
+         bg-primary-600 bg-opacity-30 backdrop-filter backdrop-blur-lg 
+         rounded-md px-4 py-2 m-1 text-white
+         border border-white border-opacity-20
+         hover:bg-opacity-40 transition duration-300 ease-in-out
+         shadow-lg">
         {% if output_image_data %}
         Swap Again
         {% else %}
         Swap Face
         {% endif %}
       </button>
-        <div id="result_container" class="flex flex-col items-center justify-center">
-            <div name="result_image" class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 border-2 border-double border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
-            Result
-            </div>
+
+      <div id="result_container" class="flex flex-col items-center justify-center">
+        <div name="result_image"
+          class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 border-2 border-double border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
+          Result
         </div>
+      </div>
 
       <div id="loading_indicator" style="display:none;">
         <div class="bouncing-ball-loader"
@@ -56,7 +62,9 @@
     </div>
   </div>
   <div class="flex flex-col items-center justify-center mt-4">
-    <a hx-get="/create/" hx-target="#content" hx-swap="outerHTML" hx-include="#render_mode" hx-vals='js:{render_mode: "content"}' hx-push-url="true" class="text-center flex flex-col justify-center items-center bg-primary-600 rounded-md px-4 py-2 m-1 text-white">
+    <a hx-get="/create/" hx-target="#content" hx-swap="outerHTML" hx-include="#render_mode"
+      hx-vals='js:{render_mode: "content"}' hx-push-url="true"
+      class="text-center flex flex-col justify-center items-center bg-primary-600 rounded-md px-4 py-2 m-1 text-white">
       Back
     </a>
   </div>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'create_face',
     'swap_face',
     'authentication',
+    'compressor',
 ]
 
 LOGIN_URL = '/login/'
@@ -57,12 +58,19 @@ MIDDLEWARE = [
     "django_htmx.middleware.HtmxMiddleware",
 ]
 
+
+COMPRESS_ROOT = BASE_DIR / 'static'
+ 
+COMPRESS_ENABLED = True
+ 
+STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
+
 ROOT_URLCONF = "safe_face_web.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [ "create_face/templates", "swap_face/templates"],
+        'DIRS': [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

@@ -6,6 +6,8 @@ python3 -m venv .venv \
 source .venv/bin/activate \
 pip install -r requirements.txt
 
+npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
+
 ## Run: 
 ```
 python3 manage.py migrate
