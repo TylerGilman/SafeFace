@@ -61,13 +61,12 @@
       </div>
     </div>
   </div>
-  <div class="flex flex-col items-center justify-center mt-4">
-    <a hx-get="/create/" hx-target="#content" hx-swap="outerHTML" hx-include="#render_mode"
-      hx-vals='js:{render_mode: "content"}' hx-push-url="true"
-      class="text-center flex flex-col justify-center items-center bg-primary-600 rounded-md px-4 py-2 m-1 text-white">
-      Back
-    </a>
-  </div>
+  <button hx-get="/create/" hx-target="#content" hx-swap="outerHTML" hx-include="#render_mode"
+    hx-vals='js:{render_mode: "content"}' hx-push-url="true"
+    class="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-700 text-bg-50 font-semibold rounded-lg shadow-md hover:from-primary-600 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-opacity-75 transform hover:scale-105 transition duration-300 ease-in-out">
+    Back
+  </button>
+
   <script>
     document.querySelectorAll('.ball').forEach((ball, index) => {
       ball.style.animation = `bounce ${0.5 + (index * 0.1)}s infinite`;
