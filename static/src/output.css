@@ -2127,6 +2127,21 @@ select {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-bg-800:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(43 43 43 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-bg-100:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(230 230 230 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-bg-200:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(204 204 204 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-opacity-40:hover {
   --tw-bg-opacity: 0.4;
 }
@@ -2301,6 +2316,11 @@ select {
 .dark\:hover\:bg-primary-900:hover:is(.dark *) {
   --tw-bg-opacity: 1;
   background-color: rgb(9 28 122 / var(--tw-bg-opacity));
+}
+
+.dark\:hover\:bg-bg-700:hover:is(.dark *) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(77 77 77 / var(--tw-bg-opacity));
 }
 
 .dark\:focus\:border-primary-500:focus:is(.dark *) {
