@@ -1,26 +1,69 @@
 {% block content %}
 
-<body id="body" class="bg-bg-100 w-5/6 flex-col items-center">
+    <body id="body" class="bg-bg-100 w-5/6 flex-col items-center">
     <div id="content" name="content" class="flex flex-col items-center justify-center w-full gap-10">
         <input type="hidden" id="csrf" value="{{ csrf_token }}">
         <input type="hidden" id="guest" value="{{ guest }}">
         <div class="flex-col gap-4">
-            <h1 class="mt-20 text-4xl text-center font-bold text-primary-500 dark:text-primary-400">Welcome to Create Face</h1>
-            <p class="text-center text-lg mt-4 text-gray-600 dark:text-gray-400">Create avatars and swap faces with ease</p>
+            <h1 class="mt-20 text-4xl text-center font-bold text-primary-500 dark:text-primary-400">Welcome to
+                SafeFace</h1>
+            <p class="text-center text-lg mt-4 text-gray-600 dark:text-gray-400">Create avatars and swap faces with
+                ease</p>
         </div>
 
         <div class="flex gap-3 items-center">
-            <a hx-get="/create" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #render_mode" hx-vals='js:{render_mode: "content"}' hx-push-url="true"
-                    class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                Continue as Guest
-            </a>
-            <a hx-get="/auth/login" hx-swap="outerHTML" hx-target="#content"  hx-include="#csrf, #next, #render_mode" hx-vals='js:{next: "/create", render_mode: "content"}'  hx-push-url="true"
-                    class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                Login
-            </a>
+            {% if user.is_authenticated %}
+                <a hx-get="/create" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #render_mode"
+                   hx-vals='js:{render_mode: "content"}' hx-push-url="true"
+                   class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+                >
+                    Create Avatar
+                </a>
+            {% else %}
+                <a hx-get="/create" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #render_mode"
+                   hx-vals='js:{render_mode: "content"}' hx-push-url="true"
+                   class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+                >
+                    Continue as Guest
+                </a>
+                <a hx-get="/auth/login" hx-swap="outerHTML" hx-target="#content" hx-include="#csrf, #next, #render_mode"
+                   hx-vals='js:{next: "/create", render_mode: "content"}' hx-push-url="true"
+                   class="bg-primary-500 hover:bg-primary-600 text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-md px-4 py-3 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+                >
+                    Login
+
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="flex flex-col items-center mt-10 text-center text-lg text-gray-700 dark:text-gray-300 pb-24">
+            <h2 class="text-2xl font-semibold text-primary-500 dark:text-primary-400">About SafeFace</h2>
+            <p class="mt-4 prose max-w-prose">SafeFace is a moral and legal face swap app designed to let you create and
+                use avatars without the risk of harmful deep fakes. By selecting a range of attributes, you can generate
+                unique characters and swap their faces with any target image. Our focus on ethical usage ensures that no
+                real faces can be used in face swaps, preventing potential misuse.</p>
+            <p class="mt-4 font-bold">Our current features include:</p>
+            <ul class="list-disc list-inside mt-4 max-w-md text-left">
+                <li>Create avatars by selecting specific attributes</li>
+                <li>Save and manage your custom avatars</li>
+                <li>Swap faces with target images</li>
+            </ul>
+            <p class="mt-4 font-bold">Future features we are working on include:</p>
+            <ul class="list-disc list-inside mt-4 max-w-md text-left">
+                <li>Face swapping in videos</li>
+                <li>Enhanced avatar customization options</li>
+                <li>Improved user interface and experience</li>
+            </ul>
+            <p class="mt-4 font-bold">Why SafeFace is different:</p>
+            <ul class="list-disc list-inside mt-4 max-w-xl text-left">
+                <li>Ethical and legal: No real face swaps, only generated characters</li>
+                <li>Privacy-focused: Your data is safe and secure</li>
+                <li>User-friendly: Easy to create, save, and use avatars</li>
+            </ul>
+            <p class="mt-8 font-bold pb-44">Join us in making face swaps fun, safe, and ethical!</p>
         </div>
     </div>
-</body>
+    </body>
 
-</html>
+    </html>
 {% endblock %}
