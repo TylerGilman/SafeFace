@@ -3,6 +3,11 @@
     <div name="create_form" id="create_form"
          class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-1 max-md:gap-2 mb-24"
     >
+            {% if mode == "create_mode" %}
+                Create A New Virtual Avatar
+            {% elif mode == "gallery_mode" %}
+                Select From Avatar Gallery
+            {% endif %}
         <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative mb-6">
             <input type="hidden" id="mode" name="mode" value="{{ mode }}"/>
             <input type="hidden" id="change_mode" name="change_mode" value="false"/>
@@ -59,12 +64,15 @@
         {% if mode == "create_mode" %}
             <div class="flex max-md:flex-col items-center justify-center gap-10 px-2">
                 <div class="flex flex-col items-center justify-center w-full gap-4">
+
+                <p class="text-xl dark:text-white"> Customize Your Virtual Avatars </p>
                     <div class="flex justify-center gap-1">
+
                         <div name="randomize_button_wrapper">
                             <button name="randomize_button" type="button" hx-get="/create/randomize_attributes/"
                                     hx-swap="outerHTML"
                                     hx-target="#create_form" hx-trigger="click"
-                                    class="gap-2 flex flex-row cursor-pointer text-white bg-primary-600 hover:bg-primary-700 font-medium rounded-full text-md max-sm:text-sm px-4 py-2 max-sm:px-3 dark:bg-bg-800 dark:hover:bg-bg-900"
+                                    class="gap-2 flex flex-row cursor-pointer text-white bg-primary-800 hover:bg-primary-700 font-medium rounded-full text-md max-sm:text-sm px-4 py-2 max-sm:px-3 dark:bg-bg-800 dark:hover:bg-bg-900"
                             >
                                 Randomize Options
                                 <svg height="24px" width="24px" version="1.1" id="_x32_"
@@ -110,7 +118,7 @@
                             <button name="clear_button" type="button" hx-get="/create/clear_attributes/"
                                     hx-swap="outerHTML"
                                     hx-target="#create_form" hx-trigger="click"
-                                    class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md max-sm:text-sm px-4 py-2 max-sm:px-3 dark:bg-bg-800 dark:hover:bg-bg-900">
+                                    class="gap-2 flex flex-row cursor-pointer text-white bg-primary-800 hover:bg-primary-700 font-medium rounded-full text-md max-sm:text-sm px-4 py-2 max-sm:px-3 dark:bg-bg-800 dark:hover:bg-bg-900">
                                 Clear Attributes
                                 <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
@@ -186,7 +194,7 @@
                             hx-post="/create/save_image/" hx-trigger="click" hx-include="#image_data"
                             hx-vals="js:{image_data: document.getElementById('image_data').value}"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="outerHTML">
-                        Save Image
+                        Save Avatar
                         <svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor"
                              xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
