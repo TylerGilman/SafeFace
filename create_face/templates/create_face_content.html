@@ -1,6 +1,13 @@
 {% block content %}
     <div class="flex flex-col items-center justify-center mt-4">
         <h1 class="text-3xl font-bold text-center dark:text-white mb-2 max-sm:text-xl">Create an Avatar</h1>
+        <p class="text-center dark:text-white max-sm:text-sm mb-4">
+            {% if mode == "create_mode" %}
+                Create your own avatar by selecting the options below.
+            {% elif mode == "gallery_mode" %}
+                Select an avatar from the gallery below.
+            {% endif %}
+        </p>
         {% include "create_form.html" %}
     </div>
 {% endblock %}
