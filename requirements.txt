@@ -55,3 +55,4 @@ tqdm==4.66.4
 scipy==1.13.0
 python-dotenv==1.0.1
 setuptools==70.1.1
+django-compressor==4.5
