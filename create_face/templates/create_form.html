@@ -123,7 +123,7 @@
       class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-800 dark:hover:bg-primary-900"
       hx-post="/create/save_image/" hx-trigger="click" hx-include="#image_data"
       hx-vals="js:{image_data: document.getElementById('image_data').value}"
-      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="outerHTML">
       Save Image
       <svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
