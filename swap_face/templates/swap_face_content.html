@@ -2,36 +2,51 @@
 <div id="content" name="content" class="flex flex-col items-center justify-center mt-4">
   <h1 class="text-3xl font-bold text-center dark:text-white mb-2">Swap Face</h1>
 
-  <div class="flex flex-row max-md:flex-col items-center gap-4">
+  <div
+    class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-row items-center p-10 gap-4 max-md:gap-2">
     <div name="avatar" id="avatar" class="text-center flex flex-col justify-center items-center">
       <p class="text-lg font-semibold mb-4 dark:text-white">Source</p>
       <img src="{{ image_data }}" alt="avatar" class="w-40 h-40 rounded-2xl shadow-lg" />
     </div>
 
-    <div id="uploaded_image_container" class="relative text-center flex flex-col justify-center items-center">
+    <p class="text-white text-3xl">+</p>
+
+    <div id="uploaded_image_container" class="relative text-center flex flex-col justify-center items-center w-40">
       <p class="text-lg font-semibold mb-4 dark:text-white">Target</p>
       <button id="choose_file_button"
         class="flex flex-col items-center gap-4 justify-center w-40 h-40 bg-transparent border-2 border-dashed border-black dark:border-white text-black dark:text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap"
         onclick="document.getElementById('hiddenFileInput').click()">
-        <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-          width="24" height="24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        <p class="font-semibold text-lg">Choose File</p>
+        <p class="font-semibold text-lg">Choose Image</p>
       </button>
     </div>
+
+    <p class="text-white text-3xl">=</p>
     <input type="file" id="hiddenFileInput" style="display: none;" onchange="handleFileChange(event)">
-  </div>
+    <div class="relative flex flex-col items-center">
+      {% if image_id %} <input type="hidden" name="image_id" id="image_id" value="{{ image_id }}"> {% endif %}
+      {% if image_data %} <input type="hidden" name="image_data" id="image_data" value="{{ image_data }}"> {% endif %}
+      <button onclick="submitForm()"
+        class="text-center flex flex-col justify-center items-center bg-primary-600 rounded-md px-4 py-2 m-1 text-white">
+        {% if output_image_data %}
+        Swap Again
+        {% else %}
+        Swap Face
+        {% endif %}
+      </button>
 
-  <div id="submit_swap" class="flex items-center rounded-lg mt-16 w-100 h-40 relative">
+      <div id="result_container"
+        class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 bg-transparent border-2 border-dashed border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
+        {% if output_image_data %}
+        <img src="{{ output_image_data }}" alt="result" class="w-40 h-40 rounded-2xl shadow-lg m-10" />
+        {% else %}
+        <p class="font-semibold text-lg">Result</p>
+        {% endif %}
+    </div>
+    {% if output_image_data %}
+    <a href="{{ output_image_data }}" download="face_swap_result.png"
+      class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
+    {% endif %}
 
-    <button onclick="submitForm()" class="bg-primary-600 rounded-lg px-4 py-2 text-white">
-      {% if output_image_data %}
-      Swap Again
-      {% else %}
-      Swap Face
-      {% endif %}
-    </button>
     <div id="loading_indicator" style="display:none;">
       <div class="bouncing-ball-loader"
         style="display: flex; justify-content: center; align-items: center; height: 40px;">
@@ -46,22 +61,6 @@
         </div>
       </div>
     </div>
-  </div>
-
-  {% if image_id %}
-  <input type="hidden" name="image_id" id="image_id" value="{{ image_id }}">
-  {% endif %}
-  {% if image_data %}
-  <input type="hidden" name="image_data" id="image_data" value="{{ image_data }}">
-  {% endif %}
-
-  <div id="result_container" class="flex flex-col items-center">
-    {% if output_image_data %}
-    <p class="text-lg font-semibold mb-4 dark:text-white">Result</p>
-    <img src="{{ output_image_data }}" alt="result" class="w-40 h-40 rounded-2xl shadow-lg" />
-    <a href="{{ output_image_data }}" download="face_swap_result.png"
-      class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
-    {% endif %}
   </div>
 </div>
 <script>
@@ -162,7 +161,6 @@
         } else {
           const resultContainer = document.getElementById('result_container');
           resultContainer.innerHTML = `
-                    <p class="text-lg font-semibold mb-4 dark:text-white">Result</p>
                     <img src="${data.output_image_data}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
                     <a href="data:image/png;base64,${data.output_image_data.split('base64,')[1]}" download="face_swap_result.png" class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
                 `;
