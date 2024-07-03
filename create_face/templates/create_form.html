@@ -67,9 +67,8 @@
             <div class="flex max-md:flex-col items-center justify-center gap-10 px-2">
                 <div class="flex flex-col items-center justify-center w-full gap-4">
 
-                <p class="text-xl dark:text-white"> Customize Your Virtual Avatars </p>
+                    <p class="text-lg font-medium dark:text-white text-left w-full">Select Avatar Attributes</p>
                     <div class="flex justify-center gap-1">
-
                         <div name="randomize_button_wrapper">
                             <button name="randomize_button" type="button" hx-get="/create/randomize_attributes/"
                                     hx-swap="outerHTML"
@@ -137,7 +136,6 @@
                             </button>
                         </div>
                     </div>
-                    <p class="text-lg font-medium dark:text-white text-left w-full">Select Avatar Attributes</p>
                     <div id="attributes"
                          class="text-center grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 w-full gap-x-4 mb-4">
                         {% for field in form_fields %}
@@ -161,22 +159,19 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="border-r-2 border-bg-400 dark:border-bg-700 h-40 max-sm:border-r-0 max-sm:border-b-2 max-sm:h-0 max-sm:w-40"></div>
-                <div id="avatar" class="text-center flex flex-col justify-center items-center max-w-50">
-                    <div class="flex items-center justify-center w-full">
-                        <div class="relative">
+                <div id="avatar" class="justify-center items-center">
+                        <div class="relative h-52 w-52">
                             <img src="../static/images/empty_profile.png" alt="Empty Avatar"
-                                 class="mx-auto rounded-2xl shadow-xl"/>
+                                 class="rounded-2xl shadow-xl"/>
                             <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
                                  src="../static/images/bouncing-ball.svg" alt="Loading..."/>
                         </div>
-                    </div>
                 </div>
             </div>
 
             <div id="generate_button"
                  class="flex flex-col md:flex-row items-center justify-center gap-2 rounded-full">
-                <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
+                <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf" 
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                         hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
                         class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
