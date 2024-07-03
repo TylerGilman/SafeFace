@@ -1,290 +1,360 @@
 {% block form %}
-{% load filters %}
-<div name="create_form" id="create_form"
-  class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-1 max-md:gap-2">
-  <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative mb-6">
-    <input type="hidden" id="mode" name="mode" value="{{ mode }}" />
-    <input type="hidden" id="change_mode" name="change_mode" value="false" />
-    <div id="slider"
-      class="absolute top-0 left-0 w-1/2 h-full bg-bg-50 rounded-xl transition-transform duration-500 {% if mode == 'gallery_mode' %} transform translate-x-full {% endif %}">
-    </div>
+    {% load filters %}
+    <div name="create_form" id="create_form"
+         class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-1 max-md:gap-2 pb-24"
+    >
+        <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative mb-6">
+            <input type="hidden" id="mode" name="mode" value="{{ mode }}"/>
+            <input type="hidden" id="change_mode" name="change_mode" value="false"/>
+            <div id="slider"
+                 class="absolute top-0 left-0 w-1/2 h-full bg-bg-50 rounded-xl transition-transform duration-500 {% if mode == 'gallery_mode' %} transform translate-x-full {% endif %}">
+            </div>
 
-    <div id="create_mode"  {% if mode == 'gallery_mode' %} hx-target="#create_form"  hx-get="/create/" hx-swap="outerHTML"
-      hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode: "content"}'
-      hx-include="#mode, #change_mode, #render_mode" {% endif %}  
-      class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'create_mode' %} text-gray-800 {% endif %} {% if mode == 'gallery_mode' %} text-gray-400 {% endif %}">
-      <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9 16C9.85038 16.6303 10.8846 17 12 17C13.1154 17 14.1496 16.6303 15 16" stroke="currentColor"
-          stroke-width="1.5" stroke-linecap="round"></path>
-        <ellipse cx="15" cy="10.5" rx="1" ry="1.5" fill="currentColor"></ellipse>
-        <ellipse cx="9" cy="10.5" rx="1" ry="1.5" fill="currentColor"></ellipse>
-        <path d="M22 14C22 17.7712 22 19.6569 20.8284 20.8284C19.6569 22 17.7712 22 14 22" stroke="currentColor"
-          stroke-width="1.5" stroke-linecap="round"></path>
-        <path d="M10 22C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14" stroke="currentColor"
-          stroke-width="1.5" stroke-linecap="round"></path>
-        <path d="M10 2C6.22876 2 4.34315 2 3.17157 3.17157C2 4.34315 2 6.22876 2 10" stroke="currentColor"
-          stroke-width="1.5" stroke-linecap="round"></path>
-        <path d="M14 2C17.7712 2 19.6569 2 20.8284 3.17157C22 4.34315 22 6.22876 22 10" stroke="currentColor"
-          stroke-width="1.5" stroke-linecap="round"></path>
-      </svg>
-      <p class="text-sm">Create</p>
-    </div>
-    <div id="gallery_mode" {% if mode == 'create_mode' %} hx-target="#create_form" hx-get="/create/" hx-swap="outerHTML"
-      hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode: "content"}'
-      hx-include="#mode, #change_mode, #render_mode" {% endif %}
-      class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'gallery_mode' %} text-gray-800 {% else %} text-gray-400{% endif %}">
-      <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M22 13.4375C22 17.2087 22 19.0944 20.8284 20.2659C19.6569 21.4375 17.7712 21.4375 14 21.4375H10C6.22876 21.4375 4.34315 21.4375 3.17157 20.2659C2 19.0944 2 17.2087 2 13.4375C2 9.66626 2 7.78065 3.17157 6.60907C4.34315 5.4375 6.22876 5.4375 10 5.4375H14C17.7712 5.4375 19.6569 5.4375 20.8284 6.60907C21.4921 7.27271 21.7798 8.16545 21.9045 9.50024"
-          stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-        <path
-          d="M3.98779 6C4.10022 5.06898 4.33494 4.42559 4.82498 3.93726C5.76553 3 7.27932 3 10.3069 3H13.5181C16.5457 3 18.0595 3 19 3.93726C19.4901 4.42559 19.7248 5.06898 19.8372 6"
-          stroke="currentColor" stroke-width="1.5"></path>
-        <circle cx="17.5" cy="9.9375" r="1.5" stroke="currentColor" stroke-width="1.5"></circle>
-        <path
-          d="M2 13.9376L3.75159 12.405C4.66286 11.6077 6.03628 11.6534 6.89249 12.5096L11.1822 16.7993C11.8694 17.4866 12.9512 17.5803 13.7464 17.0214L14.0446 16.8119C15.1888 16.0077 16.7369 16.1009 17.7765 17.0365L21 19.9376"
-          stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-      </svg>
-      <p class="text-sm">Gallery</p>
-    </div>
-  </div>
-
-  {% if mode == "create_mode" %}
-  <div class="flex max-md:flex-col items-center justify-center gap-10 px-2">
-    <div class="flex flex-col items-center justify-center w-full gap-4">
-      <div class="flex justify-center gap-1">
-        <div name="randomize_button_wrapper">
-          <button name="randomize_button" type="button" hx-get="/create/randomize_attributes/" hx-swap="outerHTML"
-            hx-target="#create_form" hx-trigger="click"
-            class="cursor-pointer text-white bg-primary-600 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-bg-800 dark:hover:bg-bg-900">
-            Randomize Options
-          </button>
+            <div id="create_mode"  {% if mode == 'gallery_mode' %} hx-target="#create_form"  hx-get="/create/"
+                 hx-swap="outerHTML"
+                 hx-vals='js:{mode: "create_mode", change_mode: "true", render_mode: "content"}'
+                 hx-include="#mode, #change_mode, #render_mode" {% endif %}
+                 class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'create_mode' %} text-gray-800 {% endif %} {% if mode == 'gallery_mode' %} text-gray-400 {% endif %}">
+                <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 16C9.85038 16.6303 10.8846 17 12 17C13.1154 17 14.1496 16.6303 15 16"
+                          stroke="currentColor"
+                          stroke-width="1.5" stroke-linecap="round"></path>
+                    <ellipse cx="15" cy="10.5" rx="1" ry="1.5" fill="currentColor"></ellipse>
+                    <ellipse cx="9" cy="10.5" rx="1" ry="1.5" fill="currentColor"></ellipse>
+                    <path d="M22 14C22 17.7712 22 19.6569 20.8284 20.8284C19.6569 22 17.7712 22 14 22"
+                          stroke="currentColor"
+                          stroke-width="1.5" stroke-linecap="round"></path>
+                    <path d="M10 22C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14"
+                          stroke="currentColor"
+                          stroke-width="1.5" stroke-linecap="round"></path>
+                    <path d="M10 2C6.22876 2 4.34315 2 3.17157 3.17157C2 4.34315 2 6.22876 2 10" stroke="currentColor"
+                          stroke-width="1.5" stroke-linecap="round"></path>
+                    <path d="M14 2C17.7712 2 19.6569 2 20.8284 3.17157C22 4.34315 22 6.22876 22 10"
+                          stroke="currentColor"
+                          stroke-width="1.5" stroke-linecap="round"></path>
+                </svg>
+                <p class="text-sm">Create</p>
+            </div>
+            <div id="gallery_mode" {% if mode == 'create_mode' %} hx-target="#create_form" hx-get="/create/"
+                 hx-swap="outerHTML"
+                 hx-vals='js:{mode: "gallery_mode", change_mode: "true", render_mode: "content"}'
+                 hx-include="#mode, #change_mode, #render_mode" {% endif %}
+                 class="flex items-center gap-2 w-1/2 z-10 text-center cursor-pointer p-2 transition-transform duration-500 {% if mode == 'gallery_mode' %} text-gray-800 {% else %} text-gray-400{% endif %}">
+                <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                            d="M22 13.4375C22 17.2087 22 19.0944 20.8284 20.2659C19.6569 21.4375 17.7712 21.4375 14 21.4375H10C6.22876 21.4375 4.34315 21.4375 3.17157 20.2659C2 19.0944 2 17.2087 2 13.4375C2 9.66626 2 7.78065 3.17157 6.60907C4.34315 5.4375 6.22876 5.4375 10 5.4375H14C17.7712 5.4375 19.6569 5.4375 20.8284 6.60907C21.4921 7.27271 21.7798 8.16545 21.9045 9.50024"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                    <path
+                            d="M3.98779 6C4.10022 5.06898 4.33494 4.42559 4.82498 3.93726C5.76553 3 7.27932 3 10.3069 3H13.5181C16.5457 3 18.0595 3 19 3.93726C19.4901 4.42559 19.7248 5.06898 19.8372 6"
+                            stroke="currentColor" stroke-width="1.5"></path>
+                    <circle cx="17.5" cy="9.9375" r="1.5" stroke="currentColor" stroke-width="1.5"></circle>
+                    <path
+                            d="M2 13.9376L3.75159 12.405C4.66286 11.6077 6.03628 11.6534 6.89249 12.5096L11.1822 16.7993C11.8694 17.4866 12.9512 17.5803 13.7464 17.0214L14.0446 16.8119C15.1888 16.0077 16.7369 16.1009 17.7765 17.0365L21 19.9376"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                </svg>
+                <p class="text-sm">Gallery</p>
+            </div>
         </div>
-        <div name="clear_button_wrapper">
-          <button name="clear_button" type="button" hx-get="/create/clear_attributes/" hx-swap="outerHTML"
-            hx-target="#create_form" hx-trigger="click"
-            class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-bg-800 dark:hover:bg-bg-900">
-            Clear Attributes
-            <img id="trash2" class="h-6 w-6" src="../static/images/trash-can2.svg" alt="Clear Attributes" />
-          </button>
-        </div>
-      </div>
-      <p class="text-lg font-medium dark:text-white text-left w-full">Select Avatar Attributes</p>
-      <div id="attributes" class="text-center grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 w-full gap-x-4 mb-4">
-        {% for field in form_fields %}
-        <div class="form-group relative rounded-xl ">
-          <label for="{{ field.id }}" class="text-left md:text-center block text-sm text-black dark:text-white">
-            {{ field.label }}
-          </label>
-          <select id="{{ field.id }}"
-            class="text-center appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3  dark:bg-bg-700 dark:border-gray-500 dark:placeholder-gray-100 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-            <option disabled selected></option>
-            {% for option in field.options %}
-            <option>{{ option }}</option>
-            {% endfor %}
-            {% for option in field.options %}
-            <option {% if option == field.default %} selected {% endif %}>{{ option }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        {% endfor %}
-      </div>
+
+        {% if mode == "create_mode" %}
+            <div class="flex max-md:flex-col items-center justify-center gap-10 px-2">
+                <div class="flex flex-col items-center justify-center w-full gap-4">
+                    <div class="flex justify-center gap-1">
+                        <div name="randomize_button_wrapper">
+                            <button name="randomize_button" type="button" hx-get="/create/randomize_attributes/"
+                                    hx-swap="outerHTML"
+                                    hx-target="#create_form" hx-trigger="click"
+                                    class="gap-2 flex flex-row cursor-pointer text-white bg-primary-600 hover:bg-primary-700 font-medium rounded-full text-md max-sm:text-sm px-4 py-2 max-sm:px-3 dark:bg-bg-800 dark:hover:bg-bg-900"
+                            >
+                                Randomize Options
+                                <svg height="24px" width="24px" version="1.1" id="_x32_"
+                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     viewBox="0 0 512 512" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier"> <style type="text/css"> .st0 {
+                                        fill: currentColor;
+                                    } </style>
+                                        <g> <path class="st0"
+                                                  d="M449.532,105.602L288.463,8.989C278.474,2.994,267.235,0,256.011,0c-11.239,0-22.483,2.994-32.467,8.989 L62.475,105.602c-19.012,11.406-30.647,31.95-30.647,54.117v192.562c0,22.168,11.635,42.711,30.647,54.117l161.069,96.613 c9.984,5.988,21.228,8.989,32.467,8.989c11.225,0,22.463-3.001,32.452-8.989l161.069-96.613 c19.012-11.406,30.64-31.949,30.64-54.117V159.719C480.172,137.552,468.544,117.008,449.532,105.602z M250.599,492.733 c-6.029-0.745-11.93-2.719-17.32-5.948L72.21,390.172c-13.306-7.989-21.456-22.369-21.456-37.891V159.719 c0-6.022,1.236-11.862,3.518-17.233l196.328,117.76V492.733z M59.669,133.114c3.364-4.464,7.593-8.318,12.541-11.285 l161.069-96.613c6.995-4.196,14.85-6.291,22.732-6.291c7.868,0,15.723,2.095,22.718,6.291l161.069,96.613 c4.941,2.967,9.184,6.821,12.54,11.285L256.011,250.881L59.669,133.114z M461.254,352.281c0,15.522-8.15,29.902-21.456,37.891 l-161.069,96.613c-5.398,3.229-11.292,5.203-17.321,5.948V260.246l196.328-117.76c2.283,5.37,3.518,11.211,3.518,17.233V352.281z"></path>
+                                            <path class="st0"
+                                                  d="M160.209,119.875c-9.828-7.278-26.021-7.465-36.165-0.41c-10.144,7.056-10.399,18.67-0.57,25.947 c9.828,7.277,26.022,7.459,36.159,0.41C169.783,138.766,170.038,127.152,160.209,119.875z"></path>
+                                            <path class="st0"
+                                                  d="M279.159,48.686c-9.829-7.277-26.022-7.458-36.172-0.403c-10.137,7.049-10.393,18.664-0.564,25.941 c9.829,7.284,26.022,7.458,36.159,0.416C288.732,67.578,288.987,55.963,279.159,48.686z"></path>
+                                            <path class="st0"
+                                                  d="M220.59,82.024c-9.834-7.27-26.028-7.458-36.172-0.403c-10.15,7.049-10.406,18.664-0.571,25.941 c9.829,7.284,26.022,7.458,36.166,0.416C230.151,100.916,230.412,89.302,220.59,82.024z"></path>
+                                            <path class="st0"
+                                                  d="M267.437,184.754c-9.828-7.277-26.015-7.459-36.159-0.41c-10.15,7.056-10.405,18.671-0.577,25.947 c9.828,7.284,26.021,7.459,36.172,0.41C277.01,203.645,277.265,192.031,267.437,184.754z"></path>
+                                            <path class="st0"
+                                                  d="M386.385,113.564c-9.828-7.271-26.021-7.458-36.158-0.403c-10.151,7.049-10.406,18.664-0.577,25.941 c9.828,7.284,26.02,7.458,36.172,0.416C395.959,132.456,396.214,120.842,386.385,113.564z"></path>
+                                            <path class="st0"
+                                                  d="M327.817,146.903c-9.829-7.27-26.022-7.458-36.172-0.403c-10.137,7.049-10.392,18.664-0.564,25.941 c9.828,7.284,26.021,7.465,36.158,0.416C337.391,165.795,337.646,154.188,327.817,146.903z"></path>
+                                            <path class="st0"
+                                                  d="M89.289,248.303c11.158,6.083,20.194,1.961,20.194-9.19c0-11.158-9.036-25.128-20.194-31.21 c-11.157-6.083-20.207-1.967-20.207,9.19C69.081,228.244,78.131,242.221,89.289,248.303z"></path>
+                                            <path class="st0"
+                                                  d="M202.061,309.771c11.158,6.082,20.208,1.967,20.208-9.184c0-11.157-9.05-25.135-20.208-31.217 c-11.15-6.076-20.194-1.961-20.194,9.198C181.867,289.719,190.911,303.689,202.061,309.771z"></path>
+                                            <path class="st0"
+                                                  d="M89.289,361.082c11.158,6.076,20.194,1.967,20.194-9.19c0-11.158-9.036-25.129-20.194-31.21 c-11.157-6.083-20.207-1.968-20.207,9.19C69.081,341.029,78.131,355,89.289,361.082z"></path>
+                                            <path class="st0"
+                                                  d="M202.061,422.55c11.158,6.082,20.208,1.967,20.208-9.191c0-11.151-9.05-25.128-20.208-31.21 c-11.15-6.076-20.194-1.961-20.194,9.19C181.867,402.497,190.911,416.468,202.061,422.55z"></path>
+                                            <path class="st0"
+                                                  d="M145.675,335.424c11.158,6.082,20.201,1.967,20.201-9.191c0-11.151-9.044-25.128-20.201-31.204 c-11.158-6.082-20.201-1.967-20.201,9.185C125.474,315.37,134.517,329.341,145.675,335.424z"></path>
+                                            <path class="st0"
+                                                  d="M418.341,207.902c-11.158,6.082-20.208,20.053-20.208,31.21c0,11.151,9.05,15.273,20.208,9.19 c11.144-6.082,20.194-20.059,20.194-31.21C438.535,205.935,429.486,201.819,418.341,207.902z"></path>
+                                            <path class="st0"
+                                                  d="M305.555,382.149c-11.158,6.082-20.194,20.059-20.194,31.21c0,11.158,9.036,15.273,20.194,9.191 c11.158-6.082,20.194-20.053,20.194-31.211C325.749,380.188,316.714,376.074,305.555,382.149z"></path>
+                                            <path class="st0"
+                                                  d="M361.948,295.028c-11.158,6.076-20.207,20.053-20.207,31.204c0,11.158,9.05,15.273,20.207,9.191 c11.158-6.083,20.194-20.053,20.194-31.21C382.142,293.062,373.106,288.947,361.948,295.028z"></path> </g> </g></svg>
+                            </button>
+                        </div>
+                        <div name="clear_button_wrapper">
+                            <button name="clear_button" type="button" hx-get="/create/clear_attributes/"
+                                    hx-swap="outerHTML"
+                                    hx-target="#create_form" hx-trigger="click"
+                                    class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md max-sm:text-sm px-4 py-2 max-sm:px-3 dark:bg-bg-800 dark:hover:bg-bg-900">
+                                Clear Attributes
+                                <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                       stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <path
+                                            d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </g>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-lg font-medium dark:text-white text-left w-full">Select Avatar Attributes</p>
+                    <div id="attributes"
+                         class="text-center grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 w-full gap-x-4 mb-4">
+                        {% for field in form_fields %}
+                            <div class="form-group relative rounded-xl ">
+                                <label for="{{ field.id }}"
+                                       class="text-left md:text-center block text-sm text-black dark:text-white">
+                                    {{ field.label }}
+                                </label>
+                                <select id="{{ field.id }}"
+                                        class="text-left appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3  dark:bg-bg-700 dark:border-gray-500 dark:placeholder-gray-100 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                    <option disabled selected></option>
+                                    {% for option in field.options %}
+                                        <option>{{ option }}</option>
+                                    {% endfor %}
+                                    {% for option in field.options %}
+                                        <option {% if option == field.default %}
+                                            selected {% endif %}>{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="border-r-2 border-bg-400 dark:border-bg-700 h-40 max-sm:border-r-0 max-sm:border-b-2 max-sm:h-0 max-sm:w-40"></div>
+                <div id="avatar" class="text-center flex flex-col justify-center items-center max-w-50">
+                    <div class="flex items-center justify-center w-full">
+                        <div class="relative">
+                            <img src="../static/images/empty_profile.png" alt="Empty Avatar"
+                                 class="mx-auto rounded-2xl shadow-xl"/>
+                            <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
+                                 src="../static/images/bouncing-ball.svg" alt="Loading..."/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="generate_button"
+                 class="flex flex-col md:flex-row items-center justify-center gap-2 rounded-full">
+                <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
+                        class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+                    Generate Avatar
+                </button>
+                <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
+                        class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+                    Generate with Hugging Face
+                </button>
+                {% if user.is_authenticated %}
+
+                    <input type="hidden" id="image_data" name="image_data" value="{{ image_path }}">
+                    <button id="save_image_button"
+                            class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-800 dark:hover:bg-primary-900"
+                            hx-post="/create/save_image/" hx-trigger="click" hx-include="#image_data"
+                            hx-vals="js:{image_data: document.getElementById('image_data').value}"
+                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="outerHTML">
+                        Save Image
+                        <svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z"
+                                      fill="currentColor"></path>
+                            </g>
+                        </svg>
+                    </button>
+                {% else %}
+                    <button hx-get="/auth/login/" hx-include="#csrf, #next, #render_mode"
+                            hx-vals='js:{next: "/create", render_mode: "content"}' hx-target="#content"
+                            hx-swap="outerHTML" hx-push-url="true"
+                            class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-3 dark:bg-primary-800 dark:hover:bg-primary-900">
+                        Login to Save Avatar
+                    </button>
+                {% endif %}
+            </div>
+        {% endif %}
+
+
+        {% if mode == "gallery_mode" %}
+            <div id="gallery" class="mt-5 flex flex-col items-center justify-center w-full gap-4 p-2">
+                <div id="avatar_gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {% for image in images %}
+                        <div name="image_{{ image.id }}" id="image_{{ image.id }}"
+                             class="relative w-full max-w-xs flex items-center justify-center">
+                            <div class="relative inline-block hover:scale-105 transform transition duration-500">
+                                <div class="swap-face-button" data-image-id="{{ image.id }}"
+                                     data-image-path="{{ image.image }}">
+                                    <img src="data:image/png;base64,{{ image.image }}" alt="Avatar"
+                                         class="rounded-xl shadow-lg w-40 h-40 max-sm:w-30 max-sm:h-30 object-cover"/>
+                                </div>
+                                {% if not image.id|startswith:"default" %}
+                                    <div hx-post="/create/delete/{{ image.id }}/"
+                                         hx-confirm="Are you sure you want to delete this avatar?"
+                                         hx-target="#image_{{ image.id }}" hx-swap="outerHTML"
+                                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                         hx-include="#csrf"
+                                         class="border-2 bg-white hover:scale-110 transform transition duration-500 rounded-full absolute w-8 h-8 -top-4 -right-4 flex items-center justify-center">
+                                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                               stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path
+                                                        d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6"
+                                                        stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
     </div>
-    <div class="border-r-2 border-bg-400 dark:border-bg-700 h-40"></div>
-    <div id="avatar" class="text-center flex flex-col justify-center items-center max-w-50">
-      <div class="flex items-center justify-center w-full">
-        <div class="relative">
-          <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="mx-auto rounded-2xl shadow-xl" />
-          <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
-            src="../static/images/bouncing-ball.svg" alt="Loading..." />
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="generate_button"
-    class="flex flex-col md:flex-row items-center justify-center gap-2 rounded-full">
-    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
-      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-      hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
-      class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-      Generate Avatar
-    </button>
-    <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
-      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-      hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
-      class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-      Generate with Hugging Face
-    </button>
-    {% if user.is_authenticated %}
-
-    <input type="hidden" id="image_data" name="image_data" value="{{image_path}}">
-    <button id="save_image_button"
-      class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-800 dark:hover:bg-primary-900"
-      hx-post="/create/save_image/" hx-trigger="click" hx-include="#image_data"
-      hx-vals="js:{image_data: document.getElementById('image_data').value}"
-      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="outerHTML">
-      Save Image
-      <svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-        <g id="SVGRepo_iconCarrier">
-          <path fill-rule="evenodd" clip-rule="evenodd"
-            d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z"
-            fill="currentColor"></path>
-        </g>
-      </svg>
-    </button>
-    {% else %}
-    <button hx-get="/auth/login/" hx-include="#csrf, #next, #render_mode"
-      hx-vals='js:{next: "/create", render_mode: "content"}' hx-target="#content" hx-swap="outerHTML" hx-push-url="true"
-      class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-3 dark:bg-primary-800 dark:hover:bg-primary-900">
-      Login to Save Avatar
-    </button>
-    {% endif %}
-  </div>
-  {% endif %}
-
-
-  {% if mode == "gallery_mode" %}
-  <div id="gallery" class="mt-5 flex flex-col items-center justify-center w-full gap-4 p-2">
-    <div id="avatar_gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {% for image in images %}
-      <div name="image_{{ image.id }}" id="image_{{ image.id }}"
-        class="relative w-full max-w-xs flex items-center justify-center">
-        <div class="relative inline-block hover:scale-105 transform transition duration-500">
-          <div class="swap-face-button" data-image-id="{{ image.id }}" data-image-path="{{ image.image }}">
-            <img src="data:image/png;base64,{{ image.image }}" alt="Avatar"
-              class="rounded-xl shadow-lg w-40 h-40 max-sm:w-30 max-sm:h-30 object-cover" />
-          </div>
-          {% if not image.id|startswith:"default" %}
-          <div hx-post="/create/delete/{{image.id}}/" hx-confirm="Are you sure you want to delete this avatar?"
-            hx-target="#image_{{ image.id }}" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-            hx-include="#csrf"
-            class="border-2 bg-white hover:scale-110 transform transition duration-500 rounded-full absolute w-8 h-8 -top-4 -right-4 flex items-center justify-center">
-            <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-              <g id="SVGRepo_iconCarrier">
-                <path
-                  d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6"
-                  stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </g>
-            </svg>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-  {% endif %}
-
-</div>
 
 
 
 
-<script>
-  function getPipeline() {
-    return "pipeline";
-  }
-
-  function getHuggingface() {
-    return "hugging_face";
-  }
-
-  function getGender() {
-    return getValueById("gender");
-  }
-
-  function getHairColor() {
-    return getValueById("hair_color");
-  }
-
-  function getHairType() {
-    return getValueById("hair_type");
-  }
-
-  function getHairLength() {
-    return getValueById("hair_length");
-  }
-
-  function getSkinColor() {
-    return getValueById("skin_color");
-  }
-
-  function getSkinType() {
-    return getValueById("skin_type");
-  }
-
-  function getEthnicity() {
-    return getValueById("ethnicity");
-  }
-
-  function getEyeColor() {
-    return getValueById("eye_color");
-  }
-
-  function getAge() {
-    return getValueById("age");
-  }
-
-  function getBodyType() {
-    return getValueById("body_type");
-  }
-
-  function getValueById(id) {
-    const element = document.getElementById(id);
-    return element.value !== element.options[0].value ? element.value : "";
-  }
-
-  function attachImageClickListeners() {
-    const images = document.querySelectorAll('.swap-face-button');
-    images.forEach(function (image) {
-      image.addEventListener('click', function () {
-        const imageId = this.getAttribute('data-image-id');
-        const imagePath = this.getAttribute('data-image-path');
-
-        // Create a form to submit the data
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/swap_face/';
-
-        // Create hidden input to hold the image ID or data
-        if (imageId.startsWith('default-')) {
-          const inputPath = document.createElement('input');
-          inputPath.type = 'hidden';
-          inputPath.name = 'image_path';
-          inputPath.value = `data:image/jpeg;base64,${imagePath}`;
-          form.appendChild(inputPath);
-        } else {
-          const inputId = document.createElement('input');
-          inputId.type = 'hidden';
-          inputId.name = 'image_id';
-          inputId.value = imageId;
-          form.appendChild(inputId);
+    <script>
+        function getPipeline() {
+            return "pipeline";
         }
 
-        // Add the CSRF token to the form
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = 'csrfmiddlewaretoken';
-        csrfToken.value = '{{ csrf_token }}';
+        function getHuggingface() {
+            return "hugging_face";
+        }
 
-        form.appendChild(csrfToken);
+        function getGender() {
+            return getValueById("gender");
+        }
 
-        document.body.appendChild(form);
-        form.submit();
-      });
-    });
-  }
+        function getHairColor() {
+            return getValueById("hair_color");
+        }
 
-  // Attach click listeners to the images after swapping the form
-  document.body.addEventListener('htmx:afterSwap', function (evt) {
-    if (evt.detail.target.id === 'create_form') {
-      attachImageClickListeners();
-    }
-  });
-</script>
+        function getHairType() {
+            return getValueById("hair_type");
+        }
+
+        function getHairLength() {
+            return getValueById("hair_length");
+        }
+
+        function getSkinColor() {
+            return getValueById("skin_color");
+        }
+
+        function getSkinType() {
+            return getValueById("skin_type");
+        }
+
+        function getEthnicity() {
+            return getValueById("ethnicity");
+        }
+
+        function getEyeColor() {
+            return getValueById("eye_color");
+        }
+
+        function getAge() {
+            return getValueById("age");
+        }
+
+        function getBodyType() {
+            return getValueById("body_type");
+        }
+
+        function getValueById(id) {
+            const element = document.getElementById(id);
+            return element.value !== element.options[0].value ? element.value : "";
+        }
+
+        function attachImageClickListeners() {
+            const images = document.querySelectorAll('.swap-face-button');
+            images.forEach(function (image) {
+                image.addEventListener('click', function () {
+                    const imageId = this.getAttribute('data-image-id');
+                    const imagePath = this.getAttribute('data-image-path');
+
+                    // Create a form to submit the data
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/swap_face/';
+
+                    // Create hidden input to hold the image ID or data
+                    if (imageId.startsWith('default-')) {
+                        const inputPath = document.createElement('input');
+                        inputPath.type = 'hidden';
+                        inputPath.name = 'image_path';
+                        inputPath.value = `data:image/jpeg;base64,${imagePath}`;
+                        form.appendChild(inputPath);
+                    } else {
+                        const inputId = document.createElement('input');
+                        inputId.type = 'hidden';
+                        inputId.name = 'image_id';
+                        inputId.value = imageId;
+                        form.appendChild(inputId);
+                    }
+
+                    // Add the CSRF token to the form
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = 'csrfmiddlewaretoken';
+                    csrfToken.value = '{{ csrf_token }}';
+
+                    form.appendChild(csrfToken);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            });
+        }
+
+        // Attach click listeners to the images after swapping the form
+        document.body.addEventListener('htmx:afterSwap', function (evt) {
+            if (evt.detail.target.id === 'create_form') {
+                attachImageClickListeners();
+            }
+        });
+    </script>
 {% endblock %}

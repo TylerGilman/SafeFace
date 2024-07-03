@@ -1,112 +1,109 @@
 {% block content %}
-<div id="content" class="flex flex-col items-center justify-center mt-4">
-  <h1 class="text-3xl font-bold text-center dark:text-white mb-2">Swap Face</h1>
+    <div id="content" class="flex flex-col items-center justify-center mt-4 pb-24">
+        <h1 class="text-3xl font-bold text-center dark:text-white mb-2 max-sm:text-xl">Swap Face</h1>
 
-  <div
-    class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-row items-center p-10 gap-4 max-md:gap-2">
-    <div name="avatar" id="avatar" class="text-center flex flex-col justify-center items-center">
-      <p class="text-lg font-semibold mb-4 dark:text-white">Source</p>
-      <img src="{{ image_data }}" alt="avatar" class="w-40 h-40 rounded-2xl shadow-lg" />
-    </div>
+        <div class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-row max-sm:flex-col items-center p-10 gap-4 max-sm:p-5 max-md:gap-2">
+            <div name="avatar" id="avatar" class="text-center flex flex-col justify-center items-center">
+                <p class="text-lg font-semibold mb-4 max-sm:mb-2 dark:text-white">Source</p>
+                <img src="{{ image_data }}" alt="avatar" class="w-40 h-40 rounded-2xl shadow-lg"/>
+            </div>
 
-    <p class="text-white text-3xl">+</p>
+            <p class="text-black dark:text-white text-opacity-50 text-3xl">+</p>
 
-    <div id="uploaded_image_container" class="relative text-center flex flex-col justify-center items-center w-40">
-      <p class="text-lg font-semibold mb-4 dark:text-white">Target</p>
-      <button id="choose_file_button"
-        class="flex flex-col items-center gap-4 justify-center w-40 h-40 bg-transparent border-2 border-dashed border-black dark:border-white text-black dark:text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap"
-        onclick="document.getElementById('hiddenFileInput').click()">
-        <p class="font-semibold text-lg">Choose Image</p>
-      </button>
-    </div>
+            <div id="uploaded_image_container"
+                 class="relative text-center flex flex-col justify-center items-center w-40">
+                <p class="text-lg font-semibold mb-4 max-sm:mb-2 dark:text-white">Target</p>
+                <button id="choose_file_button"
+                        class="flex flex-col items-center gap-4 justify-center w-40 h-40 bg-transparent border-2 border-dashed border-black dark:border-white text-black dark:text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap"
+                        onclick="document.getElementById('hiddenFileInput').click()">
+                    <p class="font-semibold text-lg">Choose Image</p>
+                </button>
+            </div>
 
-    <p class="text-white text-3xl">=</p>
-    <input type="file" id="hiddenFileInput" style="display: none;" onchange="handleFileChange(event)">
-    <div class="relative flex flex-col items-center">
-      {% if image_id %} <input type="hidden" name="image_id" id="image_id" value="{{ image_id }}"> {% endif %}
-      {% if image_data %} <input type="hidden" name="image_data" id="image_data" value="{{ image_data }}"> {% endif %}
-      <button onclick="submitForm()" class="text-center flex flex-col justify-center items-center 
-         bg-primary-600 bg-opacity-30 backdrop-filter backdrop-blur-lg 
-         rounded-md px-4 py-2 m-1 text-white
-         border border-white border-opacity-20
-         hover:bg-opacity-40 transition duration-300 ease-in-out
-         shadow-lg">
-        {% if output_image_data %}
-        Swap Again
-        {% else %}
-        Swap Face
-        {% endif %}
-      </button>
+            <p class="text-black dark:text-white text-opacity-50 text-3xl">=</p>
+            <input type="file" id="hiddenFileInput" style="display: none;" onchange="handleFileChange(event)">
+            <div class="relative flex flex-col items-center">
+                {% if image_id %} <input type="hidden" name="image_id" id="image_id" value="{{ image_id }}"> {% endif %}
+                {% if image_data %}
+                    <input type="hidden" name="image_data" id="image_data" value="{{ image_data }}"> {% endif %}
+                <button onclick="submitForm()"
+                        class="text-center flex flex-col justify-center items-center bg-primary-600 bg-opacity-30 backdrop-filter backdrop-blur-lg rounded-md px-4 py-2 m-1 text-white border border-white border-opacity-20 hover:bg-opacity-40 transition duration-300 ease-in-out shadow-lg">
+                    {% if output_image_data %}
+                        Swap Again
+                    {% else %}
+                        Swap Face
+                    {% endif %}
+                </button>
 
-      <div id="result_container" class="flex flex-col items-center justify-center">
-        <div name="result_image"
-          class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 border-2 border-double border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
-          Result
+                <div id="result_container" class="flex flex-col items-center justify-center">
+                    <div name="result_image"
+                         class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 border-2 border-double border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
+                        Result
+                    </div>
+                </div>
+
+                <div id="loading_indicator" style="display:none;">
+                    <div class="bouncing-ball-loader"
+                         style="display: flex; justify-content: center; align-items: center; height: 40px;">
+                        <div class="ball"
+                             style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
+                        </div>
+                        <div class="ball"
+                             style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
+                        </div>
+                        <div class="ball"
+                             style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div id="loading_indicator" style="display:none;">
-        <div class="bouncing-ball-loader"
-          style="display: flex; justify-content: center; align-items: center; height: 40px;">
-          <div class="ball"
-            style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
-          </div>
-          <div class="ball"
-            style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
-          </div>
-          <div class="ball"
-            style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
-          </div>
-        </div>
-      </div>
+        <button hx-get="/create/" hx-target="#content" hx-swap="outerHTML" hx-include="#render_mode"
+                hx-vals='js:{render_mode: "content"}' hx-push-url="true"
+                class="mt-5 px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-700 text-bg-50 font-semibold rounded-lg shadow-md hover:from-primary-600 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-opacity-75 transform hover:scale-105 transition duration-300 ease-in-out">
+            Back
+        </button>
     </div>
-  </div>
-  <button hx-get="/create/" hx-target="#content" hx-swap="outerHTML" hx-include="#render_mode"
-    hx-vals='js:{render_mode: "content"}' hx-push-url="true"
-    class="mt-5 px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-700 text-bg-50 font-semibold rounded-lg shadow-md hover:from-primary-600 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-opacity-75 transform hover:scale-105 transition duration-300 ease-in-out">
-    Back
-  </button>
 
-  <script>
-    document.querySelectorAll('.ball').forEach((ball, index) => {
-      ball.style.animation = `bounce ${0.5 + (index * 0.1)}s infinite`;
-    });
+    <script>
+        document.querySelectorAll('.ball').forEach((ball, index) => {
+            ball.style.animation = `bounce ${0.5 + (index * 0.1)}s infinite`;
+        });
 
-    function getComputedStyle(element) {
-      return window.getComputedStyle(element);
-    }
+        function getComputedStyle(element) {
+            return window.getComputedStyle(element);
+        }
 
-    function getAnimationCSS() {
-      return `
-    @keyframes bounce {
-      0% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
-      100% {
-        transform: translateY(0);
-      }
-    }
-  `;
-    }
+        function getAnimationCSS() {
+            return `
+                @keyframes bounce {
+                  0% {
+                    transform: translateY(0);
+                  }
+                  50% {
+                    transform: translateY(-10px);
+                  }
+                  100% {
+                    transform: translateY(0);
+                  }
+                }
+            `;
+        }
 
-    function addStyle(tagName) {
-      const element = document.createElement(tagName);
-      element.innerHTML = getAnimationCSS();
-      document.head.appendChild(element);
-    }
+        function addStyle(tagName) {
+            const element = document.createElement(tagName);
+            element.innerHTML = getAnimationCSS();
+            document.head.appendChild(element);
+        }
 
-    addStyle('style');
+        addStyle('style');
 
-
-    function handleFileChange(event) {
-      const selectedFile = event.target.files[0];
-      if (selectedFile) {
-        getBase64(selectedFile).then(base64File => {
-          const uploadedImageContainer = document.getElementById('uploaded_image_container');
-          uploadedImageContainer.innerHTML = `
+        function handleFileChange(event) {
+            const selectedFile = event.target.files[0];
+            if (selectedFile) {
+                getBase64(selectedFile).then(base64File => {
+                    const uploadedImageContainer = document.getElementById('uploaded_image_container');
+                    uploadedImageContainer.innerHTML = `
                     <p class="text-lg font-semibold mb-4 dark:text-white">Target</p>
                     <img src="${base64File}" alt="uploaded image" class="w-60 rounded-2xl shadow-lg aspect-auto" />
                     <button id="choose_new_file_button" class="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-bg-600 dark:bg-bg-900 text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap mt-4" onclick="document.getElementById('hiddenFileInput').click()">
@@ -115,67 +112,66 @@
                         </svg>
                         Choose New File
                     </button>`;
-        });
-      }
-    }
+                });
+            }
+        }
 
-    function getBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
-    }
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
 
 
+        async function submitForm() {
+            const formData = new FormData();
+            const fileInput = document.getElementById('hiddenFileInput');
+            const imageIdElement = document.getElementById('image_id');
+            const imageDataElement = document.getElementById('image_data');
 
-    async function submitForm() {
-      const formData = new FormData();
-      const fileInput = document.getElementById('hiddenFileInput');
-      const imageIdElement = document.getElementById('image_id');
-      const imageDataElement = document.getElementById('image_data');
+            if (fileInput && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const base64File = await getBase64(file);
+                formData.append('uploaded_file', base64File);
+                document.getElementById('loading_indicator').style.display = 'block';
+            }
 
-      if (fileInput && fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const base64File = await getBase64(file);
-        formData.append('uploaded_file', base64File);
-        document.getElementById('loading_indicator').style.display = 'block';
-      }
+            if (imageIdElement) {
+                formData.append('image_id', imageIdElement.value);
+            }
 
-      if (imageIdElement) {
-        formData.append('image_id', imageIdElement.value);
-      }
+            if (imageDataElement) {
+                formData.append('image_path', imageDataElement.value);
+            }
 
-      if (imageDataElement) {
-        formData.append('image_path', imageDataElement.value);
-      }
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
-      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-
-      fetch('/swap_face/', {
-        method: 'POST',
-        body: formData,
-      })
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById('loading_indicator').style.display = 'none';
-          if (data.error) {
-            console.error('Error:', data.error);
-          } else {
-            const resultContainer = document.getElementById('result_container');
-            resultContainer.innerHTML = `
+            fetch('/swap_face/', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loading_indicator').style.display = 'none';
+                    if (data.error) {
+                        console.error('Error:', data.error);
+                    } else {
+                        const resultContainer = document.getElementById('result_container');
+                        resultContainer.innerHTML = `
                     <div name="result_image" class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 border-2 border-double border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
                     <img src="${data.output_image_data}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
                     </div>
                     <a href="data:image/png;base64,${data.output_image_data.split('base64,')[1]}" download="face_swap_result.png" class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white justify-center">Download Image</a>
                 `;
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
-  </script>
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
 
-  {% endblock %}
+{% endblock %}
