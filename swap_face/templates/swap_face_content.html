@@ -33,47 +33,39 @@
         Swap Face
         {% endif %}
       </button>
-
-      <div id="result_container"
-        class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 bg-transparent border-2 border-dashed border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
-        {% if output_image_data %}
-        <img src="{{ output_image_data }}" alt="result" class="w-40 h-40 rounded-2xl shadow-lg m-10" />
-        {% else %}
-        <p class="font-semibold text-lg">Result</p>
-        {% endif %}
-    </div>
-    {% if output_image_data %}
-    <a href="{{ output_image_data }}" download="face_swap_result.png"
-      class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
-    {% endif %}
-
-    <div id="loading_indicator" style="display:none;">
-      <div class="bouncing-ball-loader"
-        style="display: flex; justify-content: center; align-items: center; height: 40px;">
-        <div class="ball"
-          style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
+        <div id="result_container" class="flex flex-col items-center justify-center">
+            <div name="result_image" class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 border-2 border-double border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
+            Result
+            </div>
         </div>
-        <div class="ball"
-          style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
-        </div>
-        <div class="ball"
-          style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
+
+      <div id="loading_indicator" style="display:none;">
+        <div class="bouncing-ball-loader"
+          style="display: flex; justify-content: center; align-items: center; height: 40px;">
+          <div class="ball"
+            style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
+          </div>
+          <div class="ball"
+            style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
+          </div>
+          <div class="ball"
+            style="width: 10px; height: 10px; border-radius: 50%; background-color: #fff; margin: 0 10px; animation: bounce 0.5s infinite;">
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<script>
-  document.querySelectorAll('.ball').forEach((ball, index) => {
-    ball.style.animation = `bounce ${0.5 + (index * 0.1)}s infinite`;
-  });
+  <script>
+    document.querySelectorAll('.ball').forEach((ball, index) => {
+      ball.style.animation = `bounce ${0.5 + (index * 0.1)}s infinite`;
+    });
 
-  function getComputedStyle(element) {
-    return window.getComputedStyle(element);
-  }
+    function getComputedStyle(element) {
+      return window.getComputedStyle(element);
+    }
 
-  function getAnimationCSS() {
-    return `
+    function getAnimationCSS() {
+      return `
     @keyframes bounce {
       0% {
         transform: translateY(0);
@@ -86,23 +78,23 @@
       }
     }
   `;
-  }
+    }
 
-  function addStyle(tagName) {
-    const element = document.createElement(tagName);
-    element.innerHTML = getAnimationCSS();
-    document.head.appendChild(element);
-  }
+    function addStyle(tagName) {
+      const element = document.createElement(tagName);
+      element.innerHTML = getAnimationCSS();
+      document.head.appendChild(element);
+    }
 
-  addStyle('style');
+    addStyle('style');
 
 
-  function handleFileChange(event) {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      getBase64(selectedFile).then(base64File => {
-        const uploadedImageContainer = document.getElementById('uploaded_image_container');
-        uploadedImageContainer.innerHTML = `
+    function handleFileChange(event) {
+      const selectedFile = event.target.files[0];
+      if (selectedFile) {
+        getBase64(selectedFile).then(base64File => {
+          const uploadedImageContainer = document.getElementById('uploaded_image_container');
+          uploadedImageContainer.innerHTML = `
                     <p class="text-lg font-semibold mb-4 dark:text-white">Target</p>
                     <img src="${base64File}" alt="uploaded image" class="w-60 rounded-2xl shadow-lg aspect-auto" />
                     <button id="choose_new_file_button" class="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-bg-600 dark:bg-bg-900 text-white p-2 cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap mt-4" onclick="document.getElementById('hiddenFileInput').click()">
@@ -111,65 +103,67 @@
                         </svg>
                         Choose New File
                     </button>`;
+        });
+      }
+    }
+
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
       });
     }
-  }
-
-  function getBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  }
 
 
 
-  async function submitForm() {
-    const formData = new FormData();
-    const fileInput = document.getElementById('hiddenFileInput');
-    const imageIdElement = document.getElementById('image_id');
-    const imageDataElement = document.getElementById('image_data');
+    async function submitForm() {
+      const formData = new FormData();
+      const fileInput = document.getElementById('hiddenFileInput');
+      const imageIdElement = document.getElementById('image_id');
+      const imageDataElement = document.getElementById('image_data');
 
-    if (fileInput && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      const base64File = await getBase64(file);
-      formData.append('uploaded_file', base64File);
-      document.getElementById('loading_indicator').style.display = 'block';
-    }
+      if (fileInput && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const base64File = await getBase64(file);
+        formData.append('uploaded_file', base64File);
+        document.getElementById('loading_indicator').style.display = 'block';
+      }
 
-    if (imageIdElement) {
-      formData.append('image_id', imageIdElement.value);
-    }
+      if (imageIdElement) {
+        formData.append('image_id', imageIdElement.value);
+      }
 
-    if (imageDataElement) {
-      formData.append('image_path', imageDataElement.value);
-    }
+      if (imageDataElement) {
+        formData.append('image_path', imageDataElement.value);
+      }
 
-    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
-    fetch('/swap_face/', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('loading_indicator').style.display = 'none';
-        if (data.error) {
-          console.error('Error:', data.error);
-        } else {
-          const resultContainer = document.getElementById('result_container');
-          resultContainer.innerHTML = `
-                    <img src="${data.output_image_data}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
-                    <a href="data:image/png;base64,${data.output_image_data.split('base64,')[1]}" download="face_swap_result.png" class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white">Download Image</a>
-                `;
-        }
+      fetch('/swap_face/', {
+        method: 'POST',
+        body: formData,
       })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }
-</script>
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('loading_indicator').style.display = 'none';
+          if (data.error) {
+            console.error('Error:', data.error);
+          } else {
+            const resultContainer = document.getElementById('result_container');
+            resultContainer.innerHTML = `
+                    <div name="result_image" class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 border-2 border-double border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
+                    <img src="${data.output_image_data}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
+                    </div>
+                    <a href="data:image/png;base64,${data.output_image_data.split('base64,')[1]}" download="face_swap_result.png" class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white justify-center">Download Image</a>
+                `;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  </script>
 
-{% endblock %}
+  {% endblock %}
