@@ -5,6 +5,8 @@
             Select an avatar from the gallery or create your own.
         </p>
 
+        {% include "create_form.html" %}
+
         <div id="avatar" class="justify-center items-center mb-2 {% if mode == 'gallery_mode' %}hidden{% endif %} ">
             <div class="relative h-40 w-40">
                 <img src="../static/images/empty_profile.png" alt="Empty Avatar"
@@ -13,9 +15,6 @@
                      src="../static/images/bouncing-ball.svg" alt="Loading..."/>
             </div>
         </div>
-        {% include "create_form.html" %}
-
-
     </div>
     <script>
         document.addEventListener('htmx:afterSwap', function (event) {
