@@ -238,26 +238,8 @@ def save_image(request):
                 })
         else:
             logger.error("Cannot save, no image data provided.")
-            return HttpResponse(
-                status=400,
-                headers={
-                    'HX-Trigger': json.dumps({
-                        "showMessage": {
-                            "text": "No image data provided.",
-                            "type": "error"
-                        }
-                    })
-                })
-    return HttpResponse(
-        status=400,
-        headers={
-            'HX-Trigger': json.dumps({
-                "showMessage": {
-                    "text": "Error Saving Image.",
-                    "type": "error"
-                }
-            })
-        })
+            return JsonResponse({"error": "No image data provided."}, status=400)
+    return JsonResponse({"error": "Error Saving Image."}, status=400)
 
 
 @login_required
