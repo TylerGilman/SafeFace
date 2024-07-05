@@ -1,26 +1,25 @@
 {% block content %}
-<div id="content" name="content" class="flex flex-col items-center justify-center mt-4">
-  <h1 class="text-3xl font-bold text-center dark:text-white mb-2 max-sm:text-xl">Pick A Virtual Avatar</h1>
-  <p class="text-center dark:text-white max-sm:text-sm mb-4">
-    Select an avatar from the gallery or create your own.
-  </p>
+    <div id="content" name="content" class="flex flex-col items-center justify-center mt-4">
+        <h1 class="text-3xl font-bold text-center dark:text-white mb-2 max-sm:text-xl">Pick A Virtual Avatar</h1>
+        <p class="text-center dark:text-white max-sm:text-sm mb-4">
+            Select an avatar from the gallery or create your own.
+        </p>
 
-  {% include "create_form.html" %}
+        {% include "create_form.html" %}
 
-  <div id="avatar" class="justify-center items-center mb-2 {% if mode == 'gallery_mode' %}hidden{% endif %} ">
-    <div class="relative h-40 w-40">
-      <img src="../static/images/empty_profile.png" alt="Empty Avatar" class="rounded-2xl shadow-xl" />
-      <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
-        src="../static/images/bouncing-ball.svg" alt="Loading..." />
+        <div id="avatar" class="justify-center items-center mb-2 {% if mode == 'gallery_mode' %}hidden{% endif %} ">
+            <div class="relative h-40 w-40">
+                <img src="../static/images/empty_profile.png" alt="Empty Avatar"
+                     class="rounded-2xl shadow-xl"/>
+                <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
+                     src="../static/images/bouncing-ball.svg" alt="Loading..."/>
+            </div>
+        </div>
     </div>
-  </div>
-
-
-</div>
-<script>
-  document.addEventListener('htmx:afterSwap', function (event) {
-    const avatarElement = document.getElementById('avatar');
-    const modeElement = document.getElementById('mode');
+    <script>
+        document.addEventListener('htmx:afterSwap', function (event) {
+            const avatarElement = document.getElementById('avatar');
+            const modeElement = document.getElementById('mode');
 
     if (modeElement && avatarElement) {
       const currentMode = modeElement.value;
