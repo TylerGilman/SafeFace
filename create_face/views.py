@@ -214,8 +214,7 @@ def create_with_hugging_face(request):
 
 def cancel_generation(request):
     cancel_flag.set()
-    return HttpResponse("Generation cancelled")
-
+    return render(request, 'button_container.html')
 
 
 def clear_attributes(request):

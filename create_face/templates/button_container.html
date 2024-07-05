@@ -1,0 +1,23 @@
+{% block content %}
+<div id="button-container">
+    <button name="generate_button" id="generate_button" hx-post="/create/"
+            hx-swap="outerHTML"
+            hx-indicator="#ball"
+            hx-include="#csrf"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
+            hx-trigger="click"
+            class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+        Generate Avatar
+    </button>
+    <button id="cancel_button"
+            hx-post="/create/cancel_generation/" 
+            hx-target="#button-container"
+            hx-include="#csrf"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-swap="outerHTML"
+            class="hidden cursor-pointer text-white bg-red-500 hover:bg-red-700 font-medium rounded-full text-md px-4 py-2">
+        Cancel Generation
+    </button>
+</div>
+{% endblock %}

@@ -162,6 +162,7 @@
             </div>
 
             <div class="flex flex-col md:flex-row items-center justify-center gap-2 rounded-full">
+                <div id="button-container">
                     <button name="generate_button" id="generate_button" hx-post="/create/"
                             hx-swap="outerHTML"
                             hx-indicator="#ball"
@@ -172,14 +173,16 @@
                             class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
                         Generate Avatar
                     </button>
-                    <button hx-post="/create/cancel_generation/" 
-                            hx-target="#generate_button"
+                    <button id="cancel_button"
+                            hx-post="/create/cancel_generation/" 
+                            hx-target="#button-container"
                             hx-include="#csrf"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                            hx-swap="none"
-                            class="cursor-pointer text-white bg-red-500 hover:bg-red-700 font-medium rounded-full text-md px-4 py-2">
+                            hx-swap="outerHTML"
+                            class="hidden cursor-pointer text-white bg-red-500 hover:bg-red-700 font-medium rounded-full text-md px-4 py-2">
                         Cancel Generation
                     </button>
+                </div>
 
                 <button name="generate_with_huggingface"
                         hx-post="/create/"
@@ -362,6 +365,17 @@
                 });
             });
         }
+    document.body.addEventListener('htmx:beforeRequest', function(evt) {
+        if (evt.detail.elt.id === 'generate_button') {
+            document.getElementById('generate_button').classList.add('hidden');
+            document.getElementById('cancel_button').classList.remove('hidden');
+        }
+    });
+
+    document.body.addEventListener('htmx:afterRequest', function(evt) {
+        document.getElementById('generate_button').classList.remove('hidden');
+        document.getElementById('cancel_button').classList.add('hidden');
+    });
 
         // Attach click listeners to the images after swapping the form
         document.body.addEventListener('htmx:afterSwap', function (evt) {
