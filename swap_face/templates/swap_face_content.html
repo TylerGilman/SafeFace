@@ -1,5 +1,8 @@
 {% block content %}
 <div id="content" class="flex flex-col items-center justify-center mt-4 pb-24">
+  <div id="toast" class="hidden opacity-0 transition-opacity duration-300">
+    <div id="toast-body"></div>
+  </div>
   <h1 class="text-3xl font-bold text-center dark:text-white mb-2 max-sm:text-xl">Swap Face</h1>
 
   <div
@@ -124,9 +127,43 @@
       reader.onerror = error => reject(error);
     });
   }
+  function initializeToast() {
+    const toastElement = document.getElementById("toast");
+    const toastBody = document.getElementById("toast-body");
+
+    if (!toastElement || !toastBody) {
+      console.error("Toast elements not found in the DOM");
+      return;
+    }
+
+    function showToast(message, duration = 3000) {
+      toastBody.textContent = message;
+      toastElement.classList.remove('hidden');
+      setTimeout(() => {
+        toastElement.classList.remove('opacity-0');
+      }, 10);
+      setTimeout(() => {
+        hideToast();
+      }, duration);
+    }
+
+    function hideToast() {
+      toastElement.classList.add('opacity-0');
+      setTimeout(() => {
+        toastElement.classList.add('hidden');
+      }, 300);
+    }
+
+    // Make showToast available globally
+    window.showToast = showToast;
+  }
+
+  // Call this function when the DOM is ready
+  document.addEventListener('DOMContentLoaded', initializeToast);
 
 
   async function submitForm() {
+    const processingToast = window.showToast('Processing face swap...', 'info', -1);
     const formData = new FormData();
     const fileInput = document.getElementById('hiddenFileInput');
     const imageIdElement = document.getElementById('image_id');
@@ -147,27 +184,6 @@
       formData.append('image_path', imageDataElement.value);
     }
 
-
-      const toastElement = document.getElementById("toast");
-      const toastBody = document.getElementById("toast-body");
-      function showToast(message, duration = 3000) {
-        toastBody.textContent = message;
-        toastElement.classList.remove('hidden');
-        setTimeout(() => {
-          toastElement.classList.remove('opacity-0');
-        }, 10);
-        setTimeout(() => {
-          hideToast();
-        }, duration);
-      }
-
-      function hideToast() {
-        toastElement.classList.add('opacity-0');
-        setTimeout(() => {
-          toastElement.classList.add('hidden');
-        }, 300);
-      }
-
     formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
     fetch('/swap_face/', {
@@ -176,24 +192,37 @@
     })
       .then(response => response.json())
       .then(data => {
+        if (processingToast && processingToast.parentNode) {
+          processingToast.parentNode.removeChild(processingToast);
+        }
+
         document.getElementById('loading_indicator').style.display = 'none';
         if (data.error) {
           console.error('Error:', data.error);
+          window.showToast('Face Swap Failed: ' + data.error, 'error');
         } else {
-          showToast('Face Swap Success!', 3000);
-          const resultContainer = document.getElementById('result_container');
-          resultContainer.innerHTML = `
-                    <div name="result_image" class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 border-2 border-double border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
-                    <img src="${data.output_image_data}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
-                    </div>
-                    <a href="data:image/png;base64,${data.output_image_data.split('base64,')[1]}" download="face_swap_result.png" class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white justify-center">Download Image</a>
-                `;
+          document.getElementById('loading_indicator').style.display = 'none';
+          if (data.error) {
+            console.error('Error:', data.error);
+            showToast('Face Swap Failed: ' + data.error, 'error');
+          } else {
+            showToast('Face Swap Success!', 'success');
+            const resultContainer = document.getElementById('result_container');
+            resultContainer.innerHTML = `
+          <div name="result_image" class="flex flex-col overflow-hidden items-center justify-center w-52 h-52 border-2 border-double border-black dark:border-white text-black dark:text-white cursor-pointer flex items-center rounded-lg px-4 whitespace-nowrap">
+          <img src="${data.output_image_data}" alt="result" class="w-60 h-60 rounded-2xl shadow-lg" />
+          </div>
+          <a href="data:image/png;base64,${data.output_image_data.split('base64,')[1]}" download="face_swap_result.png" class="mt-4 bg-primary-600 rounded-lg px-4 py-2 text-white justify-center">Download Image</a>
+        `;
+          }
         }
       })
       .catch(error => {
         console.error('Error:', error);
+        showToast('An unexpected error occurred', 'error');
       });
   }
+
 </script>
 
 {% endblock %}
