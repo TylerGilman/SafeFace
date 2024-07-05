@@ -14,6 +14,12 @@ from create_face.ml_handler.hugging_face import HuggingFaceHandler
 from create_face.ml_handler.pipeline import PipelineHandler
 from create_face.models import UserImage
 from safe_face_web import settings
+import threading
+
+# Global variable to store the cancellation flag
+cancel_flag = threading.Event()
+
+
 
 pipeline_handler = PipelineHandler()
 hugging_face_handler = HuggingFaceHandler()
@@ -102,11 +108,11 @@ def index(request):
                           {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode,
                            'form_fields': form_fields, 'images': images})
     context = {
-            'guest': request.GET.get("guest"),
-            'form_fields': form_fields,
-            'mode': mode,
-            'images': images
-        }
+        'guest': request.GET.get("guest"),
+        'form_fields': form_fields,
+        'mode': mode,
+        'images': images
+    }
     loaded_template = loader.get_template(template)
     rendered_template = loaded_template.render(context, request)
     response = HttpResponse(rendered_template)
@@ -117,7 +123,6 @@ def index(request):
         }
     })
     return response
-
 
 
 def create(request):
@@ -132,7 +137,22 @@ def create(request):
 
 def create_with_pipeline(request):
     prompt = make_prompt(request)
-    image = pipeline_handler.generate_image(prompt)
+
+    # Reset the cancellation flag
+    cancel_flag.clear()
+
+    def generate_image_with_cancel_check():
+        return pipeline_handler.generate_image(prompt, cancel_flag)
+
+    # Run the generation in a separate thread
+    thread = threading.Thread(target=generate_image_with_cancel_check)
+    thread.start()
+    thread.join()  # Wait for the thread to complete
+
+    if cancel_flag.is_set():
+        return HttpResponse("Image generation was cancelled.")
+
+    image = generate_image_with_cancel_check()
     if image:
         # Save the image to a BytesIO object
         image_io = BytesIO()
@@ -154,8 +174,23 @@ def create_with_pipeline(request):
 
 def create_with_hugging_face(request):
     prompt = make_prompt(request)
+    
+    # Reset the cancellation flag
+    cancel_flag.clear()
+    
+    def generate_image_with_cancel_check():
+        return hugging_face_handler.generate_image(prompt, cancel_flag)
+
+    # Run the generation in a separate thread
+    thread = threading.Thread(target=generate_image_with_cancel_check)
+    thread.start()
+    thread.join()  # Wait for the thread to complete
+
+    if cancel_flag.is_set():
+        return HttpResponse("Image generation was cancelled.")
+
     try:
-        image = hugging_face_handler.generate_image(prompt)
+        image = generate_image_with_cancel_check()
         if image:
             # Save the image to a BytesIO object
             image_io = BytesIO()
@@ -175,6 +210,12 @@ def create_with_hugging_face(request):
             return JsonResponse({"error": "Failed to generate image using HuggingFace."}, status=400)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
+
+
+def cancel_generation(request):
+    cancel_flag.set()
+    return HttpResponse("Generation cancelled")
+
 
 
 def clear_attributes(request):
@@ -238,7 +279,16 @@ def save_image(request):
                 })
         else:
             logger.error("Cannot save, no image data provided.")
-            return JsonResponse({"error": "No image data provided."}, status=400)
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "showMessage": {
+                            "text": "No Avatar To Save",
+                            "type": "warning"
+                        }
+                    })
+                })
     return JsonResponse({"error": "Error Saving Image."}, status=400)
 
 
