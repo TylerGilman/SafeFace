@@ -238,6 +238,21 @@
         // Make showToast globally available
         window.showToast = showToast;
 
+        // HTMX event listener for HX-Trigger
+        document.body.addEventListener('htmx:afterRequest', function (evt) {
+            var trigger = evt.detail.xhr.getResponseHeader('HX-Trigger');
+            if (trigger) {
+                try {
+                    var triggerData = JSON.parse(trigger);
+                    if (triggerData.showMessage) {
+                        showToast(triggerData.showMessage.text, triggerData.showMessage.type);
+                    }
+                } catch (e) {
+                    console.error('Failed to parse HX-Trigger JSON', e);
+                }
+            }
+        });
+
         // HTMX event listeners for error handling
         document.body.addEventListener('htmx:afterOnLoad', function (evt) {
             const xhr = evt.detail.xhr;

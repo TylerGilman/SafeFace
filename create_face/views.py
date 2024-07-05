@@ -217,16 +217,7 @@ def save_image(request):
             user_images = UserImage.objects.filter(user=request.user)
             if len(user_images) >= 5:
                 logger.info("Maximum number of saved images, cannot save!")
-                return HttpResponse(
-                    status=400,
-                    headers={
-                        'HX-Trigger': json.dumps({
-                            "showMessage": {
-                                "text": "You have reached the maximum number of saved images.",
-                                "type": "warning"
-                            }
-                        })
-                    })
+                return JsonResponse({"error": "Maximum number of saved images reached."}, status=400)
             # Save the image to the file system
             filename = f"{request.user.id}_image_{len(user_images) + 1}.png"
             file_path = save_image_to_file_system(
@@ -274,7 +265,7 @@ def delete_image(request, id):
     logger.info(f'Attempting to delete image with id: {id}')
     if str(id).startswith("default-"):
         logger.info('Cannot delete default image')
-        return render(request, "error.html", {"message": "Cannot delete default images."})
+        return JsonResponse({"error": "Cannot delete default image."}, status=400)
     try:
         logger.info(f'Fetching image with id: {id}')
         image = UserImage.objects.get(id=id)
@@ -286,12 +277,20 @@ def delete_image(request, id):
             logger.info(f'Removing file: {image_path}')
             os.remove(image_path)
         logger.info(f'Image with id {id} deleted successfully.')
-        return render(request, "empty.html", None)
+        return HttpResponse(status=200,
+                            headers={
+                                'HX-Trigger': json.dumps({
+                                    "showMessage": {
+                                        "text": "Avatar Deleted",
+                                        "type": "success"
+                                    }
+                                })
+                            })
     except UserImage.DoesNotExist:
         logger.error(f'Image with id {id} not found.')
     except Exception as e:
         logger.error(f'An error occurred: {e}', exc_info=True)
-    return render(request, "error.html", {"message": "Failed to delete image."})
+    return JsonResponse({"error": "Failed to delete image."}, status=400)
 
 
 def save_image_to_file_system(image_data, user_id, filename):
