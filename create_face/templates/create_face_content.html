@@ -4,7 +4,32 @@
   <p class="text-center dark:text-white max-sm:text-sm mb-4">
 
   </p>
+
+                <div id="avatar" class="justify-center items-center {% if mode == 'gallery_mode' %}hidden{% endif %} ">
+                        <div class="relative h-52 w-52">
+                            <img src="../static/images/empty_profile.png" alt="Empty Avatar"
+                                 class="rounded-2xl shadow-xl"/>
+                            <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
+                                 src="../static/images/bouncing-ball.svg" alt="Loading..."/>
+                        </div>
+                </div>
   {% include "create_form.html" %}
 
+
 </div>
+<script>
+  document.addEventListener('htmx:afterSwap', function(event) {
+      const avatarElement = document.getElementById('avatar');
+      const modeElement = document.getElementById('mode');
+      
+      if (modeElement && avatarElement) {
+          const currentMode = modeElement.value;
+          if (currentMode === 'gallery_mode') {
+              avatarElement.classList.add('hidden');
+          } else {
+              avatarElement.classList.remove('hidden');
+          }
+      }
+  });
+  </script>
 {% endblock %}
