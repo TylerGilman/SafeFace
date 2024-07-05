@@ -3,13 +3,13 @@
     <div name="create_form" id="create_form"
          class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-1 max-md:gap-2 mb-24"
     >
-    <p class="dark:text-white text-xl">
+        <p class="dark:text-white text-xl">
             {% if mode == "create_mode" %}
                 Create A New Virtual Avatar
             {% elif mode == "gallery_mode" %}
                 Select From Avatar Gallery
             {% endif %}
-            </p>
+        </p>
         <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-bg-800 rounded-xl relative mb-6">
             <input type="hidden" id="mode" name="mode" value="{{ mode }}"/>
             <input type="hidden" id="change_mode" name="change_mode" value="false"/>
@@ -54,7 +54,7 @@
                     <path
                             d="M3.98779 6C4.10022 5.06898 4.33494 4.42559 4.82498 3.93726C5.76553 3 7.27932 3 10.3069 3H13.5181C16.5457 3 18.0595 3 19 3.93726C19.4901 4.42559 19.7248 5.06898 19.8372 6"
                             stroke="currentColor" stroke-width="1.5"></path>
-                   .5" stroke="currentColor" stroke-width="1.5"></circle>
+                    .5" stroke="currentColor" stroke-width="1.5"></circle>
                     <path
                             d="M2 13.9376L3.75159 12.405C4.66286 11.6077 6.03628 11.6534 6.89249 12.5096L11.1822 16.7993C11.8694 17.4866 12.9512 17.5803 13.7464 17.0214L14.0446 16.8119C15.1888 16.0077 16.7369 16.1009 17.7765 17.0365L21 19.9376"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
@@ -128,9 +128,9 @@
                                        stroke-linejoin="round"></g>
                                     <g id="SVGRepo_iconCarrier">
                                         <path
-                                            d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6"
-                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
+                                                d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
                                     </g>
                                 </svg>
                             </button>
@@ -162,19 +162,23 @@
             </div>
 
             <div class="flex flex-col md:flex-row items-center justify-center gap-2 rounded-full">
-              <div name="generate_button" id="generate_button">
-                <button hx-post="/create/" 
-                        hx-swap="outerHTML" 
-                        hx-indicator="#ball" 
-                        hx-include="#csrf" 
-                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                        hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
-                        hx-trigger="click"
-                        class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-                    Generate Avatar
-                </button>
-              </div>
-                <button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
+                <div name="generate_button" id="generate_button">
+                    <button hx-post="/create/"
+                            hx-swap="outerHTML"
+                            hx-indicator="#ball"
+                            hx-include="#csrf"
+                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                            hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
+                            hx-trigger="click"
+                            class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+                        Generate Avatar
+                    </button>
+                </div>
+                <button name="generate_with_huggingface"
+                        hx-post="/create/"
+                        hx-swap="outerHTML"
+                        hx-indicator="#ball"
+                        hx-include="#csrf"
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                         hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
                         class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">

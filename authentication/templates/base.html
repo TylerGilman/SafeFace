@@ -92,11 +92,11 @@
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="flex bg-bg-100 dark:bg-bg-900 bg-opacity-50 fixed bottom-0 w-full h-12 items-center">
+<!-- Footer -->
+<footer class="flex bg-bg-100 dark:bg-bg-900 bg-opacity-50 fixed bottom-0 w-full h-12 items-center">
     <div class="flex flex-col pl-2 opacity-10">
-      <p class="text-sm text-black dark:text-white font-semibold leading-tight">SafeFace</p>
-      <p class="text-xs text-black dark:text-white font-semibold leading-tight">© 2024 SafeFace</p>
+        <p class="text-sm text-black dark:text-white font-semibold leading-tight">SafeFace</p>
+        <p class="text-xs text-black dark:text-white font-semibold leading-tight">© 2024 SafeFace</p>
     </div>
     <div class="max-w-7xl mx-auto px-4">
       <div x-data="{
@@ -169,12 +169,12 @@
       </div>
     </div>
     <div class="flex flex-col pr-2 opacity-5 items-end">
-      <p class="text-sm text-black dark:text-white font-semibold leading-tight">By</p>
-      <p class="text-xs text-black dark:text-white font-semibold leading-tight">Tgliz and Sii</p>
+        <p class="text-sm text-black dark:text-white font-semibold leading-tight">By</p>
+        <p class="text-xs text-black dark:text-white font-semibold leading-tight">Tgliz and Sii</p>
     </div>
-  </footer>
-  <!-- Toast -->
-  <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center">
+</footer>
+<!-- Toast -->
+<div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center">
     <!-- Toasts will be dynamically added here -->
   </div>
   <script>
@@ -225,19 +225,19 @@
         const toast = document.createElement('div');
         toast.className = `mb-3 p-4 rounded-lg shadow-lg text-white text-sm font-medium transition-opacity duration-300 ease-in-out opacity-0`;
 
-        switch (type) {
-          case 'success':
-            toast.classList.add('bg-green-500'); // Using green-500 for success
-            break;
-          case 'error':
-            toast.classList.add('bg-red-500'); // Using red-500 for error
-            break;
-          case 'warning':
-            toast.classList.add('bg-bg-500'); // Using bg-500 for warning
-            break;
-          default:
-            toast.classList.add('bg-primary-500'); // Using primary-500 for the default (info)
-        }
+            switch (type) {
+                case 'success':
+                    toast.classList.add('bg-green-500'); // Using green-500 for success
+                    break;
+                case 'error':
+                    toast.classList.add('bg-red-500'); // Using red-500 for error
+                    break;
+                case 'warning':
+                    toast.classList.add('bg-yellow-500'); // Using yellow-500 for warning
+                    break;
+                default:
+                    toast.classList.add('bg-primary-500'); // Using primary-500 for the default (info)
+            }
 
         toast.textContent = message;
         toastContainer.appendChild(toast);
@@ -262,16 +262,69 @@
       // Make showToast globally available
       window.showToast = showToast;
 
-      // Add event listener for error handling
+        // HTMX event listener for HX-Trigger
+        document.body.addEventListener('htmx:afterRequest', function (evt) {
+            var trigger = evt.detail.xhr.getResponseHeader('HX-Trigger');
+            if (trigger) {
+                try {
+                    var triggerData = JSON.parse(trigger);
+                    if (triggerData.showMessage) {
+                        showToast(triggerData.showMessage.text, triggerData.showMessage.type);
+                    }
+                } catch (e) {
+                    console.error('Failed to parse HX-Trigger JSON', e);
+                }
+            }
+        });
 
-      // Add event listener for face swap
-      document.body.addEventListener('click', function (event) {
-        if (event.target.id === 'face_swap_button') {
-          showToast('Processing face swap...', 'info', -1);
-        }
-      });
+        // HTMX event listeners for error handling
+        document.body.addEventListener('htmx:afterOnLoad', function (evt) {
+            const xhr = evt.detail.xhr;
+            if (xhr.status >= 400) {
+                let errorMsg = 'An unexpected error occurred';
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.error) {
+                        errorMsg = response.error;
+                    }
+                } catch (e) {
+                    console.error('Error parsing JSON response:', e);
+                }
+                showToast(errorMsg, 'error');
+            }
+        });
+
+        document.body.addEventListener('htmx:configRequest', function (evt) {
+            const xhr = evt.detail.xhr;
+            xhr.addEventListener('loadend', function () {
+                if (xhr.status >= 400) {
+                    let errorMsg = 'An unexpected error occurred';
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.error) {
+                            errorMsg = response.error;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing JSON response:', e);
+                    }
+                    showToast(errorMsg, 'error');
+                } else {
+                    showToast('Avatar generated successfully!', 'success');
+                }
+            });
+        });
+
+        // Add event listener for face swap
+        document.body.addEventListener('click', function (event) {
+            if (event.target.id === 'face_swap_button') {
+                showToast('Processing face swap...', 'info', -1);
+            } else if (event.target.id === 'generate_button') {
+                showToast('Generating avatar...', 'info');
+            } else if (event.target.name === 'generate_with_huggingface') {
+                showToast('Generating avatar...', 'info');
+            }
+        });
     })
-
 
     var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
     var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
