@@ -1,8 +1,9 @@
 {% block content %}
     <div id="content" class="flex flex-col items-center justify-center mt-4 pb-24">
         <h1 class="text-3xl font-bold text-center dark:text-white mb-2 max-sm:text-xl">Swap Face</h1>
+        <p class="text-center text-lg text-gray-600 dark:text-gray-300 max-sm:text-md mb-4">Swap your character onto <strong>images</strong> or <strong>videos</strong></p>
 
-        <div class="flex flex-col max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg max-sm:flex-col p-8 pb-14 pt-16 gap-4 max-sm:p-5 max-md:gap-2">
+        <div class="flex flex-col max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg max-sm:flex-col p-8 pb-14 pt-20 gap-4 max-sm:p-5 max-md:gap-2">
             <div class="flex flex-row items-center w-full max-w-full justify-between gap-5">
                 <div name="avatar" id="avatar" class="relative text-center flex flex-col justify-center items-center">
                     <p class="absolute -top-12 left-1/2 transform -translate-x-1/2 text-lg font-semibold dark:text-white">
@@ -20,7 +21,7 @@
                     <button id="choose_file_button"
                             class="flex flex-col items-center gap-4 justify-center w-40 h-40 bg-transparent border-2 border-dashed border-black dark:border-bg-300 border-opacity-50 text-black dark:text-white p-2 cursor-pointer rounded-lg px-4 whitespace-nowrap"
                             onclick="document.getElementById('hiddenFileInput').click()">
-                        <p class="font-medium text-md text-opacity-50">Choose Image/Video</p>
+                        <p class="font-medium text-md text-opacity-50">Choose Target</p>
                     </button>
                 </div>
                 <input type="file" id="hiddenFileInput" style="display: none;" onchange="handleFileChange(event)">

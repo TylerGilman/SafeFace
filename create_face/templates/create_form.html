@@ -60,12 +60,12 @@
         {% if mode == "create_mode" %}
             <div class="flex max-md:flex-col items-center justify-center gap-10 px-2">
                 <div class="flex flex-col items-center justify-center w-full gap-4">
-                    <div class="flex justify-left gap-1">
+                    <div class="flex gap-1 items-start w-full">
                         <div name="randomize_button_wrapper">
                             <button name="randomize_button" type="button" hx-get="/create/randomize_attributes/"
                                     hx-swap="outerHTML"
                                     hx-target="#create_form" hx-trigger="click"
-                                    class="gap-2 flex flex-row cursor-pointer text-white bg-primary-800 hover:bg-primary-700 font-medium rounded-full text-sm max-sm:text-sm px-4 py-2 max-sm:px-3 dark:bg-bg-800 dark:hover:bg-bg-900"
+                                    class="gap-2 flex flex-row cursor-pointer text-white bg-bg-600 hover:bg-bg-700 dark:bg-bg-800 dark:hover:bg-bg-700 font-medium rounded-full text-sm max-sm:text-sm px-4 py-2 max-sm:px-3 "
                             >
                                 Randomize
                                 <svg height="20px" width="20px" version="1.1" id="_x32_"
@@ -111,7 +111,7 @@
                             <button name="clear_button" type="button" hx-get="/create/clear_attributes/"
                                     hx-swap="outerHTML"
                                     hx-target="#create_form" hx-trigger="click"
-                                    class="gap-2 flex flex-row cursor-pointer text-white bg-primary-800 hover:bg-primary-700 font-medium rounded-full text-sm max-sm:text-sm px-4 py-2 max-sm:px-3 dark:bg-bg-800 dark:hover:bg-bg-900">
+                                    class="gap-2 flex flex-row cursor-pointer text-white bg-bg-600 hover:bg-bg-700 dark:bg-bg-800 dark:hover:bg-bg-700 font-medium rounded-full text-sm max-sm:text-sm px-4 py-2 max-sm:px-3">
                                 Clear
                                 <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
@@ -153,7 +153,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row items-center justify-center gap-2 rounded-full">
+            <div class="flex flex-col md:flex-row items-end justify-end mt-2 gap-2 rounded-full w-full">
                 <div id="button-container">
                     <button name="generate_button" id="generate_button" hx-post="/create/"
                             hx-swap="outerHTML"
@@ -166,7 +166,7 @@
                         Generate Avatar
                     </button>
                     <button id="cancel_button"
-                            hx-post="/create/cancel_generation/" 
+                            hx-post="/create/cancel_generation/"
                             hx-target="#button-container"
                             hx-include="#csrf"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
@@ -176,7 +176,7 @@
                     </button>
                 </div>
                   <div id="button-container">
-                    <button name="generate_with_huggingface"
+                    <button name="generate_with_huggingface" id="generate_with_huggingface"
                             hx-post="/create/"
                             hx-swap="outerHTML"
                             hx-indicator="#ball"
@@ -186,8 +186,8 @@
                             class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
                         Generate with Hugging Face
                     </button>
-                    <button id="cancel_button"
-                            hx-post="/create/cancel_generation/" 
+                    <button id="cancel_button_hugging_face"
+                            hx-post="/create/cancel_generation/"
                             hx-target="#button-container"
                             hx-include="#csrf"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
@@ -196,7 +196,7 @@
                         Cancel Generation
                     </button>
                   </div>
-            
+
                 {% if user.is_authenticated %}
 
                     <input type="hidden" id="image_data" name="image_data" value="{{ image_path }}">
@@ -371,11 +371,17 @@
             document.getElementById('generate_button').classList.add('hidden');
             document.getElementById('cancel_button').classList.remove('hidden');
         }
+        if (evt.detail.elt.id === 'generate_with_huggingface') {
+            document.getElementById('generate_with_huggingface').classList.add('hidden');
+            document.getElementById('cancel_button_hugging_face').classList.remove('hidden');
+        }
     });
 
     document.body.addEventListener('htmx:afterRequest', function(evt) {
         document.getElementById('generate_button').classList.remove('hidden');
         document.getElementById('cancel_button').classList.add('hidden');
+        document.getElementById('generate_with_huggingface').classList.remove('hidden');
+        document.getElementById('cancel_button_hugging_face').classList.add('hidden');
     });
 
         // Attach click listeners to the images after swapping the form
