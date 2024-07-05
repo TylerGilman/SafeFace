@@ -50,6 +50,16 @@ def save_image_to_temp(image, filename):
     return temp_path
 
 
+def save_video_to_temp(video, filename):
+    temp_dir = os.path.join(os.path.dirname(__file__), 'data/tmp')
+    os.makedirs(temp_dir, exist_ok=True)
+    temp_path = os.path.join(temp_dir, filename)
+    with open(temp_path, 'wb') as f:
+        for chunk in video.chunks():
+            f.write(chunk)
+    return temp_path
+
+
 def run_facefusion(output, source, target, headless=True):
     logger.info('Running FaceFusion command...')
     start_time = time.time()
@@ -63,13 +73,15 @@ def run_facefusion(output, source, target, headless=True):
     return result
 
 
-def make_response_data(image_data, filename, output_image_data=None, image_id=None):
+def make_response_data(image_data, filename, output_image_data=None, output_video_data=None, image_id=None):
     response_data = {
         'image_data': f"data:image/jpeg;base64,{image_data}",
         'filename': filename
     }
     if output_image_data:
         response_data['output_image_data'] = f"data:image/png;base64,{output_image_data}"
+    if output_video_data:
+        response_data['output_video_data'] = f"data:video/mp4;base64,{output_video_data}"
     if image_id:
         response_data['image_id'] = image_id
     return response_data
@@ -90,6 +102,7 @@ def swap_face(request):
             return JsonResponse({'error': 'Invalid image path or image not found'}, status=400)
 
         uploaded_file = request.POST.get('uploaded_file')
+        uploaded_video = request.FILES.get('uploaded_video')
         if uploaded_file:
             logger.info('Uploaded file found, running face swap...')
             uploaded_file_data = decode_base64_image(uploaded_file)
@@ -114,10 +127,39 @@ def swap_face(request):
                 image_base64,
                 request.POST.get('filename'),
                 output_image_base64,
-                image_id
+                image_id=image_id
             )
             logger.info(
                 f'Response data, image_data: {response_data["image_data"][:50]}, output_image_data: {response_data["output_image_data"][:50]}')
+
+            return JsonResponse(response_data)
+        elif uploaded_video:
+            logger.info('Uploaded video found, running face swap...')
+            temp_video_path = save_video_to_temp(uploaded_video, 'uploaded_video.mp4')
+
+            image_base64 = base64.b64encode(image_data).decode('utf-8')
+            image_data = Image.open(BytesIO(base64.b64decode(image_base64)))
+            temp_image_data_path = save_image_to_temp(image_data, 'image_data.png')
+
+            temp_output_video_path = os.path.join(os.path.dirname(__file__), 'data/tmp/output_video.mp4')
+            run_facefusion(temp_output_video_path, temp_image_data_path, temp_video_path)
+
+            if not os.path.exists(temp_output_video_path):
+                logger.error("Output video file not found after running FaceFusion.")
+                return JsonResponse({'error': 'Failed to generate the output video'}, status=500)
+
+            with open(temp_output_video_path, 'rb') as output_file:
+                output_video_data = output_file.read()
+                output_video_base64 = base64.b64encode(output_video_data).decode('utf-8')
+
+            response_data = make_response_data(
+                image_base64,
+                request.POST.get('filename'),
+                output_video_data=output_video_base64,
+                image_id=image_id
+            )
+            logger.info(
+                f'Response data, image_data: {response_data["image_data"][:50]}, output_video_data: {response_data["output_video_data"][:50]}')
 
             return JsonResponse(response_data)
         else:
