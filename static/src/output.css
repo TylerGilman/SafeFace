@@ -2041,16 +2041,16 @@ select {
   opacity: 0;
 }
 
+.opacity-10 {
+  opacity: 0.1;
+}
+
 .opacity-100 {
   opacity: 1;
 }
 
 .opacity-5 {
   opacity: 0.05;
-}
-
-.opacity-10 {
-  opacity: 0.1;
 }
 
 .shadow {
