@@ -1,12 +1,15 @@
 import base64
+import json
 import logging
 import os
 import random
 from io import BytesIO
+from django.template import loader
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render
-
+from django.http import HttpResponse
 from create_face.ml_handler.hugging_face import HuggingFaceHandler
 from create_face.ml_handler.pipeline import PipelineHandler
 from create_face.models import UserImage
@@ -84,7 +87,8 @@ def index(request):
     images = []
     if change_mode == "true":
         if mode == "gallery_mode" or mode == "create_mode":
-            user_images = UserImage.objects.filter(user=request.user) if request.user.is_authenticated else []
+            user_images = UserImage.objects.filter(
+                user=request.user) if request.user.is_authenticated else []
             if len(user_images) == 0:
                 logger.error("No images found for the user.")
             for user_image in user_images:
@@ -94,13 +98,26 @@ def index(request):
 
             default_images = get_default_images()
             images.extend(default_images)
-
             return render(request, "create_form.html",
                           {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode,
                            'form_fields': form_fields, 'images': images})
+    context = {
+            'guest': request.GET.get("guest"),
+            'form_fields': form_fields,
+            'mode': mode,
+            'images': images
+        }
+    loaded_template = loader.get_template(template)
+    rendered_template = loaded_template.render(context, request)
+    response = HttpResponse(rendered_template)
+    response['HX-Trigger'] = json.dumps({
+        "showMessage": {
+            "text": "Welcome, create an Avatar or pick from the gallery!",
+            "type": "info"
+        }
+    })
+    return response
 
-    return render(request, template,
-                  {'guest': request.GET.get("guest"), 'form_fields': form_fields, 'mode': mode, 'images': images})
 
 
 def create(request):
@@ -177,7 +194,8 @@ def clear_attributes(request):
 def randomize_attributes(request):
     new_form_fields = form_fields.copy()
     for field in new_form_fields:
-        field['default'] = random.choice(field['options'])  # Randomly select an option for each
+        # Randomly select an option for each
+        field['default'] = random.choice(field['options'])
 
     return render(request, "create_form.html", {
         'guest': request.GET.get("guest"),
@@ -195,30 +213,60 @@ def save_image(request):
         if image_data:
             _, imgstr = image_data.split(';base64,')
             data = base64.b64decode(imgstr)
-
             # Check how many images the user has saved
             user_images = UserImage.objects.filter(user=request.user)
             if len(user_images) >= 5:
                 logger.info("Maximum number of saved images, cannot save!")
-                return render(request, "You have reached the maximum number of saved images.")
-
+                return HttpResponse(
+                    status=400,
+                    headers={
+                        'HX-Trigger': json.dumps({
+                            "showMessage": {
+                                "text": "You have reached the maximum number of saved images.",
+                                "type": "warning"
+                            }
+                        })
+                    })
             # Save the image to the file system
             filename = f"{request.user.id}_image_{len(user_images) + 1}.png"
-            file_path = save_image_to_file_system(data, request.user.id, filename)
-
+            file_path = save_image_to_file_system(
+                data, request.user.id, filename)
             # Save the file path to the database
             user_image = UserImage(user=request.user, image_path=file_path)
             user_image.save()
             logger.info("Image saved successfully.")
-            return render(request, "empty.html", {
-                "generatedSaved": None,
-                "showMessage": "Saved successfully!"
-            })
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "showMessage": {
+                            "text": "Avatar Saved To Gallery",
+                            "type": "success"
+                        }
+                    })
+                })
         else:
             logger.error("Cannot save, no image data provided.")
-            return render(request, "error.html", {"message": "No image data provided."})
-
-    return render(request, "error.html", {"message": "Error Saving Image."})
+            return HttpResponse(
+                status=400,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "showMessage": {
+                            "text": "No image data provided.",
+                            "type": "error"
+                        }
+                    })
+                })
+    return HttpResponse(
+        status=400,
+        headers={
+            'HX-Trigger': json.dumps({
+                "showMessage": {
+                    "text": "Error Saving Image.",
+                    "type": "error"
+                }
+            })
+        })
 
 
 @login_required
@@ -266,7 +314,8 @@ def get_default_images():
                 with open(filepath, 'rb') as f:
                     image_data = f.read()
                     image_base64 = base64.b64encode(image_data).decode('utf-8')
-                    default_images.append({'id': f'default-{filename}', 'image': image_base64})
+                    default_images.append(
+                        {'id': f'default-{filename}', 'image': image_base64})
 
     return default_images
 
