@@ -7,7 +7,7 @@ from io import BytesIO
 from django.template import loader
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.http import HttpResponse
 from create_face.ml_handler.hugging_face import HuggingFaceHandler
@@ -149,7 +149,7 @@ def create_with_pipeline(request):
             "image_path": image_data
         })
     else:
-        return render(request, "error.html", {"message": "Failed to generate image using pipeline."})
+        return JsonResponse({"error": "Failed to generate image using Pipeline."}, status=400)
 
 
 def create_with_hugging_face(request):
@@ -172,9 +172,9 @@ def create_with_hugging_face(request):
                 "image_path": image_data
             })
         else:
-            return render(request, "error.html", {"message": "Failed to generate image using HuggingFace."})
+            return JsonResponse({"error": "Failed to generate image using HuggingFace."}, status=400)
     except Exception as e:
-        return render(request, "error.html", {"message": str(e)})
+        return JsonResponse({"error": str(e)}, status=400)
 
 
 def clear_attributes(request):
