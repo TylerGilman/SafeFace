@@ -31,7 +31,7 @@ form_fields = [
     {
         'id': 'gender',
         'label': 'Gender',
-        'options': ['Male', 'Female', 'Ugly']
+        'options': ['Male', 'Female', 'Other']
     },
     {
         'id': 'hair_color',
@@ -51,16 +51,18 @@ form_fields = [
     {
         'id': 'skin_color',
         'label': 'Skin Color',
-        'options': ['White', 'Pale', 'Tan', 'Dark', 'Very Dark']
+        'options': ['Fair', 'Light', 'Medium', 'Dark', 'Deep']
     },
     {
         'id': 'skin_type',
         'label': 'Skin Type',
-        'options': ['Acne', 'Clear', 'Freckles', 'See-Through']},
+        'options': ['Acne', 'Clear', 'Freckles', 'Sensitive']
+    },
     {
         'id': 'age',
         'label': 'Age',
-        'options': ['Child', 'Teenager', 'Adult', 'Elderly']},
+        'options': ['Child', 'Teenager', 'Adult', 'Elderly']
+    },
     {
         'id': 'ethnicity',
         'label': 'Ethnicity',
@@ -71,7 +73,12 @@ form_fields = [
         'id': 'eye_color',
         'label': 'Eye Color',
         'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']
-    }
+    },
+    {
+        'id': 'facial_hair',
+        'label': 'Facial Hair',
+        'options': ['Beard', 'Mustache', 'Goatee', 'Clean Shaven']
+    },
 ]
 
 
