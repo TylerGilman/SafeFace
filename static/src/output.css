@@ -2083,6 +2083,11 @@ select {
   color: rgb(219 72 0 / var(--tw-text-opacity));
 }
 
+.text-secondary-500 {
+  --tw-text-opacity: 1;
+  color: rgb(255 92 26 / var(--tw-text-opacity));
+}
+
 .text-opacity-50 {
   --tw-text-opacity: 0.5;
 }
@@ -2097,6 +2102,34 @@ select {
 
 .opacity-15 {
   opacity: 0.15;
+}
+
+.opacity-25 {
+  opacity: 0.25;
+}
+
+.opacity-20 {
+  opacity: 0.2;
+}
+
+.opacity-35 {
+  opacity: 0.35;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.opacity-40 {
+  opacity: 0.4;
+}
+
+.opacity-45 {
+  opacity: 0.45;
+}
+
+.opacity-55 {
+  opacity: 0.55;
 }
 
 .shadow {
@@ -2342,6 +2375,11 @@ select {
 .dark\:text-secondary-400:is(.dark *) {
   --tw-text-opacity: 1;
   color: rgb(255 137 77 / var(--tw-text-opacity));
+}
+
+.dark\:text-secondary-500:is(.dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(255 92 26 / var(--tw-text-opacity));
 }
 
 .dark\:placeholder-gray-100:is(.dark *)::-moz-placeholder {
