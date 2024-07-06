@@ -59,13 +59,11 @@
           <div class="relative ml-3">
             <div>
               <span class="text-gray-600 dark:text-white mr-4">{{ user.username }}</span>
-              <form method="post" action="{% url 'logout' %}" class="inline">
-                {% csrf_token %}
-                <button type="submit"
-                  class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-                  Logout
-                </button>
-              </form>
+              <button hx-post="{% url 'logout' %}" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-trigger="click"
+                hx-swap="none"
+                class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+                Logout
+              </button>
             </div>
           </div>
           {% else %}
@@ -179,118 +177,122 @@
   </div>
   <script>
     // Toasts
-  document.addEventListener('DOMContentLoaded', function () {
-  const toastContainer = document.getElementById('toast-container');
-  if (!toastContainer) {
-    console.error("Toast container not found! Make sure you have a div with id 'toast-container' in your HTML.");
-    return;
-  }
-
-  let generatingToast = null;
-
-  document.body.addEventListener('htmx:beforeRequest', function (event) {
-    console.log("beforeRequest event triggered", event.detail);
-    if (event.detail.elt.closest('#generate_button')) {
-      console.log("Showing toast before request");
-      // Remove any existing generating toast
-      if (generatingToast && toastContainer.contains(generatingToast)) {
-        toastContainer.removeChild(generatingToast);
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log("DOMContentLoaded event triggered");
+      const toastContainer = document.getElementById('toast-container');
+      if (!toastContainer) {
+        console.error("Toast container not found! Make sure you have a div with id 'toast-container' in your HTML.");
+        return;
       }
-      // Show the new generating toast for a maximum of 10 seconds
-      generatingToast = showToast("Generating avatar... This may take a moment.", 'info', 10000);
-    }
-  });
 
-  document.body.addEventListener('htmx:afterRequest', function (event) {
-    console.log("afterRequest event triggered", event.detail);
-    if (event.detail.elt.closest('#generate_button')) {
-      // Remove the "generating" toast if it still exists
-      if (generatingToast && toastContainer.contains(generatingToast)) {
-        toastContainer.removeChild(generatingToast);
-      }
-      
-      if (event.detail.successful) {
-        console.log("Request successful, showing success toast");
-        showToast("Avatar generated successfully!", 'success');
-      } else {
-        console.log("Request failed, showing error toast");
-        showToast("Error generating avatar. Please try again.", 'error', 0); // 0 means it won't auto-dismiss
-      }
-    }
-    // Handle server-sent messages
-    const triggerHeader = event.detail.xhr.getResponseHeader('HX-Trigger');
-    if (triggerHeader) {
-      const triggers = JSON.parse(triggerHeader);
-      if (triggers.showMessage) {
-        showToast(triggers.showMessage.text, triggers.showMessage.type);
-      }
-    }
-  });
+      let generatingToast = null;
+      let isRedirecting = false;
 
-  // Define showToast function
-  function showToast(message, type = 'info', duration = 3000) {
-    const toast = document.createElement('div');
-    toast.className = `mb-3 p-4 rounded-lg shadow-lg text-white text-sm font-medium transition-opacity duration-300 ease-in-out opacity-0 flex justify-between items-center`;
-    switch (type) {
-      case 'success':
-        toast.classList.add('bg-green-500'); // Using green-500 for success
-        break;
-      case 'error':
-        toast.classList.add('bg-red-500'); // Using red-500 for error
-        break;
-      case 'warning':
-        toast.classList.add('bg-yellow-500'); // Using yellow-500 for warning
-        break;
-      default:
-        toast.classList.add('bg-primary-500'); // Using primary-500 for the default (info)
-    }
-    
-    const messageSpan = document.createElement('span');
-    messageSpan.textContent = message;
-    toast.appendChild(messageSpan);
-
-    const closeButton = document.createElement('button');
-    closeButton.textContent = '×';
-    closeButton.className = 'ml-2 text-white hover:text-gray-200 focus:outline-none';
-    closeButton.onclick = () => {
-      toast.classList.remove('opacity-100');
-      toast.classList.add('opacity-0');
-      setTimeout(() => {
-        if (toastContainer.contains(toast)) {
-          toastContainer.removeChild(toast);
+      document.body.addEventListener('htmx:beforeRequest', function (event) {
+        console.log("beforeRequest event triggered", event.detail);
+        if (event.detail.elt.closest('#generate_button')) {
+          console.log("Showing toast before request");
+          if (generatingToast && toastContainer.contains(generatingToast)) {
+            toastContainer.removeChild(generatingToast);
+          }
+          generatingToast = showToast("Generating avatar... This may take a moment.", 'info', 10000);
         }
-      }, 300);
-    };
-    toast.appendChild(closeButton);
+      });
 
-    toastContainer.appendChild(toast);
-    // Trigger reflow to enable transition
-    toast.offsetHeight;
-    toast.classList.add('opacity-100');
+      document.body.addEventListener('htmx:afterRequest', function (event) {
+        console.log("htmx:afterRequest event triggered", event.detail);
 
-    if (duration > 0) {
-      setTimeout(() => {
-        if (toastContainer.contains(toast)) {
-          closeButton.click();
+        if (isRedirecting) {
+          console.log("Redirect in progress, skipping further processing");
+          return;
         }
-      }, duration);
-    }
 
-    return toast; // Return the toast element for potential future reference
-  }
+        let message = null;
+        let messageType = null;
+        let redirectUrl = null;
 
-  // Make showToast globally available
-  window.showToast = showToast;
+        // Handle server-sent messages via HX-Trigger
+        const triggerHeader = event.detail.xhr.getResponseHeader('HX-Trigger');
+        if (triggerHeader) {
+          const triggers = JSON.parse(triggerHeader);
+          if (triggers.showMessage) {
+            message = triggers.showMessage.text;
+            messageType = triggers.showMessage.type;
+          }
+          if (triggers.redirectUrl) {
+            redirectUrl = triggers.redirectUrl;
+          }
+        }
 
-  // Add event listener for face swap
-  document.body.addEventListener('click', function (event) {
-    if (event.target.id === 'face_swap_button') {
-      showToast('Processing face swap...', 'info', 10000); // Show for 10 seconds max
-    }
-  });
-});
+        // Show toast if we have a message
+        if (message) {
+          console.log("Showing toast:", message, messageType);
+          showToast(message, messageType);
+        }
 
+        // Redirect if we have a URL
+        if (redirectUrl) {
+          console.log("Redirecting to:", redirectUrl);
+          isRedirecting = true;
+          setTimeout(() => {
+            window.location.href = redirectUrl;
+          }, 1000);
+        }
+      });
+      function showToast(message, type = 'info', duration = 3000) {
+        const toast = document.createElement('div');
+        toast.className = `mb-3 p-4 rounded-lg shadow-lg text-white text-sm font-medium transition-opacity duration-300 ease-in-out opacity-0 flex justify-between items-center`;
+        switch (type) {
+          case 'success':
+            toast.classList.add('bg-green-500'); // Using green-500 for success
+            break;
+          case 'error':
+            toast.classList.add('bg-red-500'); // Using red-500 for error
+            break;
+          case 'warning':
+            toast.classList.add('bg-yellow-500'); // Using yellow-500 for warning
+            break;
+          default:
+            toast.classList.add('bg-primary-500'); // Using primary-500 for the default (info)
+        }
 
+        const messageSpan = document.createElement('span');
+        messageSpan.textContent = message;
+        toast.appendChild(messageSpan);
+
+        const closeButton = document.createElement('button');
+        closeButton.textContent = '×';
+        closeButton.className = 'ml-2 text-white hover:text-gray-200 focus:outline-none';
+        closeButton.onclick = () => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0');
+          setTimeout(() => {
+            if (toastContainer.contains(toast)) {
+              toastContainer.removeChild(toast);
+            }
+          }, 300);
+        };
+        toast.appendChild(closeButton);
+
+        toastContainer.appendChild(toast);
+        // Trigger reflow to enable transition
+        toast.offsetHeight;
+        toast.classList.add('opacity-100');
+
+        if (duration > 0) {
+          setTimeout(() => {
+            if (toastContainer.contains(toast)) {
+              closeButton.click();
+            }
+          }, duration);
+        }
+
+        return toast; // Return the toast element for potential future reference
+      }
+
+      // Make showToast globally available
+      window.showToast = showToast;
+    });
 
 
     var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
@@ -333,6 +335,8 @@
       }
 
     });
+
+
   </script>
 </body>
 

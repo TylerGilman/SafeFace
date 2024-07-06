@@ -1,5 +1,6 @@
 {% block content %}
     <div id="content" name="content" class="flex flex-col items-center justify-center mt-4">
+        <!--- <a href="/create/" hx-trigger="load" hx-push-url="true"></div> -->
         <h1 class="text-3xl font-bold text-center dark:text-white mb-2 max-sm:text-xl">Pick A Virtual Avatar</h1>
         <p class="text-center dark:text-white max-sm:text-sm mb-4">
             Select an avatar from the gallery or create your own.
@@ -30,5 +31,15 @@
       }
     }
   });
+
+    document.body.addEventListener('htmx:afterSettle', function (event) {
+      const triggerAfterSettleHeader = event.detail.xhr.getResponseHeader('HX-Trigger-After-Settle');
+      if (triggerAfterSettleHeader) {
+        const triggers = JSON.parse(triggerAfterSettleHeader);
+        if (triggers.showMessage) {
+          showToast(triggers.showMessage.text, triggers.showMessage.type);
+        }
+      }
+    });
 </script>
 {% endblock %}
