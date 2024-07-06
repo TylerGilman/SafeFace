@@ -2,12 +2,14 @@
 Generate an AI avatar then swap their face onto your photos and videos.
 
 ## Install: 
+```
 python3 -m venv .venv \
 source .venv/bin/activate \
 pip install -r requirements.txt
-
+```
+```
 npx tailwindcss -i ./static/src/input.css -o ./static/src/output.css --watch
-
+```
 ## Run: 
 ```
 python3 manage.py migrate
