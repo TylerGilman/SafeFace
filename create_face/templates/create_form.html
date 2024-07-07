@@ -364,29 +364,41 @@
             });
         }
 
-        document.body.addEventListener('htmx:beforeRequest', function (evt) {
-            if (evt.detail.elt.id === 'generate_button') {
-                document.getElementById('generate_button').classList.add('hidden');
-                document.getElementById('cancel_button').classList.remove('hidden');
-            }
-            if (evt.detail.elt.id === 'generate_with_huggingface') {
-                document.getElementById('generate_with_huggingface').classList.add('hidden');
-                document.getElementById('cancel_button_hugging_face').classList.remove('hidden');
-            }
-        });
+document.body.addEventListener('htmx:beforeRequest', function (evt) {
+    if (evt.detail.elt.id === 'generate_button') {
+        const generateButton = document.getElementById('generate_button');
+        const cancelButton = document.getElementById('cancel_button');
+        if (generateButton) generateButton.classList.add('hidden');
+        if (cancelButton) cancelButton.classList.remove('hidden');
+    }
+    if (evt.detail.elt.id === 'generate_with_huggingface') {
+        const generateHuggingFace = document.getElementById('generate_with_huggingface');
+        const cancelHuggingFace = document.getElementById('cancel_button_hugging_face');
+        if (generateHuggingFace) generateHuggingFace.classList.add('hidden');
+        if (cancelHuggingFace) cancelHuggingFace.classList.remove('hidden');
+    }
+});
 
-        document.body.addEventListener('htmx:afterRequest', function (evt) {
-            document.getElementById('generate_button').classList.remove('hidden');
-            document.getElementById('cancel_button').classList.add('hidden');
-            document.getElementById('generate_with_huggingface').classList.remove('hidden');
-            document.getElementById('cancel_button_hugging_face').classList.add('hidden');
-        });
+document.body.addEventListener('htmx:afterRequest', function (evt) {
+    const generateButton = document.getElementById('generate_button');
+    const cancelButton = document.getElementById('cancel_button');
+    const generateHuggingFace = document.getElementById('generate_with_huggingface');
+    const cancelHuggingFace = document.getElementById('cancel_button_hugging_face');
 
-        // Attach click listeners to the images after swapping the form
-        document.body.addEventListener('htmx:afterSwap', function (evt) {
-            if (evt.detail.target.id === 'create_form') {
-                attachImageClickListeners();
-            }
-        });
+    if (generateButton) generateButton.classList.remove('hidden');
+    if (cancelButton) cancelButton.classList.add('hidden');
+    if (generateHuggingFace) generateHuggingFace.classList.remove('hidden');
+    if (cancelHuggingFace) cancelHuggingFace.classList.add('hidden');
+});
+// Attach click listeners to the images after swapping the form
+    document.body.addEventListener('htmx:afterSwap', function (evt) {
+    if (evt.detail.target.id === 'create_form') {
+        // Check the value of the hidden input 'mode'
+        var modeInput = document.querySelector('input[name="mode"]');
+        if (modeInput && modeInput.value === 'gallery_mode') {
+            attachImageClickListeners();
+        }
+    }
+});
     </script>
 {% endblock %}
