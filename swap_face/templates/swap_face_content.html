@@ -159,41 +159,6 @@
             });
         }
 
-        function initializeToast() {
-            const toastElement = document.getElementById("toast");
-            const toastBody = document.getElementById("toast-body");
-
-            if (!toastElement || !toastBody) {
-                console.error("Toast elements not found in the DOM");
-                return;
-            }
-
-            function showToast(message, duration = 3000) {
-                toastBody.textContent = message;
-                toastElement.classList.remove('hidden');
-                setTimeout(() => {
-                    toastElement.classList.remove('opacity-0');
-                }, 10);
-                setTimeout(() => {
-                    hideToast();
-                }, duration);
-            }
-
-            function hideToast() {
-                toastElement.classList.add('opacity-0');
-                setTimeout(() => {
-                    toastElement.classList.add('hidden');
-                }, 300);
-            }
-
-            // Make showToast available globally
-            window.showToast = showToast;
-        }
-
-        // Call this function when the DOM is ready
-        document.addEventListener('DOMContentLoaded', initializeToast);
-
-
         async function submitForm() {
             const processingToast = window.showToast('Processing face swap...', 'info', -1);
             const formData = new FormData();
@@ -231,11 +196,13 @@
                     if (processingToast && processingToast.parentNode) {
                         processingToast.parentNode.removeChild(processingToast);
                     }
-
-                    document.getElementById('loading_indicator').style.display = 'none';
-                    if (data.error) {
-                        console.error('Error:', data.error);
-                        window.showToast('Face Swap Failed: ' + data.error, 'error');
+                    var loadingIndicator = document.getElementById('loading_indicator');
+                    if (loadingIndicator) {
+                        document.getElementById('loading_indicator').style.display = 'none';
+                    }
+                    if (data.error || !loadingIndicator) {
+                        console.error('Error: data error or no indicator found', data.error);
+                        window.showToast('Face Swap Failed', 'error');
                     } else {
                         showToast('Face Swap Success!', 'success');
                         const resultContainer = document.getElementById('result_container');

@@ -25,7 +25,7 @@
   </script>
 </head>
 
-<body class="bg-bg-50 dark:bg-bg-800 flex flex-col min-h-screen">
+<body class="bg-bg-50 dark:bg-bg-800 flex flex-col min-h-screen font-mono">
   <input type="hidden" id="csrf" value="{{ csrf_token }}">
   <input type="hidden" id="render_mode" value="{{ render_mode }}">
   <input type="hidden" id="next" value="/create">
@@ -34,16 +34,30 @@
   <nav class="bg-bg-100 dark:bg-bg-900">
     <div class="max-w-7xl mx-auto px-4">
       <div class="flex justify-between h-16">
-        <div class="flex">
-          <div class="flex-shrink-0 flex items-center">
-            <a hx-get="/auth/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
-              hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/"
-              class="text-xl font-bold bg-gradient-to-r from-primary-600 to-secondary-400 inline-block text-transparent bg-clip-text transform hover:scale-105 focus:scale-110 transition-transform">SafeFace</a>
-          </div>
-        </div>
         <div class="flex items-center">
+          <a hx-get="/auth/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
+            hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/"
+            class="text-xl font-bold bg-gradient-to-r from-primary-600 to-secondary-400 inline-block text-transparent bg-clip-text transform hover:scale-105 focus:scale-110 transition-transform">
+            SafeFace
+          </a>
+        </div>
+
+        <!-- Mobile menu button -->
+        <div class="flex items-center md:hidden">
+          <button id="mobile-menu-button"
+            class="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
+            <span class="sr-only">Open main menu</span>
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Desktop menu -->
+        <div class="hidden md:flex md:items-center">
           <button id="theme-toggle" type="button"
-            class="text-gray-500 dark:text-gray-400 hover:bg-bg-200 dark:hover:bg-bg-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+            class="text-gray-500 m-4 dark:text-gray-400 hover:bg-bg-200 dark:hover:bg-bg-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
             <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg">
               <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
@@ -70,22 +84,60 @@
           <div>
             <button hx-get="/auth/login/" hx-swap="outerHTML" hx-target="#content" hx-include="#next, #render_mode"
               hx-vals='js:{next: "/create/", render_mode: "content"}' hx-push-url="/auth/login/"
-              class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700"
-            >
-                Login
+              class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 mr-2">
+              Login
             </button>
             <button hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
               hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/register/"
-              class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700"
-            >
-                Sign Up
+              class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+              Sign Up
             </button>
           </div>
           {% endif %}
         </div>
       </div>
     </div>
+
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div id="mobile-menu" class="md:hidden hidden">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <button id="mobile-theme-toggle" type="button"
+          class="text-gray-500 w-full text-left dark:text-gray-400 hover:bg-bg-200 dark:hover:bg-bg-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+          Toggle Theme
+        </button>
+        {% if user.is_authenticated %}
+        <div class="text-gray-600 dark:text-white p-2">{{ user.username }}</div>
+        <button hx-post="/auth/logout/" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-trigger="click"
+          hx-swap="none" hx-push-url="/auth/"
+          class="w-full text-left bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+          Logout
+        </button>
+        {% else %}
+        <button hx-get="/auth/login/" hx-swap="outerHTML" hx-target="#content" hx-include="#next, #render_mode"
+          hx-vals='js:{next: "/create/", render_mode: "content"}' hx-push-url="/auth/login/"
+          class="w-full text-left bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+          Login
+        </button>
+        <button hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
+          hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/register/"
+          class="w-full text-left bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+          Sign Up
+        </button>
+        {% endif %}
+      </div>
+    </div>
   </nav>
+
+  <script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function () {
+      var mobileMenu = document.getElementById('mobile-menu');
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    document.getElementById('mobile-theme-toggle').addEventListener('click', function () {
+      // Add your theme toggle logic here
+    });
+  </script>
 
   <main class="flex-grow max-w-7xl mx-auto px-4">
     <div id="content" name="content">

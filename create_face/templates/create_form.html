@@ -1,10 +1,10 @@
 {% block form %}
     {% load filters %}
     <div name="create_form" id="create_form"
-         class="flex max-w-full bg-bg-100 dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-1 max-md:gap-2 mb-5"
+         class="bg-bg-100 max-w-full dark:bg-bg-900 shadow-lg rounded-lg flex-col items-center p-4 gap-1 max-md:gap-2 mb-5"
     >
 
-        <div id="mode-toggle" class="flex items-center gap-2 my-1 bg-secondary-600 rounded-xl relative mb-6">
+        <div id="mode-toggle" class="flex max-w-sm mx-auto items-center gap-2 my-1 bg-secondary-600 rounded-xl relative mb-6">
             <input type="hidden" id="mode" name="mode" value="{{ mode }}"/>
             <input type="hidden" id="change_mode" name="change_mode" value="false"/>
             <div id="slider"
@@ -128,25 +128,24 @@
                             </button>
                         </div>
                     </div>
-                    <div id="attributes"
-                         class="text-center grid grid-cols-5 md:grid-cols-5 lg:grid-cols-5 w-full gap-x-4 gap-y-2 mb-4">
-                        {% for field in form_fields %}
-                            <div class="form-group relative rounded-xl">
-                                <label for="{{ field.id }}"
-                                       class="text-left md:text-center block text-sm text-black dark:text-white">
-                                    {{ field.label }}
-                                </label>
-                                <select id="{{ field.id }}"
-                                        class="text-left appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3  dark:bg-bg-700 dark:border-gray-500 dark:placeholder-gray-100 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                    <option disabled selected></option>
-                                    {% for option in field.options %}
-                                        <option {% if option == field.default %}
-                                            selected {% endif %}>{{ option }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        {% endfor %}
-                    </div>
+                <div id="attributes"
+                    class="text-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full gap-x-4 gap-y-2 mb-4">
+                    {% for field in form_fields %}
+                        <div class="form-group relative rounded-xl">
+                            <label for="{{ field.id }}"
+                                  class="text-left sm:text-center block text-sm text-black dark:text-white">
+                                {{ field.label }}
+                            </label>
+                            <select id="{{ field.id }}"
+                                    class="text-left appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full px-3 dark:bg-bg-700 dark:border-gray-500 dark:placeholder-gray-100 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <option disabled selected></option>
+                                {% for option in field.options %}
+                                    <option {% if option == field.default %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endfor %}
+                </div>
                 </div>
             </div>
 
@@ -364,32 +363,32 @@
             });
         }
 
-document.body.addEventListener('htmx:beforeRequest', function (evt) {
-    if (evt.detail.elt.id === 'generate_button') {
-        const generateButton = document.getElementById('generate_button');
-        const cancelButton = document.getElementById('cancel_button');
-        if (generateButton) generateButton.classList.add('hidden');
-        if (cancelButton) cancelButton.classList.remove('hidden');
-    }
-    if (evt.detail.elt.id === 'generate_with_huggingface') {
-        const generateHuggingFace = document.getElementById('generate_with_huggingface');
-        const cancelHuggingFace = document.getElementById('cancel_button_hugging_face');
-        if (generateHuggingFace) generateHuggingFace.classList.add('hidden');
-        if (cancelHuggingFace) cancelHuggingFace.classList.remove('hidden');
-    }
-});
+          document.body.addEventListener('htmx:beforeRequest', function (evt) {
+              if (evt.detail.elt.id === 'generate_button') {
+                  const generateButton = document.getElementById('generate_button');
+                  const cancelButton = document.getElementById('cancel_button');
+                  if (generateButton) generateButton.classList.add('hidden');
+                  if (cancelButton) cancelButton.classList.remove('hidden');
+              }
+              if (evt.detail.elt.id === 'generate_with_huggingface') {
+                  const generateHuggingFace = document.getElementById('generate_with_huggingface');
+                  const cancelHuggingFace = document.getElementById('cancel_button_hugging_face');
+                  if (generateHuggingFace) generateHuggingFace.classList.add('hidden');
+                  if (cancelHuggingFace) cancelHuggingFace.classList.remove('hidden');
+              }
+          });
 
-document.body.addEventListener('htmx:afterRequest', function (evt) {
-    const generateButton = document.getElementById('generate_button');
-    const cancelButton = document.getElementById('cancel_button');
-    const generateHuggingFace = document.getElementById('generate_with_huggingface');
-    const cancelHuggingFace = document.getElementById('cancel_button_hugging_face');
+          document.body.addEventListener('htmx:afterRequest', function (evt) {
+              const generateButton = document.getElementById('generate_button');
+              const cancelButton = document.getElementById('cancel_button');
+              const generateHuggingFace = document.getElementById('generate_with_huggingface');
+              const cancelHuggingFace = document.getElementById('cancel_button_hugging_face');
 
-    if (generateButton) generateButton.classList.remove('hidden');
-    if (cancelButton) cancelButton.classList.add('hidden');
-    if (generateHuggingFace) generateHuggingFace.classList.remove('hidden');
-    if (cancelHuggingFace) cancelHuggingFace.classList.add('hidden');
-});
+              if (generateButton) generateButton.classList.remove('hidden');
+              if (cancelButton) cancelButton.classList.add('hidden');
+              if (generateHuggingFace) generateHuggingFace.classList.remove('hidden');
+              if (cancelHuggingFace) cancelHuggingFace.classList.add('hidden');
+          });
 // Attach click listeners to the images after swapping the form
     document.body.addEventListener('htmx:afterSwap', function (evt) {
     if (evt.detail.target.id === 'create_form') {
