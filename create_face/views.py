@@ -144,7 +144,6 @@ def create(request):
 
 def create_with_pipeline(request):
     prompt = make_prompt(request)
-
     # Reset the cancellation flag
     cancel_flag.clear()
 
@@ -159,17 +158,17 @@ def create_with_pipeline(request):
     if cancel_flag.is_set():
         return HttpResponse("Image generation was cancelled.")
 
-    image = generate_image_with_cancel_check()
+    # Get the result from the thread
+    image = thread.result if hasattr(thread, 'result') else None
+
     if image:
         # Save the image to a BytesIO object
         image_io = BytesIO()
         image.save(image_io, format='PNG')
         image_io.seek(0)
-
         # Encode the image in base64
         image_base64 = base64.b64encode(image_io.read()).decode('utf-8')
         image_data = f"data:image/png;base64,{image_base64}"
-
         # Render the template with the base64 image
         return render(request, "avatar_display.html", {
             "generate_method": "pipeline",
