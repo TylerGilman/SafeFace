@@ -172,7 +172,7 @@
                         Cancel Generation
                     </button>
                 </div>
-                  <div id="button-container">
+                <div id="button-container">
                     <button name="generate_with_huggingface" id="generate_with_huggingface"
                             hx-post="/create/"
                             hx-swap="outerHTML"
@@ -192,7 +192,7 @@
                             class="hidden cursor-pointer text-white bg-red-500 hover:bg-red-700 font-medium rounded-full text-md px-4 py-2">
                         Cancel Generation
                     </button>
-                  </div>
+                </div>
 
                 {% if user.is_authenticated %}
 
@@ -363,23 +363,24 @@
                 });
             });
         }
-    document.body.addEventListener('htmx:beforeRequest', function(evt) {
-        if (evt.detail.elt.id === 'generate_button') {
-            document.getElementById('generate_button').classList.add('hidden');
-            document.getElementById('cancel_button').classList.remove('hidden');
-        }
-        if (evt.detail.elt.id === 'generate_with_huggingface') {
-            document.getElementById('generate_with_huggingface').classList.add('hidden');
-            document.getElementById('cancel_button_hugging_face').classList.remove('hidden');
-        }
-    });
 
-    document.body.addEventListener('htmx:afterRequest', function(evt) {
-        document.getElementById('generate_button').classList.remove('hidden');
-        document.getElementById('cancel_button').classList.add('hidden');
-        document.getElementById('generate_with_huggingface').classList.remove('hidden');
-        document.getElementById('cancel_button_hugging_face').classList.add('hidden');
-    });
+        document.body.addEventListener('htmx:beforeRequest', function (evt) {
+            if (evt.detail.elt.id === 'generate_button') {
+                document.getElementById('generate_button').classList.add('hidden');
+                document.getElementById('cancel_button').classList.remove('hidden');
+            }
+            if (evt.detail.elt.id === 'generate_with_huggingface') {
+                document.getElementById('generate_with_huggingface').classList.add('hidden');
+                document.getElementById('cancel_button_hugging_face').classList.remove('hidden');
+            }
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function (evt) {
+            document.getElementById('generate_button').classList.remove('hidden');
+            document.getElementById('cancel_button').classList.add('hidden');
+            document.getElementById('generate_with_huggingface').classList.remove('hidden');
+            document.getElementById('cancel_button_hugging_face').classList.add('hidden');
+        });
 
         // Attach click listeners to the images after swapping the form
         document.body.addEventListener('htmx:afterSwap', function (evt) {

@@ -1,19 +1,5 @@
 {% block content %}
-{% if generate_method == "pipeline" %}
-<button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
-    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-    hx-vals='js:{generate_method: getPipeline(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(),  age: getAge(), ethnicity: getEthnicity()}'
-    class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-    Regenerate
-</button>
-{% elif generate_method == "hugging_face" %}
-<button hx-post="/create/" hx-swap="outerHTML" hx-indicator="#ball" hx-include="#csrf"
-    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-    hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
-    class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-    Regenerate with Hugging Face
-</button>
-{% endif %}
+
 <div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
     <p class="text-lg font-semibold dark:text-white">Click To Continue</p>
     <div  hx-post="/swap_face/" hx-include="#image_path, #render_mode"
@@ -27,7 +13,7 @@
         <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
             src="../static/images/bouncing-ball.svg" alt="Loading..." />
     </div>
-    <div class="flex flex-col items-center justify-eenter w-full">
+    <div class="flex flex-col items-center justify-enter w-full">
         <input type="hidden" name="image_data" id="image_data" value="{{ image_path }}">
     </div>
 </div>
