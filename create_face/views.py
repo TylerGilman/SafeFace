@@ -3,23 +3,22 @@ import json
 import logging
 import os
 import random
+import threading
 from io import BytesIO
-from django.template import loader
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.template import loader
+
 from create_face.ml_handler.hugging_face import HuggingFaceHandler
 from create_face.ml_handler.pipeline import PipelineHandler
 from create_face.models import UserImage
 from safe_face_web import settings
-import threading
 
 # Global variable to store the cancellation flag
 cancel_flag = threading.Event()
-
-
 
 pipeline_handler = PipelineHandler()
 hugging_face_handler = HuggingFaceHandler()
@@ -180,10 +179,10 @@ def create_with_pipeline(request):
 
 def create_with_hugging_face(request):
     prompt = make_prompt(request)
-    
+
     # Reset the cancellation flag
     cancel_flag.clear()
-    
+
     def generate_image_with_cancel_check():
         return hugging_face_handler.generate_image(prompt, cancel_flag)
 
@@ -263,7 +262,17 @@ def save_image(request):
             user_images = UserImage.objects.filter(user=request.user)
             if len(user_images) >= 5:
                 logger.info("Maximum number of saved images, cannot save!")
-                return JsonResponse({"error": "Maximum number of saved images reached."}, status=400)
+                return JsonResponse(
+                    {"error": "Maximum number of images saved!"},
+                    status=400,
+                    headers={
+                        'HX-Trigger': json.dumps({
+                            "showMessage": {
+                                "text": "Maximum number of images saved!",
+                                "type": "warning"
+                            }
+                        })
+                    })
             # Save the image to the file system
             filename = f"{request.user.id}_image_{len(user_images) + 1}.png"
             file_path = save_image_to_file_system(
