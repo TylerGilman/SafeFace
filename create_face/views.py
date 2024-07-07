@@ -141,6 +141,8 @@ def create(request):
         return render(request, "error.html", {"message": "Invalid generate method."})
 
 
+from concurrent.futures import ThreadPoolExecutor
+
 def create_with_pipeline(request):
     prompt = make_prompt(request)
     # Reset the cancellation flag
@@ -149,16 +151,15 @@ def create_with_pipeline(request):
     def generate_image_with_cancel_check():
         return pipeline_handler.generate_image(prompt, cancel_flag)
 
-    # Run the generation in a separate thread
-    thread = threading.Thread(target=generate_image_with_cancel_check)
-    thread.start()
-    thread.join()  # Wait for the thread to complete
+    # Use ThreadPoolExecutor to run the generation in a separate thread
+    with ThreadPoolExecutor() as executor:
+        future = executor.submit(generate_image_with_cancel_check)
+        
+        # Wait for the thread to complete
+        image = future.result()
 
     if cancel_flag.is_set():
         return HttpResponse("Image generation was cancelled.")
-
-    # Get the result from the thread
-    image = thread.result if hasattr(thread, 'result') else None
 
     if image:
         # Save the image to a BytesIO object
@@ -175,7 +176,6 @@ def create_with_pipeline(request):
         })
     else:
         return JsonResponse({"error": "Failed to generate image using Pipeline."}, status=400)
-
 
 def create_with_hugging_face(request):
     prompt = make_prompt(request)
