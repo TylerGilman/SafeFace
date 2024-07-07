@@ -256,7 +256,7 @@ def randomize_attributes(request):
 @login_required
 def save_image(request):
     if request.method == "POST":
-        image_data = request.POST.get("image_data")
+        image_data = request.POST.get("image_path")
         if image_data:
             _, imgstr = image_data.split(';base64,')
             data = base64.b64decode(imgstr)

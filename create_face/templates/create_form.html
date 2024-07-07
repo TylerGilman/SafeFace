@@ -151,7 +151,7 @@
             <div class="flex flex-col md:flex-row items-end justify-end mt-2 gap-2 rounded-full w-full">
                 <div id="button-container">
                     <button name="generate_button" id="generate_button" hx-post="/create/"
-                            hx-swap="outerHTML"
+                            hx-swap="none"
                             hx-indicator="#ball"
                             hx-include="#csrf"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
@@ -173,7 +173,7 @@
                 <div id="button-container">
                     <button name="generate_with_huggingface" id="generate_with_huggingface"
                             hx-post="/create/"
-                            hx-swap="outerHTML"
+                            hx-swap="none"
                             hx-indicator="#ball"
                             hx-include="#csrf"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
@@ -194,11 +194,9 @@
 
                 {% if user.is_authenticated %}
 
-                    <input type="hidden" id="image_data" name="image_data" value="{{ image_path }}">
                     <button id="save_image_button"
                             class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-800 dark:hover:bg-primary-900"
-                            hx-post="/create/save_image/" hx-trigger="click" hx-include="#image_data"
-                            hx-vals="js:{image_data: document.getElementById('image_data').value}"
+                            hx-post="/create/save_image/" hx-trigger="click" hx-include="#image_path"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="outerHTML">
                         Save Avatar
                         <svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor"
