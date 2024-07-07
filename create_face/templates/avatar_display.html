@@ -1,24 +1,24 @@
 {% block content %}
-
-<div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
-    <p class="text-lg font-semibold dark:text-white">Click To Continue</p>
-    <div  hx-post="/swap_face/" hx-include="#image_path, #render_mode"
-            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-            hx-vals="js:{render_mode: 'content', image_path: document.getElementById('image_data').value}"
-            hx-swap="outerHTML" hx-target="#content" hx-push-url="true"  class="relative inline-block hover:scale-105 transform transition duration-500" >
-        <input type="hidden" id="image_data" name="image_data" value="{{ image_path }}">
-        <img src="{{ image_path }}" alt="avatar"
-            class=" mx-auto max-w-xs rounded-lg shadow-lg h-52 w-52"
-            id="avatar_image" />
-        <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
-            src="../static/images/bouncing-ball.svg" alt="Loading..." />
+    <div name="avatar" id="avatar" hx-swap="outerHTML" hx-swap-oob="true" class="text-center">
+        <p class="text-lg font-semibold dark:text-white">Click To Continue</p>
+        <div hx-post="/swap_face/" hx-include="#image_path, #render_mode"
+             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+             hx-vals="js:{render_mode: 'content', image_path: document.getElementById('image_data').value}"
+             hx-swap="outerHTML" hx-target="#content" hx-push-url="true"
+             class="relative inline-block hover:scale-105 transform transition duration-500">
+            <input type="hidden" id="image_data" name="image_data" value="{{ image_path }}">
+            <img src="{{ image_path }}" alt="avatar"
+                 class=" mx-auto max-w-xs rounded-lg shadow-lg h-52 w-52"
+                 id="avatar_image"/>
+            <img id="ball" class="htmx-indicator absolute right-0 top-1/2 transform -translate-y-1/2"
+                 src="../static/images/bouncing-ball.svg" alt="Loading..."/>
+        </div>
+        <div class="flex flex-col items-center justify-enter w-full">
+            <input type="hidden" name="image_data" id="image_data" value="{{ image_path }}">
+        </div>
     </div>
-    <div class="flex flex-col items-center justify-enter w-full">
-        <input type="hidden" name="image_data" id="image_data" value="{{ image_path }}">
-    </div>
-</div>
-<script>
+    <script>
 
-</script>
+    </script>
 
 {% endblock %}

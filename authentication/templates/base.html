@@ -2,157 +2,161 @@
 <html>
 
 <head>
-  <title>Create Face</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  {% load compress %}
-  {% load static %}
-  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  {% compress css %}
-  <link rel="stylesheet" href="{% static 'src/output.css' %}">
-  {% endcompress %}
-  <script>
-    if (
-      localStorage.getItem('color-theme') === 'dark' ||
-      (!('color-theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  </script>
+    <title>Create Face</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load compress %}
+    {% load static %}
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    {% endcompress %}
+    <script>
+        if (
+            localStorage.getItem('color-theme') === 'dark' ||
+            (!('color-theme' in localStorage) &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
 
 <body class="bg-bg-50 dark:bg-bg-800 flex flex-col min-h-screen font-mono">
-  <input type="hidden" id="csrf" value="{{ csrf_token }}">
-  <input type="hidden" id="render_mode" value="{{ render_mode }}">
-  <input type="hidden" id="next" value="/create">
-  <!-- Navbar -->
+<input type="hidden" id="csrf" value="{{ csrf_token }}">
+<input type="hidden" id="render_mode" value="{{ render_mode }}">
+<input type="hidden" id="next" value="/create">
+<!-- Navbar -->
 
-  <nav class="bg-bg-100 dark:bg-bg-900">
+<nav class="bg-bg-100 dark:bg-bg-900">
     <div class="max-w-7xl mx-auto px-4">
-      <div class="flex justify-between h-16">
-        <div class="flex items-center">
-          <a hx-get="/auth/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
-            hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/"
-            class="text-xl font-bold bg-gradient-to-r from-primary-600 to-secondary-400 inline-block text-transparent bg-clip-text transform hover:scale-105 focus:scale-110 transition-transform">
-            SafeFace
-          </a>
-        </div>
-
-        <!-- Mobile menu button -->
-        <div class="flex items-center md:hidden">
-          <button id="mobile-menu-button"
-            class="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
-            <span class="sr-only">Open main menu</span>
-            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Desktop menu -->
-        <div class="hidden md:flex md:items-center">
-          <button id="theme-toggle" type="button"
-            class="text-gray-500 m-4 dark:text-gray-400 hover:bg-bg-200 dark:hover:bg-bg-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
-            <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg">
-              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-            </svg>
-            <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                fill-rule="evenodd" clip-rule="evenodd"></path>
-            </svg>
-          </button>
-          {% if user.is_authenticated %}
-          <div class="relative ml-3">
-            <div>
-              <span class="text-gray-600 dark:text-white mr-4">{{ user.username }}</span>
-              <button hx-post="/auth/logout/" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-trigger="click"
-                hx-swap="none" hx-push-url="/auth/"
-                class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-                Logout
-              </button>
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <a hx-get="/auth/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
+                   hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/"
+                   class="text-xl font-bold bg-gradient-to-r from-primary-600 to-secondary-400 inline-block text-transparent bg-clip-text transform hover:scale-105 focus:scale-110 transition-transform">
+                    SafeFace
+                </a>
             </div>
-          </div>
-          {% else %}
-          <div>
-            <button hx-get="/auth/login/" hx-swap="outerHTML" hx-target="#content" hx-include="#next, #render_mode"
-              hx-vals='js:{next: "/create/", render_mode: "content"}' hx-push-url="/auth/login/"
-              class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 mr-2">
-              Login
-            </button>
-            <button hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
-              hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/register/"
-              class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-              Sign Up
-            </button>
-          </div>
-          {% endif %}
+
+            <!-- Mobile menu button -->
+            <div class="flex items-center md:hidden">
+                <button id="mobile-menu-button"
+                        class="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
+                    <span class="sr-only">Open main menu</span>
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Desktop menu -->
+            <div class="hidden md:flex md:items-center">
+                <button id="theme-toggle" type="button"
+                        class="text-gray-500 m-4 dark:text-gray-400 hover:bg-bg-200 dark:hover:bg-bg-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                    <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                    <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path
+                                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                                fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                {% if user.is_authenticated %}
+                    <div class="relative ml-3">
+                        <div>
+                            <span class="text-gray-600 dark:text-white mr-4">{{ user.username }}</span>
+                            <button hx-post="/auth/logout/" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                    hx-trigger="click"
+                                    hx-swap="none" hx-push-url="/auth/"
+                                    class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                {% else %}
+                    <div>
+                        <button hx-get="/auth/login/" hx-swap="outerHTML" hx-target="#content"
+                                hx-include="#next, #render_mode"
+                                hx-vals='js:{next: "/create/", render_mode: "content"}' hx-push-url="/auth/login/"
+                                class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 mr-2">
+                            Login
+                        </button>
+                        <button hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content"
+                                hx-include="#render_mode"
+                                hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/register/"
+                                class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+                            Sign Up
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-      </div>
     </div>
 
     <!-- Mobile menu, show/hide based on menu state. -->
     <div id="mobile-menu" class="md:hidden hidden">
-      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-        <button id="mobile-theme-toggle" type="button"
-          class="text-gray-500 w-full text-left dark:text-gray-400 hover:bg-bg-200 dark:hover:bg-bg-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
-          Toggle Theme
-        </button>
-        {% if user.is_authenticated %}
-        <div class="text-gray-600 dark:text-white p-2">{{ user.username }}</div>
-        <button hx-post="/auth/logout/" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-trigger="click"
-          hx-swap="none" hx-push-url="/auth/"
-          class="w-full text-left bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-          Logout
-        </button>
-        {% else %}
-        <button hx-get="/auth/login/" hx-swap="outerHTML" hx-target="#content" hx-include="#next, #render_mode"
-          hx-vals='js:{next: "/create/", render_mode: "content"}' hx-push-url="/auth/login/"
-          class="w-full text-left bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-          Login
-        </button>
-        <button hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
-          hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/register/"
-          class="w-full text-left bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-          Sign Up
-        </button>
-        {% endif %}
-      </div>
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <button id="mobile-theme-toggle" type="button"
+                    class="text-gray-500 w-full text-left dark:text-gray-400 hover:bg-bg-200 dark:hover:bg-bg-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                Toggle Theme
+            </button>
+            {% if user.is_authenticated %}
+                <div class="text-gray-600 dark:text-white p-2">{{ user.username }}</div>
+                <button hx-post="/auth/logout/" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-trigger="click"
+                        hx-swap="none" hx-push-url="/auth/"
+                        class="w-full text-left bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+                    Logout
+                </button>
+            {% else %}
+                <button hx-get="/auth/login/" hx-swap="outerHTML" hx-target="#content" hx-include="#next, #render_mode"
+                        hx-vals='js:{next: "/create/", render_mode: "content"}' hx-push-url="/auth/login/"
+                        class="w-full text-left bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+                    Login
+                </button>
+                <button hx-get="/auth/register/" hx-swap="outerHTML" hx-target="#content" hx-include="#render_mode"
+                        hx-vals='js:{render_mode: "content"}' hx-push-url="/auth/register/"
+                        class="w-full text-left bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
+                    Sign Up
+                </button>
+            {% endif %}
+        </div>
     </div>
-  </nav>
+</nav>
 
-  <script>
+<script>
     document.getElementById('mobile-menu-button').addEventListener('click', function () {
-      var mobileMenu = document.getElementById('mobile-menu');
-      mobileMenu.classList.toggle('hidden');
+        var mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
     });
 
     document.getElementById('mobile-theme-toggle').addEventListener('click', function () {
-      // Add your theme toggle logic here
+        // Add your theme toggle logic here
     });
-  </script>
+</script>
 
-  <main class="flex-grow max-w-7xl mx-auto px-4">
+<main class="flex-grow max-w-7xl mx-auto px-4">
     <div id="content" name="content">
-      {% block content %}{% endblock content %}
+        {% block content %}{% endblock content %}
     </div>
-  </main>
+</main>
 
-  <!-- Footer -->
-  <footer class="flex bg-bg-100 dark:bg-bg-900 bg-opacity-50 fixed bottom-0 w-full h-12 items-center">
+<!-- Footer -->
+<footer class="flex bg-bg-100 dark:bg-bg-900 bg-opacity-50 fixed bottom-0 w-full h-12 items-center">
     <div class="flex flex-col pl-2 opacity-55">
-      <p class="text-sm text-secondary-500 dark:text-secondary-500 font-semibold leading-tight">SafeFace</p>
-      <p class="text-xs text-secondary-500 dark:text-secondary-500 font-semibold leading-tight">© 2024 SafeFace</p>
+        <p class="text-sm text-secondary-500 dark:text-secondary-500 font-semibold leading-tight">SafeFace</p>
+        <p class="text-xs text-secondary-500 dark:text-secondary-500 font-semibold leading-tight">© 2024 SafeFace</p>
     </div>
     <div class="max-w-7xl mx-auto px-4">
-      <div x-data="{
+        <div x-data="{
             text: '',
             textArray : ['Generating an Avatar Takes a Little Patience!', 'Log In And Save Up To TEN Avatars!', 'Become Someone Who Does Not Exist... Yet!'],
             textIndex: 0,
@@ -215,138 +219,139 @@
             }, $data.cursorSpeed);
 
         })" class="flex items-center justify-center mx-auto text-center max-w-7xl">
-        <div class="relative flex items-center justify-center py-2 mt-2 mb-4">
-          <p class="text-2md text-black dark:text-white font-semibold leading-tight" x-text="text"></p>
-          <span class="absolute right-0 w-1 -mr-2 bg-black dark:bg-white h-1/2" x-ref="cursor"></span>
+            <div class="relative flex items-center justify-center py-2 mt-2 mb-4">
+                <p class="text-2md text-black dark:text-white font-semibold leading-tight" x-text="text"></p>
+                <span class="absolute right-0 w-1 -mr-2 bg-black dark:bg-white h-1/2" x-ref="cursor"></span>
+            </div>
         </div>
-      </div>
     </div>
     <div class="flex flex-col pr-2 opacity-55 items-end">
-      <p class="text-sm text-secondary-500 dark:text-secondary-500 font-semibold leading-tight">By</p>
-      <p class="text-xs text-secondary-500 dark:text-secondary-500 font-semibold leading-tight">Tgliz and Sii</p>
+        <p class="text-sm text-secondary-500 dark:text-secondary-500 font-semibold leading-tight">By</p>
+        <p class="text-xs text-secondary-500 dark:text-secondary-500 font-semibold leading-tight">Tgliz and Sii</p>
     </div>
-  </footer>
-  <!-- Toast -->
-  <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center">
+</footer>
+<!-- Toast -->
+<div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center">
     <!-- Toasts will be dynamically added here -->
-  </div>
-  <script>
+</div>
+<script>
     // Toasts
     document.addEventListener('DOMContentLoaded', function () {
-      console.log("DOMContentLoaded event triggered");
-      const toastContainer = document.getElementById('toast-container');
-      if (!toastContainer) {
-        console.error("Toast container not found! Make sure you have a div with id 'toast-container' in your HTML.");
-        return;
-      }
-
-      let generatingToast = null;
-      let isRedirecting = false;
-
-      document.body.addEventListener('htmx:beforeRequest', function (event) {
-        console.log("beforeRequest event triggered", event.detail);
-        if (event.detail.elt.closest('#generate_button')) {
-          console.log("Showing toast before request");
-          if (generatingToast && toastContainer.contains(generatingToast)) {
-            toastContainer.removeChild(generatingToast);
-          }
-          generatingToast = showToast("Generating avatar... This may take a moment.", 'info', 5000);
-        }
-      });
-
-      document.body.addEventListener('htmx:afterRequest', function (event) {
-        console.log("htmx:afterRequest event triggered", event.detail);
-
-        if (isRedirecting) {
-          console.log("Redirect in progress, skipping further processing");
-          return;
+        console.log("DOMContentLoaded event triggered");
+        const toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            console.error("Toast container not found! Make sure you have a div with id 'toast-container' in your HTML.");
+            return;
         }
 
-        let message = null;
-        let messageType = null;
-        let redirectUrl = null;
+        let generatingToast = null;
+        let isRedirecting = false;
 
-        // Handle server-sent messages via HX-Trigger
-        const triggerHeader = event.detail.xhr.getResponseHeader('HX-Trigger');
-        if (triggerHeader) {
-          const triggers = JSON.parse(triggerHeader);
-          if (triggers.showMessage) {
-            message = triggers.showMessage.text;
-            messageType = triggers.showMessage.type;
-          }
-          if (triggers.redirectUrl) {
-            redirectUrl = triggers.redirectUrl;
-          }
-        }
-
-        // Show toast if we have a message
-        if (message) {
-          console.log("Showing toast:", message, messageType);
-          showToast(message, messageType);
-        }
-
-        // Redirect if we have a URL
-        if (redirectUrl) {
-          console.log("Redirecting to:", redirectUrl);
-          isRedirecting = true;
-          setTimeout(() => {
-            window.location.href = redirectUrl;
-          }, 1000);
-        }
-      });
-      function showToast(message, type = 'info', duration = 3000) {
-        const toast = document.createElement('div');
-        toast.className = `mb-3 p-4 rounded-lg shadow-lg text-white text-sm font-medium transition-opacity duration-300 ease-in-out opacity-0 flex justify-between items-center`;
-        switch (type) {
-          case 'success':
-            toast.classList.add('bg-green-500'); // Using green-500 for success
-            break;
-          case 'error':
-            toast.classList.add('bg-red-500'); // Using red-500 for error
-            break;
-          case 'warning':
-            toast.classList.add('bg-yellow-500'); // Using yellow-500 for warning
-            break;
-          default:
-            toast.classList.add('bg-primary-500'); // Using primary-500 for the default (info)
-        }
-
-        const messageSpan = document.createElement('span');
-        messageSpan.textContent = message;
-        toast.appendChild(messageSpan);
-
-        const closeButton = document.createElement('button');
-        closeButton.textContent = '×';
-        closeButton.className = 'ml-2 text-white hover:text-gray-200 focus:outline-none';
-        closeButton.onclick = () => {
-          toast.classList.remove('opacity-100');
-          toast.classList.add('opacity-0');
-          setTimeout(() => {
-            if (toastContainer.contains(toast)) {
-              toastContainer.removeChild(toast);
+        document.body.addEventListener('htmx:beforeRequest', function (event) {
+            console.log("beforeRequest event triggered", event.detail);
+            if (event.detail.elt.closest('#generate_button')) {
+                console.log("Showing toast before request");
+                if (generatingToast && toastContainer.contains(generatingToast)) {
+                    toastContainer.removeChild(generatingToast);
+                }
+                generatingToast = showToast("Generating avatar... This may take a moment.", 'info', 5000);
             }
-          }, 300);
-        };
-        toast.appendChild(closeButton);
+        });
 
-        toastContainer.appendChild(toast);
-        // Trigger reflow to enable transition
-        toast.offsetHeight;
-        toast.classList.add('opacity-100');
+        document.body.addEventListener('htmx:afterRequest', function (event) {
+            console.log("htmx:afterRequest event triggered", event.detail);
 
-        if (duration > 0) {
-          setTimeout(() => {
-            if (toastContainer.contains(toast)) {
-              closeButton.click();
+            if (isRedirecting) {
+                console.log("Redirect in progress, skipping further processing");
+                return;
             }
-          }, duration);
+
+            let message = null;
+            let messageType = null;
+            let redirectUrl = null;
+
+            // Handle server-sent messages via HX-Trigger
+            const triggerHeader = event.detail.xhr.getResponseHeader('HX-Trigger');
+            if (triggerHeader) {
+                const triggers = JSON.parse(triggerHeader);
+                if (triggers.showMessage) {
+                    message = triggers.showMessage.text;
+                    messageType = triggers.showMessage.type;
+                }
+                if (triggers.redirectUrl) {
+                    redirectUrl = triggers.redirectUrl;
+                }
+            }
+
+            // Show toast if we have a message
+            if (message) {
+                console.log("Showing toast:", message, messageType);
+                showToast(message, messageType);
+            }
+
+            // Redirect if we have a URL
+            if (redirectUrl) {
+                console.log("Redirecting to:", redirectUrl);
+                isRedirecting = true;
+                setTimeout(() => {
+                    window.location.href = redirectUrl;
+                }, 1000);
+            }
+        });
+
+        function showToast(message, type = 'info', duration = 3000) {
+            const toast = document.createElement('div');
+            toast.className = `mb-3 p-4 rounded-lg shadow-lg text-white text-sm font-medium transition-opacity duration-300 ease-in-out opacity-0 flex justify-between items-center`;
+            switch (type) {
+                case 'success':
+                    toast.classList.add('bg-green-500'); // Using green-500 for success
+                    break;
+                case 'error':
+                    toast.classList.add('bg-red-500'); // Using red-500 for error
+                    break;
+                case 'warning':
+                    toast.classList.add('bg-yellow-500'); // Using yellow-500 for warning
+                    break;
+                default:
+                    toast.classList.add('bg-primary-500'); // Using primary-500 for the default (info)
+            }
+
+            const messageSpan = document.createElement('span');
+            messageSpan.textContent = message;
+            toast.appendChild(messageSpan);
+
+            const closeButton = document.createElement('button');
+            closeButton.textContent = '×';
+            closeButton.className = 'ml-2 text-white hover:text-gray-200 focus:outline-none';
+            closeButton.onclick = () => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+                setTimeout(() => {
+                    if (toastContainer.contains(toast)) {
+                        toastContainer.removeChild(toast);
+                    }
+                }, 300);
+            };
+            toast.appendChild(closeButton);
+
+            toastContainer.appendChild(toast);
+            // Trigger reflow to enable transition
+            toast.offsetHeight;
+            toast.classList.add('opacity-100');
+
+            if (duration > 0) {
+                setTimeout(() => {
+                    if (toastContainer.contains(toast)) {
+                        closeButton.click();
+                    }
+                }, duration);
+            }
+
+            return toast; // Return the toast element for potential future reference
         }
 
-        return toast; // Return the toast element for potential future reference
-      }
-
-      // Make showToast globally available
-      window.showToast = showToast;
+        // Make showToast globally available
+        window.showToast = showToast;
     });
 
 
@@ -355,44 +360,43 @@
 
     // Change the icons inside the button based on previous settings
     if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      themeToggleLightIcon.classList.remove('hidden');
+        themeToggleLightIcon.classList.remove('hidden');
     } else {
-      themeToggleDarkIcon.classList.remove('hidden');
+        themeToggleDarkIcon.classList.remove('hidden');
     }
 
     var themeToggleBtn = document.getElementById('theme-toggle');
 
     themeToggleBtn.addEventListener('click', function () {
 
-      // toggle icons inside button
-      themeToggleDarkIcon.classList.toggle('hidden');
-      themeToggleLightIcon.classList.toggle('hidden');
+        // toggle icons inside button
+        themeToggleDarkIcon.classList.toggle('hidden');
+        themeToggleLightIcon.classList.toggle('hidden');
 
-      // if set via local storage previously
-      if (localStorage.getItem('color-theme')) {
-        if (localStorage.getItem('color-theme') === 'light') {
-          document.documentElement.classList.add('dark');
-          localStorage.setItem('color-theme', 'dark');
+        // if set via local storage previously
+        if (localStorage.getItem('color-theme')) {
+            if (localStorage.getItem('color-theme') === 'light') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            }
+
+            // if NOT set via local storage previously
         } else {
-          document.documentElement.classList.remove('dark');
-          localStorage.setItem('color-theme', 'light');
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
         }
-
-        // if NOT set via local storage previously
-      } else {
-        if (document.documentElement.classList.contains('dark')) {
-          document.documentElement.classList.remove('dark');
-          localStorage.setItem('color-theme', 'light');
-        } else {
-          document.documentElement.classList.add('dark');
-          localStorage.setItem('color-theme', 'dark');
-        }
-      }
-
     });
 
 
-  </script>
+</script>
 </body>
 
 
