@@ -256,6 +256,13 @@
                 }
                 generatingToast = showToast("Generating avatar... This may take a moment.", 'info', 5000);
             }
+            if (event.detail.elt.closest('#generate_with_huggingface')) {
+                console.log("Showing toast before request");
+                if (generatingToast && toastContainer.contains(generatingToast)) {
+                    toastContainer.removeChild(generatingToast);
+                }
+                generatingToast = showToast("Generating avatar... This may take a moment.", 'info', 5000);
+            }
         });
 
         document.body.addEventListener('htmx:afterRequest', function (event) {
