@@ -59,7 +59,7 @@
           <div class="relative ml-3">
             <div>
               <span class="text-gray-600 dark:text-white mr-4">{{ user.username }}</span>
-              <button hx-post="/auth/logout" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-trigger="click"
+              <button hx-post="/auth/logout/" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-trigger="click"
                 hx-swap="none" hx-push-url="/auth/"
                 class="bg-primary-500 text-white hover:bg-primary-600 font-medium rounded-lg text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
                 Logout
