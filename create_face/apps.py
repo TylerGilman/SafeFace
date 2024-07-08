@@ -19,3 +19,4 @@ async def start_pipeline_processing():
         await config.pipeline_handler.start_processing()
     else:
         print("Warning: pipeline_handler not found in app config")
+        

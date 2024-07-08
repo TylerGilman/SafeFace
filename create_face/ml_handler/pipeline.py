@@ -47,6 +47,6 @@ class PipelineHandler(BaseMLHandler):
 
     def _callback(self, step, timestep, latents):
         if self.cancel_flag.is_set():
-            raise CancellationException("Image generation was cancelled.")
+            raise BaseMLHandler.CancellationException("Image generation was cancelled.")
 
 pipeline_handler = PipelineHandler()

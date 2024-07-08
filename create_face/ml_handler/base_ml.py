@@ -47,3 +47,6 @@ class BaseMLHandler(ABC):
             except asyncio.CancelledError:
                 pass
         self.processing_task = None
+        
+class CancellationException(Exception):
+    pass

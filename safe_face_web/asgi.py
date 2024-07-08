@@ -7,13 +7,16 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'safe_face_web.settings')
 
 django_asgi_app = get_asgi_application()
 
+async def startup():
+    await start_pipeline_processing()
+
 async def application(scope, receive, send):
     if scope['type'] == 'lifespan':
         while True:
             message = await receive()
             if message['type'] == 'lifespan.startup':
                 # Start the pipeline processing
-                await start_pipeline_processing()
+                await startup()
                 await send({'type': 'lifespan.startup.complete'})
             elif message['type'] == 'lifespan.shutdown':
                 await send({'type': 'lifespan.shutdown.complete'})
