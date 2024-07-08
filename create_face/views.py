@@ -30,12 +30,12 @@ form_fields = [
     {
         'id': 'hair_color',
         'label': 'Hair Color',
-        'options': ['Brown', 'Ginger', 'Blonde', 'Black', 'White', 'Purple']
+        'options': ['Brown', 'Ginger', 'Blonde', 'Black', 'White', 'Purple', 'Blue', 'Green', 'Red']
     },
     {
         'id': 'hair_type',
         'label': 'Hair Type',
-        'options': ['Curly', 'Straight', 'Messy', 'Wavy']
+        'options': ['Curly', 'Straight', 'Messy', 'Wavy', 'Bald']
     },
     {
         'id': 'hair_length',
@@ -50,7 +50,7 @@ form_fields = [
     {
         'id': 'skin_type',
         'label': 'Skin Type',
-        'options': ['Acne', 'Clear', 'Freckles', 'Sensitive']
+        'options': ['Acne', 'Clear', 'Freckles', 'Sensitive', 'Dry', 'Oily', 'Combination']
     },
     {
         'id': 'age',
@@ -61,12 +61,13 @@ form_fields = [
         'id': 'ethnicity',
         'label': 'Ethnicity',
         'options': ['African', 'Caucasian', 'Italian', 'Jewish', 'British', 'Finnish', 'Mexican', 'Chinese',
-                    'Vietnamese']
+                    'Vietnamese', 'Indian', 'Japanese', 'Korean', 'Filipino', 'Arab', 'Turkish', 'Greek', 'Russian',
+                    'Polish', 'Irish', 'German', 'French', 'Spanish', 'Portuguese', 'Brazilian', 'Australian']
     },
     {
         'id': 'eye_color',
         'label': 'Eye Color',
-        'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red']
+        'options': ['Brown', 'Blue', 'Gray', 'Yellow', 'Green', 'Red', 'Black']
     },
     {
         'id': 'facial_hair',
