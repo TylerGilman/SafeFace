@@ -170,30 +170,29 @@
                         Cancel Generation
                     </button>
                 </div>
-                <div id="button-container">
-                    <button name="generate_with_huggingface" id="generate_with_huggingface"
-                            hx-post="/create/"
-                            hx-swap="none"
-                            hx-indicator="#ball"
-                            hx-include="#csrf"
-                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                            hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'
-                            class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">
-                        Generate with Hugging Face
-                    </button>
-                    <button id="cancel_button_hugging_face"
-                            hx-post="/create/cancel_generation/"
-                            hx-target="#button-container"
-                            hx-include="#csrf"
-                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                            hx-swap="outerHTML"
-                            class="hidden cursor-pointer text-white bg-red-500 hover:bg-red-700 font-medium rounded-full text-md px-4 py-2">
-                        Cancel Generation
-                    </button>
-                </div>
+{#                <div id="button-container">#}
+{#                    <button name="generate_with_huggingface" id="generate_with_huggingface"#}
+{#                            hx-post="/create/"#}
+{#                            hx-swap="none"#}
+{#                            hx-indicator="#ball"#}
+{#                            hx-include="#csrf"#}
+{#                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'#}
+{#                            hx-vals='js:{generate_method: getHuggingface(), gender: getGender(), hair_color: getHairColor(), hair_type: getHairType(), hair_length: getHairLength(), skin_color: getSkinColor(), skin_type: getSkinType(), eye_color: getEyeColor(), age: getAge(), ethnicity: getEthnicity()}'#}
+{#                            class="cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700">#}
+{#                        Generate with Hugging Face#}
+{#                    </button>#}
+{#                    <button id="cancel_button_hugging_face"#}
+{#                            hx-post="/create/cancel_generation/"#}
+{#                            hx-target="#button-container"#}
+{#                            hx-include="#csrf"#}
+{#                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'#}
+{#                            hx-swap="outerHTML"#}
+{#                            class="hidden cursor-pointer text-white bg-red-500 hover:bg-red-700 font-medium rounded-full text-md px-4 py-2">#}
+{#                        Cancel Generation#}
+{#                    </button>#}
+{#                </div>#}
 
                 {% if user.is_authenticated %}
-
                     <button id="save_image_button"
                             class="gap-2 flex flex-row cursor-pointer text-white bg-primary-500 hover:bg-primary-700 font-medium rounded-full text-md px-4 py-2 dark:bg-primary-800 dark:hover:bg-primary-900"
                             hx-post="/create/save_image/" hx-trigger="click" hx-include="#image_path"
@@ -210,7 +209,7 @@
                             </g>
                         </svg>
                     </button>
-                {% else %}
+                {% else%}
                     <button hx-get="/auth/login/" hx-include="#csrf, #next, #render_mode"
                             hx-vals='js:{next: "/create", render_mode: "content"}' hx-target="#content"
                             hx-swap="outerHTML" hx-push-url="true"
