@@ -11,6 +11,3 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
 ]
 
-# Make sure to add this decorator to your URL pattern
-#from asgiref.sync import async_to_sync
-#create_with_pipeline = async_to_sync(create_with_pipeline)

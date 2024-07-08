@@ -12,11 +12,10 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template import loader
 from asgiref.sync import async_to_sync
-
-from create_face.ml_handler.hugging_face import HuggingFaceHandler
-from create_face.ml_handler.pipeline import pipeline_handler
 from create_face.models import UserImage
 from safe_face_web import settings
+from create_face.ml_handler import pipeline_handler
+
 
 
 # Set up logging
@@ -129,6 +128,8 @@ def index(request):
 
 from asgiref.sync import async_to_sync
 
+
+
 def create(request):
     generate_method = request.POST.get("generate_method")
     if generate_method == "pipeline":
@@ -200,6 +201,7 @@ def create_with_hugging_face(request):
         return JsonResponse({"error": str(e)}, status=400)
 """
 
+@async_to_sync
 async def cancel_generation(request):
     await pipeline_handler.cancel_generation()
     return render(request, 'button_container.html')
