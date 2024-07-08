@@ -7,9 +7,12 @@ python3 -m venv .venv \
 source .venv/bin/activate \
 pip install -r requirements.txt
 ```
+
+When editing styling run to rebuild style:
 ```
 npx tailwindcss -i ./static/src/input.css -o ./static/src/output.css --watch
 ```
+
 ## Run: 
 ```
 python3 manage.py migrate
