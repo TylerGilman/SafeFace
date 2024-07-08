@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
 LOGIN_URL = '/login/'
 
+DJANGO_ALLOW_ASYNC_UNSAFE = True
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

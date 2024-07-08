@@ -3,25 +3,21 @@ import json
 import logging
 import os
 import random
-import threading
+import asyncio
 from io import BytesIO
+import threading
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template import loader
+from asgiref.sync import async_to_sync
 
 from create_face.ml_handler.hugging_face import HuggingFaceHandler
-from create_face.ml_handler.pipeline import PipelineHandler
+from create_face.ml_handler.pipeline import pipeline_handler
 from create_face.models import UserImage
 from safe_face_web import settings
 
-# Global variable to store the cancellation flag
-cancel_flag = threading.Event()
-
-pipeline_handler = PipelineHandler()
-hugging_face_handler = HuggingFaceHandler()
 
 # Set up logging
 logger = logging.getLogger("create_face")
@@ -80,7 +76,6 @@ form_fields = [
     },
 ]
 
-
 def index(request):
     if request.method == "POST":
         return create(request)
@@ -91,16 +86,13 @@ def index(request):
     else:
         template = "create_face.html"
 
-    mode = request.GET.get("mode")
+    mode = request.GET.get("mode", "create_mode")
     change_mode = request.GET.get("change_mode")
-    if not mode:
-        mode = "create_mode"
 
     images = []
-    if change_mode == "true":
-        if mode == "gallery_mode" or mode == "create_mode":
-            user_images = UserImage.objects.filter(
-                user=request.user) if request.user.is_authenticated else []
+    if change_mode == "true" and (mode == "gallery_mode" or mode == "create_mode"):
+        if request.user.is_authenticated:
+            user_images = UserImage.objects.filter(user=request.user)
             if len(user_images) == 0:
                 logger.error("No images found for the user.")
             for user_image in user_images:
@@ -108,11 +100,16 @@ def index(request):
                     image_base64 = base64.b64encode(f.read()).decode('utf-8')
                     images.append({'id': user_image.id, 'image': image_base64})
 
-            default_images = get_default_images()
-            images.extend(default_images)
-            return render(request, "create_form.html",
-                          {'guest': request.GET.get("guest"), 'render_mode': 'content', 'mode': mode,
-                           'form_fields': form_fields, 'images': images})
+        default_images = get_default_images()
+        images.extend(default_images)
+        return render(request, "create_form.html", {
+            'guest': request.GET.get("guest"),
+            'render_mode': 'content',
+            'mode': mode,
+            'form_fields': form_fields,
+            'images': images
+        })
+
     context = {
         'guest': request.GET.get("guest"),
         'form_fields': form_fields,
@@ -130,46 +127,31 @@ def index(request):
     })
     return response
 
+from asgiref.sync import async_to_sync
 
 def create(request):
     generate_method = request.POST.get("generate_method")
     if generate_method == "pipeline":
-        return create_with_pipeline(request)
-    elif generate_method == "hugging_face":
-        return create_with_hugging_face(request)
+        return async_to_sync(create_with_pipeline)(request)
+    #elif generate_method == "hugging_face":
+    #    return create_with_hugging_face(request)
     else:
         return render(request, "error.html", {"message": "Invalid generate method."})
 
 
-from concurrent.futures import ThreadPoolExecutor
-
-def create_with_pipeline(request):
+async def create_with_pipeline(request):
     prompt = make_prompt(request)
-    # Reset the cancellation flag
-    cancel_flag.clear()
-
-    def generate_image_with_cancel_check():
-        return pipeline_handler.generate_image(prompt, cancel_flag)
-
-    # Use ThreadPoolExecutor to run the generation in a separate thread
-    with ThreadPoolExecutor() as executor:
-        future = executor.submit(generate_image_with_cancel_check)
-        
-        # Wait for the thread to complete
-        image = future.result()
-
-    if cancel_flag.is_set():
+    try:
+        image = await pipeline_handler.add_to_queue(prompt)
+    except asyncio.CancelledError:
         return HttpResponse("Image generation was cancelled.")
 
     if image:
-        # Save the image to a BytesIO object
         image_io = BytesIO()
         image.save(image_io, format='PNG')
         image_io.seek(0)
-        # Encode the image in base64
         image_base64 = base64.b64encode(image_io.read()).decode('utf-8')
         image_data = f"data:image/png;base64,{image_base64}"
-        # Render the template with the base64 image
         return render(request, "avatar_display.html", {
             "generate_method": "pipeline",
             "image_path": image_data
@@ -177,6 +159,7 @@ def create_with_pipeline(request):
     else:
         return JsonResponse({"error": "Failed to generate image using Pipeline."}, status=400)
 
+"""
 def create_with_hugging_face(request):
     prompt = make_prompt(request)
 
@@ -215,10 +198,10 @@ def create_with_hugging_face(request):
             return JsonResponse({"error": "Failed to generate image using HuggingFace."}, status=400)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
+"""
 
-
-def cancel_generation(request):
-    cancel_flag.set()
+async def cancel_generation(request):
+    await pipeline_handler.cancel_generation()
     return render(request, 'button_container.html')
 
 
