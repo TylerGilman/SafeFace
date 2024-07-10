@@ -16,6 +16,13 @@ from create_face.models import UserImage
 from safe_face_web import settings
 from create_face.ml_handler import pipeline_handler
 
+import asyncio
+import base64
+from io import BytesIO
+from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
+from django.shortcuts import render
+from asgiref.sync import async_to_sync
+import logging
 
 
 # Set up logging
@@ -134,31 +141,58 @@ def create(request):
     generate_method = request.POST.get("generate_method")
     if generate_method == "pipeline":
         return async_to_sync(create_with_pipeline)(request)
-    #elif generate_method == "hugging_face":
-    #    return create_with_hugging_face(request)
     else:
         return render(request, "error.html", {"message": "Invalid generate method."})
-
+      
 
 async def create_with_pipeline(request):
     prompt = make_prompt(request)
+    
+    pipeline_handler.log_memory_usage()  # Log memory usage before generation
+    
     try:
         image = await pipeline_handler.add_to_queue(prompt)
     except asyncio.CancelledError:
+        logger.info("Image generation was cancelled.")
         return HttpResponse("Image generation was cancelled.")
-
+    except Exception as e:
+        logger.error(f"Error during image generation: {str(e)}")
+        return JsonResponse({"error": f"Failed to generate image: {str(e)}"}, status=500)
+    
+    pipeline_handler.log_memory_usage()  # Log memory usage after generation
+    
     if image:
-        image_io = BytesIO()
+        return StreamingHttpResponse(stream_image(image), content_type="text/html")
+    else:
+        logger.error("Failed to generate image using Pipeline.")
+        return JsonResponse({"error": "Failed to generate image using Pipeline."}, status=400)
+
+def stream_image(image):
+    yield """
+    <html>
+    <body>
+        <img src="data:image/png;base64,
+    """
+    
+    with BytesIO() as image_io:
         image.save(image_io, format='PNG')
         image_io.seek(0)
-        image_base64 = base64.b64encode(image_io.read()).decode('utf-8')
-        image_data = f"data:image/png;base64,{image_base64}"
-        return render(request, "avatar_display.html", {
-            "generate_method": "pipeline",
-            "image_path": image_data
-        })
-    else:
-        return JsonResponse({"error": "Failed to generate image using Pipeline."}, status=400)
+        base64_image = base64.b64encode(image_io.read()).decode('utf-8')
+        
+        # Stream the base64 data in chunks
+        chunk_size = 8192
+        for i in range(0, len(base64_image), chunk_size):
+            yield base64_image[i:i+chunk_size]
+    
+    yield f"""
+    " alt="Generated Avatar">
+    </body>
+    </html>
+    """
+
+def make_prompt(request):
+    # Your existing make_prompt function here
+    pass
 
 """
 def create_with_hugging_face(request):

@@ -8,8 +8,15 @@ class CreateFaceConfig(AppConfig):
 
     def ready(self):
         # This method is called by Django during startup
-        from .ml_handler import pipeline_handler
+        from .ml_handler import pipeline_handler, shutdown_cleanup
         self.pipeline_handler = pipeline_handler
+        
+        async def run_cleanup():
+            await shutdown_cleanup()
+
+        # Schedule the cleanup to run when the application exits
+        import atexit
+        atexit.register(lambda: asyncio.run(run_cleanup()))
 
 # Create a function to start the processing
 async def start_pipeline_processing():
